@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WishWell — Verified Wish-Matching Platform (Live Browser Preview)</title>
+
+  <!-- Typography: Fraunces & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cream: { 50: '#FDFBF7', 100: '#F8F4EE', 200: '#EFE8DD', 300: '#E2D7C7' },
+            terracotta: { 50: '#FDF7F5', 100: '#FAEFEA', 200: '#F4D8CD', 500: '#D96547', 600: '#BF5033', 700: '#9E3E26' },
+            sage: { 50: '#F3F6F4', 100: '#E5ECE7', 200: '#CDDCCF', 500: '#4B7A5C', 600: '#3C634A', 700: '#2E4E3A' },
+            ink: { 900: '#1A1816', 800: '#2C2825', 700: '#47423D', 600: '#68615A', 500: '#8C847C', 400: '#B6ACA2' }
+          },
+          fontFamily: {
+            serif: ['Fraunces', 'Georgia', 'serif'],
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- React & Babel CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    body {
+      background-color: #FDFBF7;
+      color: #1A1816;
+    }
+
+    *:focus-visible {
+      outline: 2px solid #BF5033;
+      outline-offset: 2px;
+    }
+  </style>
+</head>
+
+<body class="bg-cream-50 text-ink-900 font-sans antialiased min-h-screen">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    // --- SEED DATA & MOCK STATE ---
+    const INITIAL_WISHES = [
+      { id: 1, category: "Educational Supplies", title: "25 Grade 8 Mathematics Textbooks", item: "NCERT Grade 8 Math Book", desc: "Required for children advancing to 8th grade semester.", requested: 25, claimed: 15, remaining: 10, home: "St. Mary's Children's Haven", city: "Bengaluru, KA", neededBy: "2026-11-20", status: "partially_claimed" },
+      { id: 2, category: "Footwear & Warm Clothing", title: "30 Thermal Winter Jackets", item: "Heavy Winter Fleece Jackets (Sizes 8-14)", desc: "Needed for cold winter months in the shelter.", requested: 30, claimed: 30, remaining: 0, home: "Little Angels Home", city: "Mysuru, KA", neededBy: "2026-11-15", status: "claimed" },
+      { id: 3, category: "Hygiene & Bedding", title: "40 Cotton Single Bed Sheets & Pillows", item: "100% Cotton Single Bedspreads", desc: "Replacing worn bedding across dormitory blocks.", requested: 40, claimed: 12, remaining: 28, home: "Hope Haven Children's Care", city: "Mangaluru, KA", neededBy: "2026-12-05", status: "open" },
+      { id: 4, category: "Sports & Nutrition", title: "15 Footballs & Badminton Rackets", item: "Sports Kit & Coaching Equipment", desc: "For daily physical training and youth recreation.", requested: 15, claimed: 5, remaining: 10, home: "St. Mary's Children's Haven", city: "Bengaluru, KA", neededBy: "2026-11-28", status: "partially_claimed" }
+    ];
+
+    const INITIAL_CLAIMS = [
+      { id: 101, wishId: 1, wishTitle: "25 Grade 8 Mathematics Textbooks", item: "NCERT Grade 8 Math Book", qty: 5, deadline: "2026-11-12", status: "active", home: "St. Mary's Children's Haven" },
+      { id: 102, wishId: 2, wishTitle: "30 Thermal Winter Jackets", item: "Winter Fleece Jackets", qty: 10, deadline: "2026-11-10", status: "delivered", home: "Little Angels Home" }
+    ];
+
+    const AUDIT_LOGS = [
+      { id: 1, entity: "users #1", action: "SYSTEM_GENESIS", old_s: null, new_s: "active", prev: "0".repeat(64), hash: "7a8f9b2d8e4c1a5f6e7d8c9b0a1f2e3d4c5b6a7f8e9d0c1b2a3f4e5d6c7b8a9f", date: "2026-10-28 10:00:00" },
+      { id: 2, entity: "institutions #1", action: "REGISTER", old_s: null, new_s: "pending", prev: "7a8f9b2d8e4c1a5f6e7d8c9b0a1f2e3d4c5b6a7f8e9d0c1b2a3f4e5d6c7b8a9f", hash: "4c5b6a7f8e9d0c1b2a3f4e5d6c7b8a9f0e1d2c3b4a5f6e7d8c9b0a1f2e3d4c5b", date: "2026-10-28 10:15:00" },
+      { id: 3, entity: "institutions #1", action: "RECOMMEND", old_s: "pending", new_s: "recommended", prev: "4c5b6a7f8e9d0c1b2a3f4e5d6c7b8a9f0e1d2c3b4a5f6e7d8c9b0a1f2e3d4c5b", hash: "9e0d1c2b3a4f5e6d7c8b9a0f1e2d3c4b5a6f7e8d9c0b1a2f3e4d5c6b7a8f9e0d", date: "2026-10-28 11:30:00" },
+      { id: 4, entity: "institutions #1", action: "APPROVE", old_s: "recommended", new_s: "verified", prev: "9e0d1c2b3a4f5e6d7c8b9a0f1e2d3c4b5a6f7e8d9c0b1a2f3e4d5c6b7a8f9e0d", hash: "3b4a5f6e7d8c9b0a1f2e3d4c5b6a7f8e9d0c1b2a3f4e5d6c7b8a9f0e1d2c3b4a", date: "2026-10-28 12:00:00" },
+      { id: 5, entity: "wish_claims #101", action: "CLAIM_CREATED", old_s: null, new_s: "active", prev: "3b4a5f6e7d8c9b0a1f2e3d4c5b6a7f8e9d0c1b2a3f4e5d6c7b8a9f0e1d2c3b4a", hash: "d8c9b0a1f2e3d4c5b6a7f8e9d0c1b2a3f4e5d6c7b8a9f0e1d2c3b4a5f6e7d8c9", date: "2026-10-28 13:45:00" }
+    ];
+
+    function App() {
+      const [role, setRole] = useState('guest'); // guest, donor, institution, verifier, admin
+      const [view, setView] = useState('landing');
+      const [wishes, setWishes] = useState(INITIAL_WISHES);
+      const [claims, setClaims] = useState(INITIAL_CLAIMS);
+      const [selectedWish, setSelectedWish] = useState(null);
+      const [claimModalOpen, setClaimModalOpen] = useState(false);
+      const [claimQty, setClaimQty] = useState(1);
+      const [show409Error, setShow409Error] = useState(false);
+      const [duplicateStepActive, setDuplicateStepActive] = useState(false);
+      const [auditValid, setAuditValid] = useState(null);
+      const [toast, setToast] = useState(null);
+
+      const notify = (msg, type = 'success') => {
+        setToast({ msg, type });
+        setTimeout(() => setToast(null), 4000);
+      };
+
+      const handlePledge = () => {
+        if (show409Error) {
+          notify("409 Conflict: Available quantity changed due to another simultaneous donor pledge!", "error");
+          return;
+        }
+        if (selectedWish.remaining < claimQty) {
+          notify(`Cannot claim ${claimQty} items. Only ${selectedWish.remaining} remain available!`, "error");
+          return;
+        }
+        const updated = wishes.map(w => {
+          if (w.id === selectedWish.id) {
+            const newClaimed = w.claimed + claimQty;
+            const newRemaining = w.remaining - claimQty;
+            return { ...w, claimed: newClaimed, remaining: newRemaining, status: newRemaining === 0 ? 'claimed' : 'partially_claimed' };
+          }
+          return w;
+        });
+        setWishes(updated);
+        setClaims([{ id: Math.floor(Math.random() * 900) + 100, wishId: selectedWish.id, wishTitle: selectedWish.title, item: selectedWish.item, qty: claimQty, deadline: "2026-11-14", status: "active", home: selectedWish.home }, ...claims]);
+        setClaimModalOpen(false);
+        notify(`Successfully pledged ${claimQty} item(s)! Deadline: 14 days.`);
+        setView('my_claims');
+      };
+
+      const handleReleaseClaim = (claimId) => {
+        const target = claims.find(c => c.id === claimId);
+        if (!target) return;
+        setClaims(claims.map(c => c.id === claimId ? { ...c, status: 'released' } : c));
+        setWishes(wishes.map(w => w.id === target.wishId ? { ...w, claimed: Math.max(0, w.claimed - target.qty), remaining: w.remaining + target.qty, status: 'partially_claimed' } : w));
+        notify(`Claim #${claimId} voluntarily released. Quantity returned to open pool.`, 'info');
+      };
+
+      return (
+        <div className="min-h-screen flex flex-col font-sans">
+          {/* TOAST NOTIFICATION */}
+          {toast && (
+            <div className="fixed bottom-6 right-6 z-50 p-4 rounded-xl shadow-xl text-xs font-bold transition-all animate-bounce flex items-center space-x-2 border bg-white border-cream-300">
+              <span className={`w-2.5 h-2.5 rounded-full ${toast.type === 'error' ? 'bg-rose-500' : toast.type === 'info' ? 'bg-blue-500' : 'bg-emerald-500'}`} />
+              <span className="text-ink-900">{toast.msg}</span>
+            </div>
+          )}
+
+          {/* NAVBAR */}
+          <header className="bg-cream-50/90 backdrop-blur border-b border-cream-200 sticky top-0 z-40">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
+              <div className="flex items-center space-x-3 cursor-pointer" onClick={() => setView('landing')}>
+                <div className="w-10 h-10 rounded-xl bg-terracotta-600 flex items-center justify-center text-white shadow font-bold text-lg">
+                  W
+                </div>
+                <div>
+                  <div className="flex items-center space-x-2">
+                    <span className="font-serif text-2xl font-bold tracking-tight text-ink-900">WishWell</span>
+                    <span className="bg-sage-100 text-sage-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-sage-200">
+                      Verified
+                    </span>
+                  </div>
+                  <span className="text-[11px] text-ink-500 font-medium">Item-Only Matching for Children's Homes</span>
+                </div>
+              </div>
+
+              {/* NAV BUTTONS */}
+              <nav className="hidden md:flex items-center space-x-2 text-xs font-bold">
+                <button onClick={() => setView('browse')} className={`px-3 py-2 rounded-lg transition ${view === 'browse' ? 'bg-terracotta-50 text-terracotta-700' : 'text-ink-700 hover:bg-cream-100'}`}>
+                  Browse Wishes
+                </button>
+                {role === 'donor' && (
+                  <>
+                    <button onClick={() => setView('my_claims')} className={`px-3 py-2 rounded-lg transition ${view === 'my_claims' ? 'bg-terracotta-50 text-terracotta-700' : 'text-ink-700 hover:bg-cream-100'}`}>
+                      My Pledges
+                    </button>
+                    <button onClick={() => setView('impact')} className={`px-3 py-2 rounded-lg transition ${view === 'impact' ? 'bg-terracotta-50 text-terracotta-700' : 'text-ink-700 hover:bg-cream-100'}`}>
+                      Personal Impact
+                    </button>
+                  </>
+                )}
+                {role === 'institution' && (
+                  <>
+                    <button onClick={() => setView('inst_onboarding')} className={`px-3 py-2 rounded-lg transition ${view === 'inst_onboarding' ? 'bg-terracotta-50 text-terracotta-700' : 'text-ink-700 hover:bg-cream-100'}`}>
+                      Onboarding & Docs
+                    </button>
+                    <button onClick={() => setView('inst_create')} className={`px-3 py-2 rounded-lg transition ${view === 'inst_create' ? 'bg-terracotta-50 text-terracotta-700' : 'text-ink-700 hover:bg-cream-100'}`}>
+                      + Post Wish (Duplicate Check)
+                    </button>
+                  </>
+                )}
+                {role === 'verifier' && (
+                  <button onClick={() => setView('verifier_queue')} className={`px-3 py-2 rounded-lg transition ${view === 'verifier_queue' ? 'bg-terracotta-50 text-terracotta-700' : 'text-ink-700 hover:bg-cream-100'}`}>
+                    Pending Queue
+                  </button>
+                )}
+                {role === 'admin' && (
+                  <>
+                    <button onClick={() => setView('admin_analytics')} className={`px-3 py-2 rounded-lg transition ${view === 'admin_analytics' ? 'bg-terracotta-50 text-terracotta-700' : 'text-ink-700 hover:bg-cream-100'}`}>
+                      Analytics Dashboard
+                    </button>
+                    <button onClick={() => setView('admin_audit')} className={`px-3 py-2 rounded-lg transition ${view === 'admin_audit' ? 'bg-terracotta-50 text-terracotta-700' : 'text-ink-700 hover:bg-cream-100'}`}>
+                      Cryptographic Audit Log
+                    </button>
+                  </>
+                )}
+              </nav>
+
+              {/* 1-CLICK ROLE SWITCHER */}
+              <div className="flex items-center space-x-2">
+                <span className="text-[10px] font-bold text-ink-400 uppercase tracking-wider hidden sm:inline">Role:</span>
+                <select
+                  value={role}
+                  onChange={(e) => {
+                    const r = e.target.value;
+                    setRole(r);
+                    if (r === 'donor') setView('browse');
+                    else if (r === 'institution') setView('inst_onboarding');
+                    else if (r === 'verifier') setView('verifier_queue');
+                    else if (r === 'admin') setView('admin_analytics');
+                    else setView('landing');
+                    notify(`Switched session persona to: ${r.toUpperCase()}`);
+                  }}
+                  className="bg-cream-200 border border-cream-300 text-ink-800 text-xs font-bold py-1.5 px-3 rounded-full cursor-pointer focus:outline-none"
+                >
+                  <option value="guest">Public Guest</option>
+                  <option value="donor">Sarah (Donor)</option>
+                  <option value="institution">St. Mary's (Home)</option>
+                  <option value="verifier">Marcus (Verifier)</option>
+                  <option value="admin">Elena (Admin)</option>
+                </select>
+              </div>
+            </div>
+          </header>
+
+          {/* MAIN BODY ROUTING */}
+          <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 py-8 w-full">
+            {/* VIEW 1: LANDING PAGE */}
+            {view === 'landing' && (
+              <div className="space-y-16 py-8">
+                <div className="text-center max-w-3xl mx-auto space-y-6">
+                  <span className="px-3 py-1 rounded-full bg-cream-200 text-terracotta-700 text-xs font-bold tracking-wider uppercase">
+                    Direct, Verified, Privacy-Preserving
+                  </span>
+                  <h1 className="font-serif text-5xl sm:text-6xl font-bold text-ink-900 leading-tight">
+                    Real wishes from <span className="text-terracotta-600 underline decoration-cream-300">verified children&apos;s homes.</span>
+                  </h1>
+                  <p className="text-sm sm:text-base text-ink-600 leading-relaxed">
+                    Fulfill specific item-based requests directly. Homes undergo physical verification before posting. Every delivery is verified by item photo proof. <strong>Strictly zero photos of children.</strong>
+                  </p>
+                  <div className="flex items-center justify-center space-x-4 pt-4">
+                    <button onClick={() => setView('browse')} className="px-6 py-3 rounded-xl bg-terracotta-600 hover:bg-terracotta-700 text-white text-xs font-bold shadow-lg transition">
+                      Browse Open Wishes &rarr;
+                    </button>
+                    <button onClick={() => { setRole('institution'); setView('inst_onboarding'); }} className="px-6 py-3 rounded-xl bg-white border border-cream-300 text-ink-800 text-xs font-bold hover:bg-cream-100 transition">
+                      Children&apos;s Home Portal
+                    </button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-6">
+                  <div className="p-6 rounded-2xl bg-white border border-cream-200 shadow-sm space-y-2">
+                    <span className="text-2xl font-serif text-terracotta-600 font-bold">01</span>
+                    <h3 className="font-serif text-lg font-bold">Two-Step Verification</h3>
+                    <p className="text-xs text-ink-600">Field verifiers physically inspect facilities; platform administrators grant final approval before any wish can be posted.</p>
+                  </div>
+                  <div className="p-6 rounded-2xl bg-white border border-cream-200 shadow-sm space-y-2">
+                    <span className="text-2xl font-serif text-terracotta-600 font-bold">02</span>
+                    <h3 className="font-serif text-lg font-bold">Item-Only Delivery Proof</h3>
+                    <p className="text-xs text-ink-600">Photos of received items only. Image re-encoding automatically strips all EXIF and GPS geolocation metadata.</p>
+                  </div>
+                  <div className="p-6 rounded-2xl bg-white border border-cream-200 shadow-sm space-y-2">
+                    <span className="text-2xl font-serif text-terracotta-600 font-bold">03</span>
+                    <h3 className="font-serif text-lg font-bold">Cryptographic Audit Chain</h3>
+                    <p className="text-xs text-ink-600">Every pledge and state change is sealed into an append-only SHA-256 hash chain, protected by SQL Server triggers.</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* VIEW 2: BROWSE WISHES */}
+            {view === 'browse' && (
+              <div className="space-y-6">
+                <div className="border-b border-cream-200 pb-4 flex flex-col sm:flex-row justify-between sm:items-end gap-2">
+                  <div>
+                    <h2 className="font-serif text-3xl font-bold text-ink-900">Browse Verified Wishes</h2>
+                    <p className="text-xs text-ink-600">Live items requested by verified homes, evaluated directly against SQL View v_open_wishes.</p>
+                  </div>
+                  <span className="text-xs font-bold text-ink-500">{wishes.length} active needs</span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {wishes.map(w => {
+                    const pct = Math.round((w.claimed / w.requested) * 100);
+                    return (
+                      <div key={w.id} className="p-6 rounded-2xl bg-white border border-cream-200 shadow hover:shadow-lg transition space-y-4 flex flex-col justify-between">
+                        <div className="space-y-2">
+                          <div className="flex justify-between items-center text-[10px] font-bold">
+                            <span className="px-2 py-0.5 rounded bg-terracotta-50 text-terracotta-700">{w.category}</span>
+                            <span className={`px-2 py-0.5 rounded ${w.status === 'claimed' ? 'bg-blue-100 text-blue-800' : 'bg-sage-100 text-sage-800'}`}>{w.status.replace('_', ' ')}</span>
+                          </div>
+                          <h3 className="font-serif text-lg font-bold text-ink-900">{w.title}</h3>
+                          <p className="text-xs text-terracotta-600 font-semibold">Item: {w.item}</p>
+                          <p className="text-xs text-ink-600 line-clamp-2">{w.desc}</p>
+                          <div className="pt-2 text-[11px] text-ink-500 border-t border-cream-100">
+                            <strong>{w.home}</strong> &bull; {w.city}
+                          </div>
+                          <div className="space-y-1 pt-1">
+                            <div className="flex justify-between text-xs font-bold text-ink-700">
+                              <span>{w.claimed} / {w.requested} pledged</span>
+                              <span className="text-terracotta-600">{w.remaining} remaining</span>
+                            </div>
+                            <div className="w-full bg-cream-200 h-2 rounded-full overflow-hidden">
+                              <div className="bg-terracotta-600 h-full rounded-full transition-all" style={{ width: `${pct}%` }} />
+                            </div>
+                          </div>
+                        </div>
+                        <button
+                          disabled={w.remaining === 0}
+                          onClick={() => { setSelectedWish(w); setClaimQty(1); setShow409Error(false); setClaimModalOpen(true); }}
+                          className={`w-full py-2.5 rounded-xl text-xs font-bold shadow transition ${w.remaining > 0 ? 'bg-terracotta-600 hover:bg-terracotta-700 text-white' : 'bg-cream-200 text-ink-400 cursor-not-allowed'}`}
+                        >
+                          {w.remaining > 0 ? 'Pledge Items &rarr;' : 'Fully Pledged'}
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* VIEW 3: DONOR MY CLAIMS */}
+            {view === 'my_claims' && (
+              <div className="space-y-6">
+                <div className="border-b border-cream-200 pb-4">
+                  <h2 className="font-serif text-3xl font-bold text-ink-900">My Pledged Claims</h2>
+                  <p className="text-xs text-ink-600">Track shipments and delivery deadlines. Overdue active claims are auto-released by sp_release_stale_claims.</p>
+                </div>
+                <div className="space-y-4">
+                  {claims.map(c => (
+                    <div key={c.id} className="p-6 rounded-2xl bg-white border border-cream-200 shadow flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                      <div>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-xs font-mono text-ink-400">Claim #{c.id}</span>
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${c.status === 'active' ? 'bg-amber-100 text-amber-800' : c.status === 'delivered' ? 'bg-blue-100 text-blue-800' : 'bg-ink-100 text-ink-600'}`}>{c.status}</span>
+                        </div>
+                        <h3 className="font-serif text-lg font-bold text-ink-900 mt-1">{c.qty}x {c.item}</h3>
+                        <p className="text-xs text-ink-600">{c.home} &bull; Deadline: <strong className="text-ink-800">{c.deadline}</strong></p>
+                      </div>
+                      <div className="flex space-x-2">
+                        {c.status === 'active' && (
+                          <>
+                            <button onClick={() => handleReleaseClaim(c.id)} className="px-3 py-1.5 rounded-lg border border-cream-300 text-xs font-bold text-ink-700 hover:bg-cream-100">Release Claim</button>
+                            <button onClick={() => { setClaims(claims.map(x => x.id === c.id ? { ...x, status: 'delivered' } : x)); notify(`Claim #${c.id} marked as delivered! Home director notified to inspect items.`); }} className="px-4 py-1.5 rounded-lg bg-terracotta-600 text-white text-xs font-bold hover:bg-terracotta-700">Mark Delivered &rarr;</button>
+                          </>
+                        )}
+                        {c.status === 'delivered' && (
+                          <span className="text-xs font-bold text-blue-700 bg-blue-50 px-3 py-1 rounded border border-blue-200">Awaiting Photo Proof Confirmation</span>
+                        )}
+                        {c.status === 'released' && (
+                          <span className="text-xs text-ink-400 font-medium">Voluntarily Released</span>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* VIEW 4: PERSONAL IMPACT */}
+            {view === 'impact' && (
+              <div className="space-y-6">
+                <div className="border-b border-cream-200 pb-4">
+                  <h2 className="font-serif text-3xl font-bold text-ink-900">Your Giving Impact</h2>
+                  <p className="text-xs text-ink-600">Every delivered item verified with physical item photo proof.</p>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                  <div className="p-6 rounded-2xl bg-white border border-cream-200 shadow text-center">
+                    <span className="text-xs font-bold text-terracotta-600 uppercase">Wishes Fulfilled</span>
+                    <div className="font-serif text-4xl font-bold text-ink-900 mt-1">12</div>
+                  </div>
+                  <div className="p-6 rounded-2xl bg-white border border-cream-200 shadow text-center">
+                    <span className="text-xs font-bold text-sage-600 uppercase">Physical Items Delivered</span>
+                    <div className="font-serif text-4xl font-bold text-sage-700 mt-1">85</div>
+                  </div>
+                  <div className="p-6 rounded-2xl bg-white border border-cream-200 shadow text-center">
+                    <span className="text-xs font-bold text-amber-600 uppercase">Partner Homes Helped</span>
+                    <div className="font-serif text-4xl font-bold text-ink-900 mt-1">4</div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* VIEW 5: INSTITUTION ONBOARDING & STATUS */}
+            {view === 'inst_onboarding' && (
+              <div className="space-y-6">
+                <div className="border-b border-cream-200 pb-4 flex justify-between items-center">
+                  <div>
+                    <h2 className="font-serif text-3xl font-bold text-ink-900">St. Mary&apos;s Children&apos;s Haven</h2>
+                    <p className="text-xs text-ink-600">Reg: REG-KA-2024-001 &bull; 4-Step Verification Lifecycle</p>
+                  </div>
+                  <span className="px-3 py-1 bg-sage-100 text-sage-800 text-xs font-bold rounded-full border border-sage-200">Status: Verified</span>
+                </div>
+
+                <div className="p-6 rounded-2xl bg-white border border-cream-200 shadow space-y-4">
+                  <h3 className="font-serif text-lg font-bold">State Machine Verification Status</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                    <div className="p-4 rounded-xl bg-sage-50 border border-sage-200 text-xs">
+                      <span className="font-bold text-sage-800">1. Registration</span>
+                      <p className="text-ink-500 mt-1">&check; Legal documents uploaded</p>
+                    </div>
+                    <div className="p-4 rounded-xl bg-sage-50 border border-sage-200 text-xs">
+                      <span className="font-bold text-sage-800">2. Field Verification</span>
+                      <p className="text-ink-500 mt-1">&check; Physical inspection passed</p>
+                    </div>
+                    <div className="p-4 rounded-xl bg-sage-50 border border-sage-200 text-xs">
+                      <span className="font-bold text-sage-800">3. Admin Approval</span>
+                      <p className="text-ink-500 mt-1">&check; Final compliance verified</p>
+                    </div>
+                    <div className="p-4 rounded-xl bg-sage-50 border border-sage-200 text-xs">
+                      <span className="font-bold text-sage-800">4. Wish Posting</span>
+                      <p className="text-ink-500 mt-1">&check; Active posting privileges</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* VIEW 6: CREATE WISH WITH DUPLICATE DETECTION */}
+            {view === 'inst_create' && (
+              <div className="max-w-2xl mx-auto p-8 rounded-3xl bg-white border border-cream-200 shadow-md space-y-6">
+                <div>
+                  <h2 className="font-serif text-2xl font-bold text-ink-900">Post Item Wish (Duplicate Warning Step)</h2>
+                  <p className="text-xs text-ink-600">Demonstrating explainable Jaccard token overlap (&ge; 50%) duplicate-need detection.</p>
+                </div>
+
+                {duplicateStepActive && (
+                  <div className="p-5 rounded-2xl bg-amber-50 border-2 border-amber-300 text-xs space-y-3">
+                    <div className="font-bold text-amber-900 flex items-center space-x-1">
+                      <span>&Delta;</span>
+                      <span>Rule-Based Duplicate Need Detected (HTTP 409 Warning)</span>
+                    </div>
+                    <p className="text-amber-800 leading-relaxed">
+                      Your item <strong>&ldquo;NCERT Math Grade 8&rdquo;</strong> shares 75% token overlap with open Wish #1. You can revise details or override with the <code>confirm_duplicate</code> flag.
+                    </p>
+                    <div className="flex space-x-2 pt-1">
+                      <button onClick={() => setDuplicateStepActive(false)} className="px-3 py-1.5 rounded-lg bg-white border border-amber-300 font-bold text-amber-900">Revise Item Details</button>
+                      <button onClick={() => { setDuplicateStepActive(false); notify("Wish posted successfully with confirm_duplicate=True flag override!"); setView('browse'); }} className="px-3 py-1.5 rounded-lg bg-amber-700 text-white font-bold">Confirm & Post Anyway</button>
+                    </div>
+                  </div>
+                )}
+
+                <div className="space-y-4 text-xs">
+                  <div>
+                    <label className="font-bold text-ink-700 uppercase">Item Name</label>
+                    <input defaultValue="Grade 8 NCERT Mathematics Textbook" className="w-full mt-1 p-2.5 rounded-xl border border-cream-300 bg-white" />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="font-bold text-ink-700 uppercase">Quantity Needed</label>
+                      <input type="number" defaultValue="20" className="w-full mt-1 p-2.5 rounded-xl border border-cream-300 bg-white" />
+                    </div>
+                    <div>
+                      <label className="font-bold text-ink-700 uppercase">Needed-By Date</label>
+                      <input type="date" defaultValue="2026-11-30" className="w-full mt-1 p-2.5 rounded-xl border border-cream-300 bg-white" />
+                    </div>
+                  </div>
+                  <button onClick={() => setDuplicateStepActive(true)} className="w-full py-3 rounded-xl bg-terracotta-600 text-white font-bold hover:bg-terracotta-700 shadow">
+                    Validate & Post Wish
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* VIEW 7: VERIFIER QUEUE */}
+            {view === 'verifier_queue' && (
+              <div className="space-y-6">
+                <div className="border-b border-cream-200 pb-4">
+                  <h2 className="font-serif text-3xl font-bold text-ink-900">Field Verifier Inspection Queue</h2>
+                  <p className="text-xs text-ink-600">Review government registration certificates and document physical premises compliance.</p>
+                </div>
+                <div className="p-6 rounded-2xl bg-white border border-cream-200 shadow space-y-4">
+                  <div className="flex justify-between items-center">
+                    <h3 className="font-serif text-xl font-bold text-ink-900">Sunshine Orphan Care Home</h3>
+                    <span className="text-xs font-bold text-amber-800 bg-amber-100 px-3 py-1 rounded-full">Pending Inspection</span>
+                  </div>
+                  <p className="text-xs text-ink-600">Hubballi, Karnataka &bull; Reg: REG-KA-2024-089</p>
+                  <div className="text-xs p-3 rounded-xl bg-cream-100 font-mono text-terracotta-700">
+                    Document: registration_certificate.pdf (Private Azurite SAS Token: ?se=15m&sig=...)
+                  </div>
+                  <div className="flex justify-end space-x-3 pt-2">
+                    <button onClick={() => notify("Institution rejected with documented violation note.", "error")} className="px-4 py-2 rounded-xl border border-rose-200 text-rose-700 text-xs font-bold">Reject</button>
+                    <button onClick={() => notify("Inspection verified! Recommended for Step 2 Admin Approval.")} className="px-5 py-2 rounded-xl bg-amber-600 text-white text-xs font-bold hover:bg-amber-700">Recommend Institution &rarr;</button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* VIEW 8: ADMIN ANALYTICS & AUDIT */}
+            {view === 'admin_analytics' && (
+              <div className="space-y-6">
+                <div className="border-b border-cream-200 pb-4 flex justify-between items-end">
+                  <div>
+                    <h2 className="font-serif text-3xl font-bold text-ink-900">Executive Analytics (Power BI Feed)</h2>
+                    <p className="text-xs text-ink-600">Aggregated KPIs from SQL Server transactions and triggers.</p>
+                  </div>
+                  <button onClick={() => notify("Stored procedure sp_release_stale_claims executed! 0 stale claims expired.")} className="px-4 py-2 bg-ink-800 text-white text-xs font-bold rounded-xl shadow">
+                    Run sp_release_stale_claims
+                  </button>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-4 gap-6">
+                  <div className="p-6 rounded-2xl bg-white border border-cream-200 shadow text-center">
+                    <span className="text-xs font-bold text-ink-500 uppercase">Avg Delivery Time</span>
+                    <div className="font-serif text-3xl font-bold mt-1">4.2 <span className="text-sm font-normal">days</span></div>
+                  </div>
+                  <div className="p-6 rounded-2xl bg-white border border-cream-200 shadow text-center">
+                    <span className="text-xs font-bold text-ink-500 uppercase">Stale-Claim Rate</span>
+                    <div className="font-serif text-3xl font-bold text-amber-600 mt-1">4.8%</div>
+                  </div>
+                  <div className="p-6 rounded-2xl bg-white border border-cream-200 shadow text-center">
+                    <span className="text-xs font-bold text-ink-500 uppercase">Fulfillment Rate</span>
+                    <div className="font-serif text-3xl font-bold text-emerald-600 mt-1">91.2%</div>
+                  </div>
+                  <div className="p-6 rounded-2xl bg-white border border-cream-200 shadow text-center">
+                    <span className="text-xs font-bold text-ink-500 uppercase">Verified Homes</span>
+                    <div className="font-serif text-3xl font-bold text-ink-900 mt-1">18</div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* VIEW 9: CRYPTOGRAPHIC AUDIT LOG */}
+            {view === 'admin_audit' && (
+              <div className="space-y-6">
+                <div className="border-b border-cream-200 pb-4 flex flex-col sm:flex-row justify-between sm:items-end gap-3">
+                  <div>
+                    <h2 className="font-serif text-3xl font-bold text-ink-900">Append-Only Cryptographic Audit Log</h2>
+                    <p className="text-xs text-ink-600">SHA-256 hash chains linking each event to its predecessor. Direct UPDATE/DELETE blocked by SQL triggers.</p>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setAuditValid(true);
+                      notify("Chain verification complete: All 5 rows cryptographically valid with zero broken links!");
+                    }}
+                    className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow flex items-center space-x-2"
+                  >
+                    <span>&check; Verify Chain Integrity</span>
+                  </button>
+                </div>
+
+                {auditValid && (
+                  <div className="p-4 rounded-xl bg-sage-50 border border-sage-300 text-sage-950 text-xs font-bold flex items-center space-x-2">
+                    <span className="w-5 h-5 rounded-full bg-sage-600 text-white flex items-center justify-center">&check;</span>
+                    <span>100% Valid Cryptographic Chain: No broken pointers or tampered rows found across the database ledger.</span>
+                  </div>
+                )}
+
+                <div className="bg-white rounded-2xl border border-cream-200 overflow-x-auto shadow">
+                  <table className="w-full text-left text-xs font-mono">
+                    <thead className="bg-cream-100 text-ink-500 border-b border-cream-200 font-sans uppercase text-[10px]">
+                      <tr>
+                        <th className="p-3">ID</th>
+                        <th className="p-3">Entity</th>
+                        <th className="p-3">Action</th>
+                        <th className="p-3">Prev Hash</th>
+                        <th className="p-3">Record Hash</th>
+                        <th className="p-3">Timestamp</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-cream-100">
+                      {AUDIT_LOGS.map(log => (
+                        <tr key={log.id} className="hover:bg-cream-50">
+                          <td className="p-3 font-bold text-ink-900 font-sans">#{log.id}</td>
+                          <td className="p-3 font-sans text-ink-800">{log.entity}</td>
+                          <td className="p-3 text-terracotta-700 font-bold font-sans">{log.action}</td>
+                          <td className="p-3 text-[10px] text-ink-400">{log.prev.slice(0, 10)}...</td>
+                          <td className="p-3 text-[10px] text-indigo-700 font-bold">{log.hash.slice(0, 10)}...</td>
+                          <td className="p-3 text-[10px] text-ink-500 font-sans">{log.date}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+          </main>
+
+          {/* CLAIM MODAL */}
+          {claimModalOpen && selectedWish && (
+            <div className="fixed inset-0 bg-ink-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50">
+              <div className="bg-white rounded-3xl max-w-md w-full p-6 space-y-5 border border-cream-200 shadow-2xl">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <span className="text-[10px] font-bold text-terracotta-700 uppercase">{selectedWish.category}</span>
+                    <h3 className="font-serif text-xl font-bold text-ink-900">{selectedWish.title}</h3>
+                    <p className="text-xs text-ink-500">{selectedWish.home}</p>
+                  </div>
+                  <button onClick={() => setClaimModalOpen(false)} className="text-ink-400 hover:text-ink-700 text-lg">&times;</button>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-cream-100 text-xs flex justify-between items-center">
+                  <span>Available to pledge:</span>
+                  <span className="font-bold text-terracotta-700">{selectedWish.remaining} item(s)</span>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-ink-700 uppercase">Pledge Quantity</label>
+                  <div className="flex items-center space-x-3">
+                    <button onClick={() => setClaimQty(Math.max(1, claimQty - 1))} className="w-10 h-10 rounded-xl bg-cream-200 font-bold text-lg">-</button>
+                    <span className="font-serif text-xl font-bold w-12 text-center">{claimQty}</span>
+                    <button onClick={() => setClaimQty(Math.min(selectedWish.remaining, claimQty + 1))} className="w-10 h-10 rounded-xl bg-cream-200 font-bold text-lg">+</button>
+                  </div>
+                </div>
+
+                <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900">
+                  <strong>Calculated Deadline: 14 Days</strong>
+                  <p className="text-[11px] text-amber-800 mt-0.5">Enforced by database: default 14 days, capped by need date ({selectedWish.neededBy}).</p>
+                </div>
+
+                {/* SIMULATE 409 CONFLICT TOGGLE */}
+                <div className="pt-1 flex items-center space-x-2 text-xs text-ink-600">
+                  <input type="checkbox" id="sim409" checked={show409Error} onChange={(e) => setShow409Error(e.target.checked)} className="cursor-pointer" />
+                  <label htmlFor="sim409" className="cursor-pointer select-none">Simulate 409 Concurrency Conflict (over-claim race)</label>
+                </div>
+
+                <div className="flex justify-end space-x-3 pt-2 border-t border-cream-200">
+                  <button onClick={() => setClaimModalOpen(false)} className="px-4 py-2 rounded-xl text-xs font-bold text-ink-600 hover:bg-cream-100">Cancel</button>
+                  <button onClick={handlePledge} className="px-5 py-2 rounded-xl bg-terracotta-600 hover:bg-terracotta-700 text-white text-xs font-bold shadow">
+                    Confirm Pledge of {claimQty} Item(s)
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* FOOTER */}
+          <footer className="bg-cream-100 border-t border-cream-200 py-6 text-center text-xs text-ink-500 mt-auto">
+            WishWell &copy; 2026 &bull; Strict Child Privacy Charter &bull; 3NF Relational Integrity &bull; Append-Only Hash Chain
+          </footer>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+
+</html>

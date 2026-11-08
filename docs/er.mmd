@@ -1,0 +1,147 @@
+erDiagram
+    users {
+        int id PK
+        string email UK
+        string password_hash
+        string full_name
+        string role "institution | donor | verifier | admin"
+        datetime created_at
+        datetime updated_at
+    }
+
+    institutions {
+        int id PK
+        int user_id FK,UK
+        string name
+        string registration_number UK
+        string address
+        string city
+        string state
+        string postal_code
+        string phone
+        string website_url
+        string description
+        string status "pending | recommended | verified | rejected"
+        datetime created_at
+        datetime updated_at
+    }
+
+    verification_records {
+        int id PK
+        int institution_id FK
+        int recommended_by FK
+        datetime recommended_at
+        int approved_by FK
+        datetime approved_at
+        string decision "pending | recommended | verified | rejected"
+        string reason
+        datetime created_at
+    }
+
+    institution_documents {
+        int id PK
+        int institution_id FK
+        string document_type
+        string file_name
+        string blob_name UK
+        int file_size_bytes
+        string mime_type
+        datetime created_at
+    }
+
+    categories {
+        int id PK
+        string name UK
+        string description
+        datetime created_at
+    }
+
+    wishes {
+        int id PK
+        int institution_id FK
+        int category_id FK
+        string title
+        string description
+        string item_name
+        int qty_requested
+        datetime needed_by
+        string status "open | partially_claimed | claimed | delivered | expired | cancelled"
+        datetime created_at
+        datetime updated_at
+    }
+
+    wish_claims {
+        int id PK
+        int wish_id FK
+        int donor_id FK
+        int qty
+        datetime deadline
+        string status "active | delivered | released | expired"
+        datetime created_at
+        datetime updated_at
+    }
+
+    deliveries {
+        int id PK
+        int wish_claim_id FK,UK
+        string tracking_number
+        string carrier
+        string photo_url
+        string status "in_transit | delivered | confirmed | failed"
+        datetime delivered_at
+        int confirmed_by FK
+        datetime confirmed_at
+        string confirmation_notes
+        datetime created_at
+        datetime updated_at
+    }
+
+    thank_you_notes {
+        int id PK
+        int wish_id FK
+        int institution_id FK
+        int donor_id FK
+        int delivery_id FK,UK
+        string message
+        string impact_summary
+        string photo_url
+        datetime created_at
+    }
+
+    notifications {
+        int id PK
+        int user_id FK
+        string title
+        string message
+        string type "claim_expired | wish_update | delivery_update | verification_update | thank_you"
+        boolean is_read
+        datetime created_at
+    }
+
+    audit_log {
+        int id PK
+        string entity_type
+        int entity_id
+        string action
+        string old_status
+        string new_status
+        int changed_by FK
+        string details
+        datetime created_at
+    }
+
+    users ||--o| institutions : "has profile"
+    users ||--o{ wish_claims : "places claim"
+    users ||--o{ verification_records : "recommends or approves"
+    users ||--o{ notifications : "receives"
+    users ||--o{ audit_log : "invokes mutation"
+    institutions ||--o{ verification_records : "evaluated in"
+    institutions ||--o{ institution_documents : "uploads"
+    institutions ||--o{ wishes : "publishes"
+    institutions ||--o{ thank_you_notes : "authors"
+    categories ||--o{ wishes : "categorizes"
+    wishes ||--o{ wish_claims : "allocated to"
+    wishes ||--o{ thank_you_notes : "referenced in"
+    wish_claims ||--o| deliveries : "fulfilled through"
+    deliveries ||--o| thank_you_notes : "generates"
+
