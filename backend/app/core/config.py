@@ -1,7 +1,7 @@
 """
 Application Configuration Module
 Reads environment variables securely with defaults for local development.
-VIVA NOTE: Secrets are NEVER hardcoded in production; they are injected via .env.
+ARCHITECTURE NOTE: Secrets are NEVER hardcoded in production; they are injected via .env.
 """
 
 import os

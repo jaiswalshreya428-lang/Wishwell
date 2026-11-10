@@ -1,6 +1,6 @@
 # WishWell Security Architecture & Compliance Checklist
 
-> **Comprehensive Verification Matrix & Viva Defense Guide**  
+> **Comprehensive Verification Matrix & TECHNICAL SPECIFICATION Guide**  
 > Every security control maps directly to verifiable source code (file and line numbers) and the corresponding **Azure Portal Setting to Screenshot**.
 
 ---

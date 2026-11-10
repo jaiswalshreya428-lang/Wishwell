@@ -1,6 +1,6 @@
 # WishWell Power BI Analytics & Reporting Guide
 
-> **Enterprise Business Intelligence & Viva Examination Reference**  
+> **Enterprise Business Intelligence & Technical Engineering Reference**  
 > Complete technical guide for connecting Microsoft Power BI Desktop to Azure SQL Database, configuring the data model, and building executive dashboards.
 
 ---
@@ -83,7 +83,7 @@ Power BI Desktop requires direct TCP access to port 1433:
    * **Server**: `<your-server-name>.database.windows.net` *(e.g. `wishwell-sql-prod.database.windows.net` or `localhost,1433` for local Docker)*
    * **Database**: `sqldb-wishwell` *(or `wishwell` for local Docker)*
    * **Data Connectivity mode**:
-     * **Import (Recommended for viva demo)**: Loads data into Power BI's in-memory VertiPaq engine. Delivers lightning-fast slicer interactions and enables rich DAX calculations even if Azure SQL Serverless enters auto-pause.
+     * **Import (Recommended for interactive demo)**: Loads data into Power BI's in-memory VertiPaq engine. Delivers lightning-fast slicer interactions and enables rich DAX calculations even if Azure SQL Serverless enters auto-pause.
      * **DirectQuery**: Sends live SQL queries to Azure SQL on every slicer click. Best for real-time monitoring.
 2. Click **OK**.
 
@@ -252,7 +252,7 @@ Create a single 16:9 canvas (1920x1080) with a modern header and 5 analytical ca
 
 ---
 
-## 7. Viva Defense & Examination Talking Points
+## 7. Key Architectural & Engineering Considerations
 
 1. **Why create dedicated SQL Views instead of letting Power BI query base tables directly?**
    * *Security Abstraction*: Power BI users and report authors only need aggregated views, shielding raw personally identifiable information (PII) or sensitive institution records.

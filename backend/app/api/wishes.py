@@ -2,7 +2,7 @@
 Wishes API Router (/api/wishes)
 Manages the complete lifecycle of item requests posted by verified children's homes.
 
-VIVA DEFENSE NOTES:
+Engineering Design Notes:
 1. Dual-Layer Verification Guard:
    - Only institutions with status 'verified' can create wishes.
    - Enforced at API layer (HTTP 403) AND guaranteed at database layer by trigger
@@ -348,7 +348,7 @@ async def list_open_wishes(
 ):
     """
     Lists open wishes for public and donor browsing.
-    VIVA REQUIREMENT: Directly reads from dbo.v_open_wishes view with server-side pagination.
+    SYSTEM REQUIREMENT: Directly reads from dbo.v_open_wishes view with server-side pagination.
     """
     effective_page_size = limit if limit is not None else page_size
     from_date = needed_by_after if needed_by_after is not None else needed_by_from

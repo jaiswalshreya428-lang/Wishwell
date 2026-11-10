@@ -107,11 +107,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           </button>
         </div>
 
-        {/* Quick Viva Demo Accounts */}
+        {/* Quick interactive demo Accounts */}
         {tab === 'login' && (
           <div className="p-3.5 rounded-xl bg-cream-100 border border-cream-200 space-y-2">
             <span className="text-[10px] font-bold text-ink-500 uppercase tracking-wider block">
-              Viva Examiner One-Click Demo Profiles:
+              One-Click Demo Profiles:
             </span>
             <div className="grid grid-cols-2 gap-2 text-xs">
               <button

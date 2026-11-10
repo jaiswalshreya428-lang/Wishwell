@@ -1,7 +1,7 @@
 """
 Cryptographic Audit Hash Chain & Tamper-Detection Engine (/app/core/audit.py)
 
-VIVA DEFENSE NOTES:
+Engineering Design Notes:
 1. Append-Only Cryptographic Chain (Blockchain-style Merkle Linkage):
    - Every row in dbo.audit_log contains a SHA-256 hash (record_hash) generated over its own contents
      concatenated with the hash of the immediately preceding row (prev_hash).

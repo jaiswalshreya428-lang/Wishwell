@@ -2,7 +2,7 @@
 Pytest Fixtures for WishWell Backend Testing
 Sets up in-memory SQLite database, mock sessions, seeds baseline accounts, and test client.
 
-VIVA NOTES:
+ARCHITECTURE NOTES:
 - Uses SQLite in-memory with aiosqlite for ultra-fast, isolated, and deterministic test runs.
 - Overrides FastAPI get_db dependency so test queries execute inside the test database.
 - Provides token generator fixtures for all four roles: admin, verifier, institution, donor.

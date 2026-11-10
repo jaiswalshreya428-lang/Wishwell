@@ -1,7 +1,7 @@
 """
 Pydantic Schemas for Deliveries, Thank-You Notes, Notifications, and Donor Impact.
 
-VIVA NOTES:
+ARCHITECTURE NOTES:
 - Strongly typed request/response schemas for deliveries and receipt confirmation.
 - Includes SAS URL fields for delivery proofs stored in private blob storage.
 - Comprehensive aggregations for donor impact reporting and timeline tracking.

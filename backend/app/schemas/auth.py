@@ -2,7 +2,7 @@
 Pydantic Schemas for Authentication & User Accounts
 Enforces strict input validation and secure output serialization.
 
-VIVA NOTES:
+ARCHITECTURE NOTES:
 - Pydantic v2 validates types, lengths, and formats before controller execution.
 - Passwords are validated for a minimum length of 8 characters.
 - Output models strip sensitive data (password_hash) from all API responses.

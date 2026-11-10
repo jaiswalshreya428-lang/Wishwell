@@ -3,7 +3,7 @@ Deliveries & Thank-You Notes API Router
 Handles physical item delivery tracking, proof photo validation, receipt confirmation,
 and thank-you notes.
 
-VIVA DEFENSE NOTES:
+Engineering Design Notes:
 1. Strict Role Authorization:
    - Donor marks claim as delivered.
    - ONLY the institution owning the wish can confirm receipt.
@@ -429,7 +429,7 @@ async def post_thank_you_note(
 ):
     """
     Institution posts a thank-you note to the donor for a confirmed delivery.
-    VIVA INVARIANT: Exactly one thank-you note permitted per delivery.
+    SYSTEM INVARIANT: Exactly one thank-you note permitted per delivery.
     """
     # 1. Fetch institution profile
     inst_stmt = select(Institution).where(Institution.user_id == current_user.id)

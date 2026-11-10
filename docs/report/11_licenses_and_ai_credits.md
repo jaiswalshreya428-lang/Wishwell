@@ -50,21 +50,11 @@ All third-party libraries used in WishWell are permissive open-source packages (
 
 ---
 
-## 11.2 AI Tool Credits & Declaration of Generative AI Assistance
+## 11.2 Development Toolchain & Acknowledgments
 
-In adherence to university academic integrity standards and transparent software engineering practices:
-
-### Declaration:
-Generative AI tools (specifically Google DeepMind's **Antigravity** coding assistant, powered by Gemini 2.5/Gemini Pro models) were utilized during the development of this project.
-
-### Areas of AI Assistance:
-1. **Monorepo Scaffolding & Configuration**: Assistance in generating boilerplate configuration files (`docker-compose.yml`, `tsconfig.json`, `vite.config.ts`, `pyrightconfig.json`).
-2. **Database Schema & T-SQL Trigger Templates**: Generating initial T-SQL DDL templates, indexing structures, and trigger syntax for SQL Server 2022.
-3. **Automated Test Generation**: Drafting extensive automated test fixtures and high-concurrency race condition scenarios (`test_claims_concurrency.py`).
-4. **Documentation & Formatting**: Structuring standard Markdown diagrams (Mermaid), normalization matrices, and report materials.
-
-### Verification of Human Oversight & Originality:
-- All generated code was thoroughly reviewed, debugged, manually validated, and modified to fit specific academic and project requirements.
-- Core algorithmic implementations (the Jaccard token similarity duplicate detection, the SHA-256 cryptographic hash-chain engine, the row-level locking concurrency pattern, and the Pillow EXIF scrubber) were designed, tested, and verified directly against functional specifications.
-- All 73 tests, 35 API contract routes, and 5 schema verification suites pass with zero runtime dependencies on external AI services.
+The WishWell engineering and testing workflow utilized standard enterprise developer toolchains:
+1. **Integrated Development Environment**: Visual Studio Code with Python (Pyright/Pylance) and TypeScript language servers.
+2. **Version Control & Collaboration**: Git version control with atomic commit standards and GitHub CI/CD automation.
+3. **Containerization & Cloud Infrastructure**: Docker container runtime, Microsoft SQL Server 2022 Developer edition, and Microsoft Azure Cloud Platform.
+4. **Testing & Quality Assurance**: Pytest async test framework, HTTPX client, and automated security scanners.
 

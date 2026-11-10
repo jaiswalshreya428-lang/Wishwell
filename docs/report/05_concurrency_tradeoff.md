@@ -69,7 +69,7 @@ Final Database State: Active Claim Sum = 10 / 10, Status = 'claimed'
 
 ---
 
-## 5.4 Conclusion & Viva Recommendation
+## 5.4 Conclusion & architectural recommendation
 For WishWell, **pessimistic row-level locking (`with_for_update()`)** is decisively superior to optimistic concurrency. In a physical-item charity system, over-claiming is unacceptable because physical deliveries cannot be effortlessly reversed like digital cart items. 
 
 The brief lock window (< 15 milliseconds on a single wish row) introduces zero noticeable latency to other wishes while offering absolute mathematical mathematical protection against double-allocation.

@@ -1,6 +1,6 @@
 -- ==============================================================================
 -- WishWell Database Queries & SQL Demonstration Suite
--- Purpose: University Project Demonstration & Viva Examination Reference
+-- Purpose: University Project Demonstration & Technical Engineering Reference
 -- Contains:
 --   1. Multi-Table Relational Query (5 JOINs across core entities)
 --   2. Aggregation & Analytical Query (GROUP BY, SUM, COUNT, AVG, HAVING)

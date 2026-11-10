@@ -2,7 +2,7 @@
 Pydantic Schemas for Wish Management
 Defines request and response schemas for creating, editing, listing, and detailing wishes.
 
-VIVA NOTES:
+ARCHITECTURE NOTES:
 - Implements strict input validation (qty_requested > 0, needed_by datetime, category_id > 0).
 - Supports confirm_duplicate flag to bypass explainable duplicate detection warnings.
 - OpenWishViewResponse matches dbo.v_open_wishes SQL View schema.

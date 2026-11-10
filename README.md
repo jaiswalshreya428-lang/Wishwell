@@ -1,6 +1,6 @@
 # WishWell — Verified Wish-Matching Platform
 
-> **University Project Monorepo & Viva Examination Reference**  
+> **University Project Monorepo & Technical Engineering Reference**  
 > Full-Stack Platform connecting verified children's homes with donors for direct, transparent item fulfillment.
 
 ---
@@ -31,7 +31,7 @@
 
 ## 3. Test Logins for Each Role
 
-The database comes pre-seeded with fictional accounts for all four roles. In the frontend, you can also use the **1-Click Viva Demo Switcher** in the top-right navbar menu.
+The database comes pre-seeded with fictional accounts for all four roles. In the frontend, you can also use the **1-Click interactive demo Switcher** in the top-right navbar menu.
 
 | Role | Email Address | Password | Permissions & Workflow |
 |---|---|---|---|
@@ -138,7 +138,7 @@ Validates:
 
 ---
 
-## 7. Architecture & Viva Defense Highlights
+## 7. Architecture & Key Architectural Highlights
 
 - **3NF Normalization**: Complete functional dependency analysis in [docs/3NF_ANALYSIS.md](docs/3NF_ANALYSIS.md).
 - **Concurrency Control**: Wish claims utilize row locking (`UPDLOCK, HOLDLOCK`) and database triggers guaranteeing active claim sums never exceed requested quantities.

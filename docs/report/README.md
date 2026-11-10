@@ -1,6 +1,6 @@
 # WishWell Project Report & Academic Material Index
 
-This directory contains the complete technical report documentation for the **WishWell** verified wish-matching platform, structured for university evaluation and viva examination defense.
+This directory contains the complete technical report documentation for the **WishWell** verified wish-matching platform, structured for academic review and project submission.
 
 ---
 
@@ -24,6 +24,6 @@ This directory contains the complete technical report documentation for the **Wi
 
 ## Supporting Project Deliverables
 - **Demonstration SQL Queries**: [`docs/queries.sql`](file:///c:/Users/shubh/OneDrive/Desktop/wishwell/Wishwell/docs/queries.sql) (5 Joins, Group By Aggregation, View query, Stored Procedure call, and ACID Claim Transaction).
-- **25 Viva Examination Questions**: [`docs/viva_questions.md`](file:///c:/Users/shubh/OneDrive/Desktop/wishwell/Wishwell/docs/viva_questions.md) (Code-referenced model answers).
+- **Technical Implementation Review & FAQ**: [`docs/technical_faq.md`](file:///c:/Users/shubh/OneDrive/Desktop/wishwell/Wishwell/docs/technical_faq.md) (Architectural considerations and code-referenced questions).
 - **Final QA Verification Report**: [`docs/qa_verification_report.md`](file:///c:/Users/shubh/OneDrive/Desktop/wishwell/Wishwell/docs/qa_verification_report.md) (End-to-end 9-step flow test and performance audit).
 

@@ -1,7 +1,7 @@
 """
 APScheduler & Stale Claim Expiry Service for WishWell
 
-VIVA DEFENSE NOTES:
+Engineering Design Notes:
 1. Hard Rule 1 Alignment:
    - In production (SQL Server), business logic executes via stored procedure dbo.sp_release_stale_claims.
    - For SQLite test runners, an atomic transaction performs the identical state transitions:

@@ -103,7 +103,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  // Quick Demo Login for instant examiner/viva role switching
+  // Quick Demo Login for instant examiner/technical evaluation role switching
   const quickDemoLogin = async (role: UserRole) => {
     const credentials: Record<UserRole, { email: string; pass: string }> = {
       admin: { email: 'admin@wishwell.org', pass: 'Password123!' },

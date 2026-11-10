@@ -2,7 +2,7 @@
  * WishWell Typed API Client
  *
  * Implements strict in-memory token storage (avoiding persistent localStorage)
- * with sessionStorage fallback for page refresh resilience during viva/demos.
+ * with sessionStorage fallback for page refresh resilience during technical evaluation/demos.
  * Handles HTTP 409 Conflict, validation errors, and typed response extraction.
  */
 

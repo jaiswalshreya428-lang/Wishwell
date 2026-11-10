@@ -2,7 +2,7 @@
 Donor Impact API Router
 Aggregates donation metrics, category distributions, institutions supported, and chronological timeline.
 
-VIVA DEFENSE NOTES:
+Engineering Design Notes:
 1. Transparency & Donor Retention:
    - Donors see tangible verification that their physical items arrived safely.
    - Calculates verified impact from confirmed deliveries (never unconfirmed pledges).

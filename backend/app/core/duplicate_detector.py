@@ -1,7 +1,7 @@
 r"""
 Duplicate Need Detector for Wish Management.
 
-VIVA DEFENSE NOTES:
+Engineering Design Notes:
 - Purpose: Prevent children's homes from unintentionally posting redundant or duplicate wishes
   for identical physical items (e.g., multiple teachers requesting "A4 Math Notebooks").
 - Algorithm: Non-ML, explainable, rule-based approach:
@@ -23,7 +23,7 @@ VIVA DEFENSE NOTES:
      - Threshold: If similarity >= 0.5, flag as duplicate warning.
 - Why Not Machine Learning?
   - ML / Neural embeddings (e.g. BERT/Word2Vec) are non-deterministic black-boxes, require GPU/heavy dependencies,
-    introduce cold-start latency, and cannot be easily explained or audited in university viva and regulatory settings.
+    introduce cold-start latency, and cannot be easily explained or audited in university technical evaluation and regulatory settings.
   - Set-theoretic token overlap runs in O(|A| + |B|) time with zero external dependencies, is 100% deterministic,
     and directly handles token permutations (e.g. "Math Notebooks A4" and "A4 Notebooks Math" have a score of 1.0).
 """

@@ -1,7 +1,7 @@
 """
 Concurrency & Row Locking Helpers for Wish Claims
 
-VIVA DEFENSE NOTES:
+Engineering Design Notes:
 1. Two-Tier Concurrency Safeguard:
    - Tier 1 (Database Level): On SQL Server, uses query hints WITH (UPDLOCK, HOLDLOCK) to ensure
      row-level exclusivity and transaction-duration isolation.

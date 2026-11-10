@@ -1,6 +1,6 @@
 # WishWell Minimal & Low-Cost Azure Deployment Guide
 
-> **Production Deployment Specification & Viva Defense Reference**  
+> **Production Deployment Specification & TECHNICAL SPECIFICATION Reference**  
 > Complete operational guide for deploying WishWell on Microsoft Azure at minimum cost (~$5 to $13/month or $0 with student/free trial credits).
 
 ---
@@ -79,7 +79,7 @@
 
 ## 3. Step-by-Step Deployment Commands & Screenshots
 
-Follow these exact commands in order. Each step lists the corresponding screenshot to capture for your evaluation portfolio and viva examination.
+Follow these exact commands in order. Each step lists the corresponding screenshot to capture for your evaluation portfolio and technical examination.
 
 ### Step 1: Login & Create Resource Group
 ```bash
@@ -469,7 +469,7 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
 
 ---
 
-## 5. Security & Compliance Checklist for Viva
+## 5. Security & Compliance Checklist for technical evaluation
 
 - [x] **No Secrets in Repo**: All passwords and secrets are generated dynamically and stored in Azure Key Vault.
 - [x] **Least-Privilege Database Access**: `wishwell_app` is granted `SELECT, INSERT` on `dbo.audit_log` with explicit `DENY UPDATE, DELETE`.

@@ -70,7 +70,7 @@ def add_title_page(doc):
     desc_p = doc.add_paragraph()
     desc_p.paragraph_format.space_after = Pt(144)
     desc_p.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run_desc = desc_p.add_run("Comprehensive Technical Report, Architectural Specification, Security Model & Viva Defense Guide")
+    run_desc = desc_p.add_run("Comprehensive Technical Report, Architectural Specification, Security Model & System Implementation Guide")
     run_desc.font.name = "Calibri"
     run_desc.font.size = Pt(12)
     run_desc.font.color.rgb = MUTED_TEXT
@@ -394,12 +394,12 @@ def main():
         run.font.size = Pt(8.0)
         run.font.color.rgb = DARK_TEXT
 
-    # 5. Appendix B: 25 Viva Examination Questions
-    print("[5/5] Merging Appendix B: 25 Likely Viva Questions & Model Answers...")
-    viva_path = DOCS_DIR / "viva_questions.md"
-    if viva_path.exists():
-        viva_content = viva_path.read_text(encoding="utf-8")
-        parse_markdown_to_docx(doc, viva_content)
+    # 5. Appendix B: Technical Implementation Review & Architectural FAQ
+    print("[5/5] Merging Appendix B: Technical Implementation Review & Architectural FAQ...")
+    faq_path = DOCS_DIR / "technical_faq.md"
+    if faq_path.exists():
+        faq_content = faq_path.read_text(encoding="utf-8")
+        parse_markdown_to_docx(doc, faq_content)
 
     # Final QA Verification Report
     qa_path = DOCS_DIR / "qa_verification_report.md"

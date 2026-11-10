@@ -1,7 +1,7 @@
 -- ==============================================================================
 -- WishWell Database Schema (T-SQL / Microsoft SQL Server 2022 & Azure SQL)
 -- 
--- DESIGN GOALS & VIVA NOTES:
+-- DESIGN GOALS & ARCHITECTURE NOTES:
 -- 1. Strictly in Third Normal Form (3NF): No repeating groups, no partial key
 --    dependencies, and no transitive dependencies.
 -- 2. Database-enforced business invariants: Triggers and constraints guard
@@ -22,7 +22,7 @@ GO
 -- ==============================================================================
 -- 1. USERS TABLE
 -- Stores authentication credentials, full name, and platform role.
--- VIVA NOTE: Role is strictly restricted via CHECK constraint to avoid
+-- ARCHITECTURE NOTE: Role is strictly restricted via CHECK constraint to avoid
 -- unauthorized role escalation. Email is UNIQUE and indexed for fast lookup.
 -- ==============================================================================
 IF OBJECT_ID('dbo.users', 'U') IS NULL
@@ -45,7 +45,7 @@ GO
 -- ==============================================================================
 -- 2. INSTITUTIONS TABLE
 -- Stores children's home profiles. 
--- VIVA NOTE: Separated from users table to adhere to 3NF (institutional
+-- ARCHITECTURE NOTE: Separated from users table to adhere to 3NF (institutional
 -- metadata like reg number and address only belong to institution users).
 -- Has a 1-to-1 relationship with the 'institution' user via user_id.
 -- ==============================================================================
@@ -80,7 +80,7 @@ GO
 -- Implements the two-step verification workflow:
 -- Step 1: Field Verifier reviews documentation/facility -> 'recommended'
 -- Step 2: System Admin performs final approval -> 'verified'
--- VIVA NOTE: Maintains complete provenance and auditability of verification.
+-- ARCHITECTURE NOTE: Maintains complete provenance and auditability of verification.
 -- ==============================================================================
 IF OBJECT_ID('dbo.verification_records', 'U') IS NULL
 BEGIN
@@ -106,7 +106,7 @@ GO
 -- ==============================================================================
 -- 3B. INSTITUTION_DOCUMENTS TABLE
 -- Stores uploaded compliance documents (e.g. registration certificate, tax exemption).
--- VIVA NOTE: Actual files reside in Azure / Azurite Blob Storage in a PRIVATE container.
+-- ARCHITECTURE NOTE: Actual files reside in Azure / Azurite Blob Storage in a PRIVATE container.
 -- Renamed to UUIDs to prevent directory traversal and collision.
 -- ==============================================================================
 IF OBJECT_ID('dbo.institution_documents', 'U') IS NULL
@@ -131,7 +131,7 @@ GO
 -- ==============================================================================
 -- 4. CATEGORIES TABLE
 -- Lookup table for wish categories (e.g. Books, Bedding, Hygiene, Footwear).
--- VIVA NOTE: 3NF lookup table eliminating redundant text repetition in wishes.
+-- ARCHITECTURE NOTE: 3NF lookup table eliminating redundant text repetition in wishes.
 -- ==============================================================================
 IF OBJECT_ID('dbo.categories', 'U') IS NULL
 BEGIN
@@ -149,7 +149,7 @@ GO
 -- ==============================================================================
 -- 5. WISHES TABLE
 -- Stores specific item needs requested by verified institutions.
--- VIVA NOTE: qty_requested > 0 enforced via CHECK.
+-- ARCHITECTURE NOTE: qty_requested > 0 enforced via CHECK.
 -- Future needed_by rule is enforced via trigger trg_wishes_check_needed_by_future
 -- because T-SQL CHECK constraints cannot invoke non-deterministic functions (SYSUTCDATETIME).
 -- ==============================================================================
@@ -179,7 +179,7 @@ GO
 -- ==============================================================================
 -- 6. WISH_CLAIMS TABLE
 -- Records pledges by donors to fulfill whole or partial wish quantities.
--- VIVA NOTE: Active claims hold quantity until delivered, released, or expired.
+-- ARCHITECTURE NOTE: Active claims hold quantity until delivered, released, or expired.
 -- Invariant sum(active claims) <= qty_requested is enforced by trigger
 -- trg_wish_claims_enforce_active_qty_limit.
 -- ==============================================================================
@@ -206,7 +206,7 @@ GO
 -- ==============================================================================
 -- 7. DELIVERIES TABLE
 -- Tracks dispatch, courier details, and item-only photo proof of delivery.
--- VIVA NOTE: photo_url references local Azurite Blob Storage.
+-- ARCHITECTURE NOTE: photo_url references local Azurite Blob Storage.
 -- Strict business policy: photos must ONLY display received physical items,
 -- NEVER faces or identifying images of children.
 -- ==============================================================================
@@ -237,7 +237,7 @@ GO
 -- ==============================================================================
 -- 8. THANK_YOU_NOTES TABLE
 -- Sent by children's homes to donors once items are confirmed delivered.
--- VIVA NOTE: 1-to-1 with successful delivery. Provides the feedback loop and
+-- ARCHITECTURE NOTE: 1-to-1 with successful delivery. Provides the feedback loop and
 -- drives the donor impact page.
 -- ==============================================================================
 IF OBJECT_ID('dbo.thank_you_notes', 'U') IS NULL
@@ -287,7 +287,7 @@ GO
 -- ==============================================================================
 -- 10. AUDIT_LOG TABLE
 -- Immutable event ledger capturing state transitions across key domain entities.
--- VIVA NOTE: Required by regulatory compliance and university evaluation.
+-- ARCHITECTURE NOTE: Required by regulatory compliance and university evaluation.
 -- Populated automatically via AFTER UPDATE database triggers.
 -- ==============================================================================
 IF OBJECT_ID('dbo.audit_log', 'U') IS NULL
@@ -315,7 +315,7 @@ GO
 -- 10B. APPEND-ONLY ENFORCEMENT & HASH CHAIN GUARDS ON AUDIT_LOG
 -- Requirements: "Make the audit log append-only: the application database user has
 -- INSERT and SELECT only on audit_log. Add a hash chain and an admin endpoint that verifies integrity."
--- VIVA NOTE: INSTEAD OF trigger prevents any UPDATE or DELETE operations even by privileged scripts.
+-- ARCHITECTURE NOTE: INSTEAD OF trigger prevents any UPDATE or DELETE operations even by privileged scripts.
 -- ==============================================================================
 CREATE OR ALTER TRIGGER dbo.trg_audit_log_prevent_mutation
 ON dbo.audit_log
@@ -399,7 +399,7 @@ GO
 -- VIEW: v_open_wishes
 -- Requirements: "view v_open_wishes joining wishes, institutions and categories
 -- with remaining quantity."
--- VIVA NOTE: Encapsulates remaining quantity calculation. Uses OUTER APPLY
+-- ARCHITECTURE NOTE: Encapsulates remaining quantity calculation. Uses OUTER APPLY
 -- to dynamically compute the sum of active claims, safeguarding against double-counting.
 -- ==============================================================================
 CREATE OR ALTER VIEW dbo.v_open_wishes AS
@@ -613,7 +613,7 @@ GO
 -- ==============================================================================
 -- TRIGGER 1: trg_wishes_check_needed_by_future
 -- Requirements: "wishes: qty_requested > 0, needed_by in the future at creation"
--- VIVA NOTE: In T-SQL, CHECK constraints cannot call non-deterministic functions
+-- ARCHITECTURE NOTE: In T-SQL, CHECK constraints cannot call non-deterministic functions
 -- like SYSUTCDATETIME() or GETDATE() (Error 414). An AFTER INSERT trigger is
 -- the idiomatic, ANSI-standard database-level solution.
 -- ==============================================================================
@@ -641,7 +641,7 @@ GO
 -- TRIGGER 1B: trg_wishes_enforce_verified_institution
 -- Requirements: "Only institutions with status 'verified' may create wishes
 -- (enforce in the API and with a database check)."
--- VIVA NOTE: In T-SQL, a CHECK constraint cannot query another table (institutions).
+-- ARCHITECTURE NOTE: In T-SQL, a CHECK constraint cannot query another table (institutions).
 -- An AFTER INSERT trigger guarantees database-level integrity, blocking unverified
 -- institutions even if an unauthorized query bypasses the application layer.
 -- ==============================================================================
@@ -670,7 +670,7 @@ GO
 -- TRIGGER 2: trg_wish_claims_enforce_active_qty_limit
 -- Requirements: "A CHECK or trigger must guarantee the sum of ACTIVE claims
 -- never exceeds qty_requested."
--- VIVA NOTE: In T-SQL, CHECK constraints cannot contain subqueries (e.g. SUM()).
+-- ARCHITECTURE NOTE: In T-SQL, CHECK constraints cannot contain subqueries (e.g. SUM()).
 -- This trigger validates that for any inserted or updated claim, the cumulative
 -- sum of all ACTIVE claims for that wish never exceeds wishes.qty_requested.
 -- It also synchronizes wishes.status between 'open', 'partially_claimed', and 'claimed'.
@@ -734,7 +734,7 @@ GO
 -- AUDIT TRIGGERS
 -- Requirements: "trigger writing to audit_log on status changes of
 -- institutions, wishes, wish_claims and deliveries."
--- VIVA NOTE: AFTER UPDATE triggers write immutable rows to audit_log whenever
+-- ARCHITECTURE NOTE: AFTER UPDATE triggers write immutable rows to audit_log whenever
 -- the status column transitions to a new value.
 -- ==============================================================================
 
@@ -886,7 +886,7 @@ GO
 -- STORED PROCEDURE: sp_release_stale_claims
 -- Requirements: "in one transaction, marks overdue active claims as expired,
 -- restores the wish status, and inserts a notification row for each affected donor."
--- VIVA NOTE: Encapsulates atomic batch maintenance in a single ACID transaction.
+-- ARCHITECTURE NOTE: Encapsulates atomic batch maintenance in a single ACID transaction.
 -- If any step fails, TRY...CATCH guarantees a complete rollback, leaving no
 -- orphaned claims or partial status updates.
 -- ==============================================================================

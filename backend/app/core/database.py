@@ -1,7 +1,7 @@
 """
 Database Engine & Session Management (SQLAlchemy 2.0 Async)
 
-VIVA NOTES:
+ARCHITECTURE NOTES:
 1. Uses SQLAlchemy 2.0 DeclarativeBase and async sessions via aioodbc.
 2. In production / Docker, connecting to Microsoft SQL Server uses ODBC Driver 18.
 3. FastAPI dependency get_db ensures sessions are automatically closed after request lifecycle.

@@ -2,7 +2,7 @@
 FastAPI Authentication & RBAC Dependencies
 Provides declarative access control across endpoints.
 
-VIVA NOTES:
+ARCHITECTURE NOTES:
 - Centralizes authentication and Role-Based Access Control (RBAC).
 - `require_role(*roles)` uses closure/currying to return a parameterized dependency.
 - Enforces the Principle of Least Privilege: routes specify exactly which roles are authorized.

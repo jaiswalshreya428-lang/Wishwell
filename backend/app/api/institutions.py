@@ -2,7 +2,7 @@
 Institutions API Router (/api/institutions)
 Handles institutional dashboard and document uploads for verification.
 
-VIVA NOTES:
+ARCHITECTURE NOTES:
 - Document uploads are stored in Azure / Azurite Blob Storage in a PRIVATE container.
 - File bytes are verified against magic byte signatures to prevent malicious content spoofing.
 - Files are renamed to random UUIDs.

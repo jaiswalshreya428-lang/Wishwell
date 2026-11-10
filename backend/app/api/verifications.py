@@ -1,7 +1,7 @@
 """
 Two-Step Institution Verification Endpoints (/api/verifications)
 
-VIVA NOTES:
+ARCHITECTURE NOTES:
 - Implements two-step verification governance:
     Step 1: Field Verifier physically reviews facility & recommends ('recommended') or rejects.
     Step 2: System Administrator performs final compliance review & approves ('verified') or rejects.

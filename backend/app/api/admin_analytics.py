@@ -2,7 +2,7 @@
 Admin Analytics & Cryptographic Audit Verification API Router
 Exposes append-only hash chain verification and clean JSON data feeds for Power BI.
 
-VIVA DEFENSE NOTES:
+Engineering Design Notes:
 1. Cryptographic Audit Chain Verification:
    - Proves mathematically that the append-only ledger has not been tampered with.
    - Evaluates SHA-256 hash linkages from genesis to the most recent transaction block.

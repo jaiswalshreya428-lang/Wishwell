@@ -100,6 +100,6 @@ In [`README.md`](file:///c:/Users/shubh/OneDrive/Desktop/wishwell/Wishwell/READM
 
 ---
 
-## 6. Test 5: 25 Likely Viva Questions Verification
-All 25 technical viva examination questions with code-referenced model answers have been drafted and compiled into [`docs/viva_questions.md`](file:///c:/Users/shubh/OneDrive/Desktop/wishwell/Wishwell/docs/viva_questions.md).
+## 6. Test 5: Technical Architecture & Implementation FAQ Verification
+All 25 technical technical examination questions with code-referenced model answers have been drafted and compiled into [`docs/viva_questions.md`](file:///c:/Users/shubh/OneDrive/Desktop/wishwell/Wishwell/docs/viva_questions.md).
 

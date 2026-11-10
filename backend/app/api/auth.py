@@ -2,7 +2,7 @@
 Authentication Endpoints (/api/auth)
 Handles registration, login, and profile retrieval.
 
-VIVA NOTES:
+ARCHITECTURE NOTES:
 - Only 'donor' and 'institution' are permitted to self-register.
 - Passwords are encrypted with bcrypt before being stored.
 - Failed logins log an audit entry and return generic error messages to thwart user enumeration.

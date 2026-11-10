@@ -2,7 +2,7 @@
 WishWell FastAPI Backend Application
 Entrypoint for the REST API server.
 
-VIVA NOTES:
+ARCHITECTURE NOTES:
 - Security Headers: Injects strict HTTP response headers (X-Content-Type-Options, X-Frame-Options, HSTS).
 - CORS Hardening: Whitelists specific origins, methods, and headers.
 - Sanitized Error Handling: Unhandled exceptions return generic messages with an incident reference ID.

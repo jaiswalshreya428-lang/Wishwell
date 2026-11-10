@@ -2,7 +2,7 @@
 Input Sanitization & Output Escaping Utility
 Prevents Cross-Site Scripting (XSS) and injection attacks by escaping HTML entities.
 
-VIVA NOTES:
+ARCHITECTURE NOTES:
 - Input is validated with Pydantic limits.
 - Output text is escaped via html.escape so user-supplied strings cannot be executed as HTML/JavaScript in client browsers.
 """

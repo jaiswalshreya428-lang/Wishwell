@@ -2,7 +2,7 @@
 Notifications API Router
 Manages donor and institution notifications for claims, deliveries, verifications, and thank-you notes.
 
-VIVA NOTES:
+ARCHITECTURE NOTES:
 - Provides real-time user engagement loop.
 - Automatically populated by stored procedures (sp_release_stale_claims), background workers, and API state transitions.
 - Supports filtering by read/unread state and mark-as-read transitions.

@@ -113,14 +113,14 @@ export const Navbar: React.FC<NavbarProps> = ({ currentRoute, navigate, unreadCo
           })}
         </nav>
 
-        {/* User / Viva Demo Switcher */}
+        {/* User / interactive demo Switcher */}
         <div className="hidden md:flex items-center space-x-3">
-          {/* Viva Role Switcher Dropdown */}
+          {/* technical evaluation Role Switcher Dropdown */}
           <div className="relative">
             <button
               onClick={() => setRoleMenuOpen(!roleMenuOpen)}
               className="flex items-center space-x-2 px-3 py-1.5 rounded-full bg-cream-200/80 hover:bg-cream-300 text-ink-700 text-xs font-semibold border border-cream-300 transition"
-              title="Viva Quick Switcher"
+              title="Role Quick Switcher"
             >
               <span className="w-2 h-2 rounded-full bg-terracotta-500 animate-pulse" />
               <span>Role: {user ? user.role : 'Guest'}</span>
@@ -132,7 +132,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentRoute, navigate, unreadCo
             {roleMenuOpen && (
               <div className="absolute right-0 mt-2 w-56 rounded-xl bg-white shadow-soft-lg border border-cream-200 p-2 z-50 text-xs font-medium animate-in fade-in zoom-in-95">
                 <div className="px-2 py-1 text-[10px] text-ink-400 font-bold uppercase tracking-wider">
-                  Viva Quick Demo Switcher
+                  Demo Role Switcher
                 </div>
                 <button
                   onClick={() => handleRoleSwitch('donor')}

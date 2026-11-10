@@ -2,7 +2,7 @@
 Claims API Router
 Handles donor pledging (claims), concurrency serialization, claim release, and stale-claim maintenance.
 
-VIVA DEFENSE NOTES:
+Engineering Design Notes:
 1. One Transaction Atomic Pledging:
    - Uses row-locking hints (UPDLOCK, HOLDLOCK on MSSQL) and asyncio per-wish mutex locks.
    - Computes remaining quantity atomically: remaining = qty_requested - sum(active claims).

@@ -1,7 +1,7 @@
 """
 Pydantic Schemas for Audit Verification and Power BI Analytics.
 
-VIVA NOTES:
+ARCHITECTURE NOTES:
 - Strongly typed, clean JSON representations designed for enterprise analytics & Power BI ingestion.
 - Exposes cryptographic verification results for university examiners and audit compliance.
 """

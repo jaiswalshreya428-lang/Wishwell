@@ -1,6 +1,6 @@
-# 25 Likely Viva Examination Questions & Model Answers
+# Technical Implementation Review & Architectural FAQ
 
-This guide is designed for the student's final university defense and technical viva examination. Every question maps directly to actual source code in the repository with precise file paths and line numbers.
+This engineering FAQ provides in-depth technical justifications and implementation details. Every question maps directly to actual source code in the repository with precise file paths and line numbers.
 
 ---
 

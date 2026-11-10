@@ -1,7 +1,7 @@
 """
 In-Memory Rate Limiting for Authentication Endpoints
 
-VIVA NOTES:
+ARCHITECTURE NOTES:
 - Rate limiting defends the login route against automated brute-force attacks,
   credential stuffing, and dictionary guessing.
 - Uses a sliding window algorithm to enforce a maximum number of attempts

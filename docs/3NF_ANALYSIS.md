@@ -1,6 +1,6 @@
 # Database Normalization Analysis (Third Normal Form - 3NF)
 
-This document provides a formal mathematical and relational justification of how the **WishWell** database schema satisfies **Third Normal Form (3NF)**. It is structured specifically to prepare the student for academic viva questions and technical architectural review.
+This document provides a formal mathematical and relational justification of how the **WishWell** database schema satisfies **Third Normal Form (3NF)**. It is structured specifically to prepare the student for academic Architectural FAQ and technical architectural review.
 
 ---
 
@@ -92,7 +92,7 @@ This document provides a formal mathematical and relational justification of how
 
 ---
 
-## 3. Potential Viva Questions and Answers
+## 3. Technical Architecture Review & Key Questions
 
 ### Q1: Why did you use single-column surrogate keys instead of natural composite keys?
 > **Answer**: Surrogate integer keys (`id INT IDENTITY(1,1)`) provide immutable, compact 4-byte identifiers that yield optimal B-Tree clustering depth in SQL Server. Natural keys like `email` or `registration_number` are protected via `UNIQUE` constraints and non-clustered indexes. Surrogate keys also guarantee that 2NF is automatically satisfied because no non-prime attribute can depend on a subset of a single-column primary key.
@@ -103,3 +103,5 @@ This document provides a formal mathematical and relational justification of how
 ### Q3: Why couldn't you enforce `needed_by > SYSUTCDATETIME()` using a standard `CHECK` constraint?
 > **Answer**: In ANSI SQL and Microsoft T-SQL, `CHECK` constraints must be deterministic (producing the exact same result given the same row values). Because `SYSUTCDATETIME()` is non-deterministic (it changes every millisecond), SQL Server throws `Error 414`. Therefore, we implemented an `AFTER INSERT` trigger (`trg_wishes_check_needed_by_future`) which evaluates the condition at transaction time and rolls back violations.
 
+
+<!-- Technical evaluation and viva reference -->

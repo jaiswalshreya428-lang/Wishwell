@@ -3,7 +3,7 @@ Azure Blob Storage Service (Azurite Emulator locally, Azure in Production)
 Handles document uploads into PRIVATE containers, content-type magic bytes verification,
 UUID sanitization, and short-lived Shared Access Signature (SAS) download URLs.
 
-VIVA NOTES:
+ARCHITECTURE NOTES:
 - Files are saved in a PRIVATE container; public anonymous access is completely disabled.
 - Magic byte validation prevents executable masquerading (e.g. evil.exe renamed to cert.pdf).
 - UUID renaming protects against path traversal vulnerabilities and filename collisions.

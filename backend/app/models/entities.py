@@ -2,7 +2,7 @@
 SQLAlchemy 2.0 ORM Models for WishWell
 Maps directly to schema.sql (T-SQL / SQL Server 2022).
 
-VIVA NOTES:
+ARCHITECTURE NOTES:
 - Uses SQLAlchemy 2.0 typed mapped_column syntax.
 - Matches table constraints, enums, relationships, and foreign keys.
 - Preserves referential integrity and supports async queries.
@@ -231,7 +231,7 @@ class AuditLog(Base):
 class OpenWishView(Base):
     """
     SQL View Entity: dbo.v_open_wishes
-    VIVA NOTE: Encapsulates remaining quantity calculation and filters active wishes
+    ARCHITECTURE NOTE: Encapsulates remaining quantity calculation and filters active wishes
     from verified institutions needing fulfillment in the future.
     """
     __tablename__ = "v_open_wishes"

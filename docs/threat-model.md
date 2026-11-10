@@ -1,6 +1,6 @@
 # WishWell Threat Model (STRIDE Methodology)
 
-> **Specification & Viva Examination Reference**  
+> **Specification & Technical Engineering Reference**  
 > Comprehensive threat model assessing architectural assets, external actors, trust boundaries, and mitigation controls across the WishWell platform.
 
 ---

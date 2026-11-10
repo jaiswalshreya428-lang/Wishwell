@@ -170,10 +170,10 @@ def verify_docs():
 
     analysis_path = verify_file_exists("docs/3NF_ANALYSIS.md")
     analysis_content = analysis_path.read_text(encoding="utf-8")
-    for nf in ["1NF", "2NF", "3NF", "Candidate Keys", "Functional Dependencies", "viva"]:
+    for nf in ["1NF", "2NF", "3NF", "Candidate Keys", "Functional Dependencies", "technical evaluation"]:
         if nf.lower() not in analysis_content.lower():
             log_fail(f"3NF analysis missing section: {nf}")
-    log_pass("3NF formal normalization analysis & viva preparation verified: docs/3NF_ANALYSIS.md")
+    log_pass("3NF formal normalization analysis & technical review preparation verified: docs/3NF_ANALYSIS.md")
 
 def verify_scaffold():
     log_info("--- 4. Validating Monorepo Scaffold ---")

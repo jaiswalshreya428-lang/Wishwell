@@ -11,7 +11,7 @@
 -- - 15 Diverse Wishes
 -- - Verification Records, Claims, Deliveries, Thank-You Notes, and Notifications
 -- 
--- VIVA NOTE: All passwords hash to 'Password123!' using standard 12-round bcrypt.
+-- ARCHITECTURE NOTE: All passwords hash to 'Password123!' using standard 12-round bcrypt.
 -- All photo URLs point to item-only blobs in local Azurite emulator.
 -- Absolutely NO personal data or images of children.
 -- ==============================================================================

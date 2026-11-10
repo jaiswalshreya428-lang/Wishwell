@@ -1,6 +1,6 @@
 # Explainable Duplicate-Need Detection Algorithm
 
-This document explains the mathematical model, design choices, and implementation details of the duplicate-need detection engine in **WishWell**. It is specifically structured to prepare the student for viva examinations and technical defense.
+This document explains the mathematical model, design choices, and implementation details of the duplicate-need detection engine in **WishWell**. It is specifically structured to prepare the student for technical evaluation examinations and technical defense.
 
 ---
 
@@ -18,12 +18,12 @@ Children's homes frequently have multiple staff members, teachers, or house coor
 
 ## 2. Why Rule-Based Set Theory Over Machine Learning?
 
-In university viva and academic defense, examiners frequently scrutinize why complex AI/ML was or was not used. The rationale is as follows:
+In university technical evaluation and academic defense, examiners frequently scrutinize why complex AI/ML was or was not used. The rationale is as follows:
 
 | Factor | Rule-Based Token Overlap (WishWell) | ML / Neural Embeddings (e.g., BERT, Word2Vec) |
 |---|---|---|
 | **Determinism** | 100% deterministic and mathematically auditable. | Stochastic / black-box embeddings with opaque cosine distances. |
-| **Explainability (Viva)** | Step-by-step token sets and Jaccard intersection can be calculated by hand on a whiteboard. | Cannot explain why two arbitrary 768-dimension vectors crossed a cosine threshold without high-dimensional projection tools. |
+| **Explainability (technical evaluation)** | Step-by-step token sets and Jaccard intersection can be calculated by hand on a whiteboard. | Cannot explain why two arbitrary 768-dimension vectors crossed a cosine threshold without high-dimensional projection tools. |
 | **Compute Overhead** | Zero GPU, zero model inference latency ($O(\|A\| + \|B\|)$ runtime). | Requires PyTorch/TensorFlow, model weights (100MB-500MB), and inference latency. |
 | **Cold Start / Data Needs** | Operates immediately with zero training data. | Requires fine-tuning on domain-specific e-commerce / donation data. |
 | **False Positives Control** | Deterministic threshold ($\ge 0.5$) with transparent token attribution. | Susceptible to semantic drift (e.g., confusing "Toothbrush" with "Toothpaste" due to shared hygiene context). |
@@ -69,7 +69,7 @@ $$\text{Effective Score} = \max(J(A, B), \text{Containment}(A, B) \times 0.8)$$
 
 ---
 
-## 4. Concrete Viva Walkthrough Examples
+## 4. Concrete technical evaluation Walkthrough Examples
 
 ### Example A: Token Reordering
 - **Existing Item:** *"Camlin Geometry Instrument Box Set"*

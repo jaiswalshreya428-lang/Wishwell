@@ -375,5 +375,5 @@ echo " Key Vault:             https://portal.azure.com/#@/resource/subscriptions
 echo "================================================================="
 echo "Testing Backend /health..."
 curl -s "${BACKEND_URL}/health" || echo "[NOTE] App Service container is booting up. Allow ~60s for cold start."
-echo -e "\nDeployment complete! Review /infra/DEPLOYMENT.md for screenshots and viva defense."
+echo -e "\nDeployment complete! Review /infra/DEPLOYMENT.md for screenshots and TECHNICAL SPECIFICATION."
 

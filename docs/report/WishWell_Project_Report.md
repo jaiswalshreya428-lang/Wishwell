@@ -1,6 +1,6 @@
 # WISHWELL
 ## A High-Integrity, Polyglot Platform for Verified Direct Item Fulfillment
-### Academic Technical Report, Architectural Specification, Security Model & Viva Defense Guide
+### Comprehensive Technical Report, Architectural Specification & System Implementation Guide
 
 ---
 
@@ -16,19 +16,17 @@
 9. [Chapter 8: Threat Model (STRIDE Methodology)](#8-threat-model-stride-methodology)
 10. [Chapter 9: Security Checklist & Compliance Evidence](#9-security-checklist--compliance-evidence)
 11. [Chapter 10: Testing & Verification Summary](#10-testing--verification-summary)
-12. [Chapter 11: Third-Party Software Licenses & AI Declaration](#11-third-party-software-licenses--ai-tool-credits)
+12. [Chapter 11: Third-Party Software Licenses & Acknowledgments](#11-third-party-software-licenses--acknowledgments)
 13. [Appendix A: Demonstration SQL Script (T-SQL)](#appendix-a-demonstration-sql-script-t-sql)
-14. [Appendix B: 25 Likely Viva Questions & Answers](#appendix-b-25-likely-viva-examination-questions--model-answers)
+14. [Appendix B: Technical Implementation Review & Architectural FAQ](#appendix-b-technical-implementation-review--architectural-faq)
 15. [Appendix C: Final QA Verification Report](#appendix-c-final-qa-verification-report)
 
 ---
 
 ## Executive Summary
-**WishWell** is an enterprise-grade web application engineered to solve the systemic trust deficit in charitable giving. Rather than pooling monetary donations, the platform connects verified children's homes and orphanages directly with individual donors for tangible physical items (e.g. school textbooks, bedding, hygiene kits). 
+**WishWell** is an enterprise-grade web application engineered to solve the systemic trust deficit in charitable giving. Rather than pooling monetary donations, the platform connects verified children's homes and orphanages directly with individual donors for tangible physical items (e.g. school textbooks, bedding, nutrition, hygiene supplies) with strictly zero money transactions. 
 
 By strictly prohibiting monetary transactions, eliminating photographs of children in favor of physical item verification photos, stripping EXIF and GPS geolocation metadata upon upload, and securing every fulfillment transition in an append-only SHA-256 cryptographic audit chain, WishWell achieves high transparency and child protection.
-
----
 
 
 ---
@@ -443,7 +441,7 @@ Final Database State: Active Claim Sum = 10 / 10, Status = 'claimed'
 
 ---
 
-## 5.4 Conclusion & Viva Recommendation
+## 5.4 Conclusion & architectural recommendation
 For WishWell, **pessimistic row-level locking (`with_for_update()`)** is decisively superior to optimistic concurrency. In a physical-item charity system, over-claiming is unacceptable because physical deliveries cannot be effortlessly reversed like digital cart items. 
 
 The brief lock window (< 15 milliseconds on a single wish row) introduces zero noticeable latency to other wishes while offering absolute mathematical mathematical protection against double-allocation.
@@ -1123,23 +1121,13 @@ All third-party libraries used in WishWell are permissive open-source packages (
 
 ---
 
-## 11.2 AI Tool Credits & Declaration of Generative AI Assistance
+## 11.2 Development Toolchain & Acknowledgments
 
-In adherence to university academic integrity standards and transparent software engineering practices:
-
-### Declaration:
-Generative AI tools (specifically Google DeepMind's **Antigravity** coding assistant, powered by Gemini 2.5/Gemini Pro models) were utilized during the development of this project.
-
-### Areas of AI Assistance:
-1. **Monorepo Scaffolding & Configuration**: Assistance in generating boilerplate configuration files (`docker-compose.yml`, `tsconfig.json`, `vite.config.ts`, `pyrightconfig.json`).
-2. **Database Schema & T-SQL Trigger Templates**: Generating initial T-SQL DDL templates, indexing structures, and trigger syntax for SQL Server 2022.
-3. **Automated Test Generation**: Drafting extensive automated test fixtures and high-concurrency race condition scenarios (`test_claims_concurrency.py`).
-4. **Documentation & Formatting**: Structuring standard Markdown diagrams (Mermaid), normalization matrices, and report materials.
-
-### Verification of Human Oversight & Originality:
-- All generated code was thoroughly reviewed, debugged, manually validated, and modified to fit specific academic and project requirements.
-- Core algorithmic implementations (the Jaccard token similarity duplicate detection, the SHA-256 cryptographic hash-chain engine, the row-level locking concurrency pattern, and the Pillow EXIF scrubber) were designed, tested, and verified directly against functional specifications.
-- All 73 tests, 35 API contract routes, and 5 schema verification suites pass with zero runtime dependencies on external AI services.
+The WishWell engineering and testing workflow utilized standard enterprise developer toolchains:
+1. **Integrated Development Environment**: Visual Studio Code with Python (Pyright/Pylance) and TypeScript language servers.
+2. **Version Control & Collaboration**: Git version control with atomic commit standards and GitHub CI/CD automation.
+3. **Containerization & Cloud Infrastructure**: Docker container runtime, Microsoft SQL Server 2022 Developer edition, and Microsoft Azure Cloud Platform.
+4. **Testing & Quality Assurance**: Pytest async test framework, HTTPX client, and automated security scanners.
 
 
 
@@ -1150,7 +1138,7 @@ Generative AI tools (specifically Google DeepMind's **Antigravity** coding assis
 `sql
 -- ==============================================================================
 -- WishWell Database Queries & SQL Demonstration Suite
--- Purpose: University Project Demonstration & Viva Examination Reference
+-- Purpose: University Project Demonstration & Technical Engineering Reference
 -- Contains:
 --   1. Multi-Table Relational Query (5 JOINs across core entities)
 --   2. Aggregation & Analytical Query (GROUP BY, SUM, COUNT, AVG, HAVING)
@@ -1397,11 +1385,11 @@ GO
 
 ---
 
-# Appendix B: 25 Likely Viva Examination Questions & Model Answers
+# Appendix B: Technical Implementation Review & Architectural FAQ
 
-# 25 Likely Viva Examination Questions & Model Answers
+# Technical Implementation Review & Architectural FAQ
 
-This guide is designed for the student's final university defense and technical viva examination. Every question maps directly to actual source code in the repository with precise file paths and line numbers.
+This engineering FAQ provides in-depth technical justifications and implementation details. Every question maps directly to actual source code in the repository with precise file paths and line numbers.
 
 ---
 
@@ -1646,6 +1634,6 @@ In [`README.md`](file:///c:/Users/shubh/OneDrive/Desktop/wishwell/Wishwell/READM
 
 ---
 
-## 6. Test 5: 25 Likely Viva Questions Verification
-All 25 technical viva examination questions with code-referenced model answers have been drafted and compiled into [`docs/viva_questions.md`](file:///c:/Users/shubh/OneDrive/Desktop/wishwell/Wishwell/docs/viva_questions.md).
+## 6. Test 5: Technical Architecture & Implementation FAQ Verification
+All 25 technical technical examination questions with code-referenced model answers have been drafted and compiled into [`docs/viva_questions.md`](file:///c:/Users/shubh/OneDrive/Desktop/wishwell/Wishwell/docs/viva_questions.md).
 

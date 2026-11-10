@@ -1,7 +1,7 @@
 """
 Azure Cosmos DB Client & Polyglot Document Service (/app/core/cosmos.py)
 
-VIVA DEFENSE NOTES:
+Engineering Design Notes:
 1. Polyglot Persistence Architecture:
    - Relational core (Microsoft SQL Server): 3NF schema, ACID transactions, row-level locks,
      and append-only hash chains for financial/regulatory accountability.

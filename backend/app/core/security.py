@@ -2,7 +2,7 @@
 Security & Authentication Utilities
 Implements direct bcrypt password hashing and short-lived JWT token management.
 
-VIVA NOTES:
+ARCHITECTURE NOTES:
 - bcrypt automatically incorporates a cryptographically random salt and an
   adaptive work factor (cost) to protect against offline dictionary/rainbow attacks.
 - Direct bcrypt usage avoids passlib 1.7.4 compatibility quirks with bcrypt >= 4.0.

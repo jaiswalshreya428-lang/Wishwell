@@ -1,7 +1,7 @@
 """
 Pydantic Schemas for Wish Claims & Concurrency Management.
 
-VIVA NOTES:
+ARCHITECTURE NOTES:
 - Validates claim quantity strictly > 0.
 - Models full claim response including computed deadline and claim lifecycle status.
 - Standardizes administrative stale-claim release response.
