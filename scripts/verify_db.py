@@ -75,10 +75,22 @@ def verify_schema():
             log_fail(f"Index missing: {name}")
         log_pass(f"Index validated: {name}")
 
-    # 4. Check View v_open_wishes
+    # 4. Check Views (v_open_wishes + 5 Power BI Analytics Views)
     if "VIEW dbo.v_open_wishes" not in content and "VIEW v_open_wishes" not in content:
         log_fail("Missing view: v_open_wishes")
     log_pass("View validated: v_open_wishes with remaining quantity calculation")
+
+    powerbi_views = [
+        ("vw_wishes_by_category_month", "Wishes posted & fulfilled by category and month"),
+        ("vw_avg_delivery_time", "Turnaround lead time in hours"),
+        ("vw_institutions_by_status", "Verification funnel distribution"),
+        ("vw_stale_claim_rate", "Stale and expired claim rate metrics"),
+        ("vw_top_categories", "Category demand ranking & fulfillment percentage"),
+    ]
+    for view_name, desc in powerbi_views:
+        if f"VIEW dbo.{view_name}" not in content and f"VIEW {view_name}" not in content:
+            log_fail(f"Missing Power BI analytics view: {view_name}")
+        log_pass(f"Power BI view validated: {view_name} ({desc})")
 
     # 5. Check Triggers
     required_triggers = [

@@ -5,8 +5,9 @@ VIVA NOTE: Secrets are NEVER hardcoded in production; they are injected via .env
 """
 
 import os
-from typing import List
-from pydantic import Field
+import json
+from typing import List, Optional
+from pydantic import Field, model_validator
 
 try:
     from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -36,6 +37,11 @@ try:
         )
         AZURE_STORAGE_CONTAINER_NAME: str = "delivery-photos"
 
+        # Azure Cosmos DB (Semi-Structured Data & Polyglot Persistence)
+        COSMOS_ENDPOINT: Optional[str] = Field(default=None)
+        COSMOS_KEY: Optional[str] = Field(default=None)
+        COSMOS_DATABASE_NAME: str = Field(default="wishwell-nosql")
+
         # Security & JWT Auth
         JWT_SECRET_KEY: str = Field(default="wishwell_development_jwt_secret_key_change_in_production_2026")
         JWT_ALGORITHM: str = "HS256"
@@ -47,6 +53,13 @@ try:
             "http://127.0.0.1:5173",
             "http://localhost:3000",
         ]
+
+        @model_validator(mode="after")
+        def validate_production_secrets(self):
+            if self.ENVIRONMENT == "production":
+                if self.JWT_SECRET_KEY == "wishwell_development_jwt_secret_key_change_in_production_2026":
+                    raise ValueError("CRITICAL SECURITY VIOLATION: Default development JWT_SECRET_KEY cannot be used in production.")
+            return self
 
     settings = Settings()
 
@@ -69,10 +82,21 @@ except ImportError:
             "DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1;"
         )
         AZURE_STORAGE_CONTAINER_NAME: str = os.getenv("AZURE_STORAGE_CONTAINER_NAME", "delivery-photos")
+        COSMOS_ENDPOINT: Optional[str] = os.getenv("COSMOS_ENDPOINT")
+        COSMOS_KEY: Optional[str] = os.getenv("COSMOS_KEY")
+        COSMOS_DATABASE_NAME: str = os.getenv("COSMOS_DATABASE_NAME", "wishwell-nosql")
         JWT_SECRET_KEY: str = os.getenv("JWT_SECRET_KEY", "wishwell_development_jwt_secret_key_change_in_production_2026")
         JWT_ALGORITHM: str = os.getenv("JWT_ALGORITHM", "HS256")
         ACCESS_TOKEN_EXPIRE_MINUTES: int = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "1440"))
-        CORS_ORIGINS: List[str] = ["http://localhost:5173", "http://127.0.0.1:5173"]
+        
+        _cors_env = os.getenv("CORS_ORIGINS")
+        if _cors_env:
+            try:
+                CORS_ORIGINS: List[str] = json.loads(_cors_env)
+            except Exception:
+                CORS_ORIGINS: List[str] = [x.strip() for x in _cors_env.split(",") if x.strip()]
+        else:
+            CORS_ORIGINS: List[str] = ["http://localhost:5173", "http://127.0.0.1:5173", "http://localhost:3000"]
 
     settings = FallbackSettings()
 

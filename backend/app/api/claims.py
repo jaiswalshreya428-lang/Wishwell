@@ -16,7 +16,7 @@ VIVA DEFENSE NOTES:
 """
 
 from datetime import datetime, timedelta, timezone
-from typing import Optional
+from typing import Optional, List
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
@@ -25,11 +25,23 @@ from app.core.database import get_db
 from app.core.dependencies import require_role
 from app.core.concurrency import get_wish_lock
 from app.core.scheduler import release_stale_claims
-from app.models.entities import User, Wish, WishClaim, AuditLog
+from app.models.entities import User, Wish, WishClaim, AuditLog, Institution, Category
 from app.core.audit import record_audit_event
 from app.schemas.claim import ClaimCreate, ClaimResponse, StaleClaimsReleaseResponse
+from app.schemas.wish import CategoryResponse
 
 router = APIRouter(tags=["Claims"])
+
+@router.get("/categories", response_model=List[CategoryResponse], tags=["Categories"])
+async def list_categories_endpoint(db: AsyncSession = Depends(get_db)):
+    """
+    Returns all item categories (Educational Supplies, Bedding & Linens, Clothing, etc.).
+    Public endpoint for wish filters and wish creation forms.
+    """
+    stmt = select(Category).order_by(Category.name.asc())
+    res = await db.execute(stmt)
+    categories = res.scalars().all()
+    return [CategoryResponse.model_validate(c) for c in categories]
 
 @router.post("/wishes/{wish_id}/claim", response_model=ClaimResponse, status_code=status.HTTP_201_CREATED)
 async def claim_wish(
@@ -136,6 +148,41 @@ async def claim_wish(
         await db.refresh(new_claim)
 
         return ClaimResponse.model_validate(new_claim)
+
+@router.get("/claims/my", response_model=List[ClaimResponse])
+async def get_my_claims(
+    current_user: User = Depends(require_role("donor")),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Returns all item claims pledged by the authenticated donor, enriched with wish and institution context.
+    """
+    stmt = (
+        select(WishClaim, Wish, Institution)
+        .join(Wish, WishClaim.wish_id == Wish.id)
+        .join(Institution, Wish.institution_id == Institution.id)
+        .where(WishClaim.donor_id == current_user.id)
+        .order_by(WishClaim.created_at.desc())
+    )
+    res = await db.execute(stmt)
+    claims_list = []
+    for claim, wish, inst in res.all():
+        claims_list.append(ClaimResponse(
+            id=claim.id,
+            wish_id=claim.wish_id,
+            donor_id=claim.donor_id,
+            qty=claim.qty,
+            deadline=claim.deadline,
+            status=claim.status,
+            created_at=claim.created_at,
+            updated_at=claim.updated_at,
+            wish_title=wish.title,
+            item_name=wish.item_name,
+            institution_name=inst.name,
+            institution_city=inst.city,
+            needed_by=wish.needed_by
+        ))
+    return claims_list
 
 @router.post("/claims/{claim_id}/release", response_model=ClaimResponse)
 @router.post("/wishes/{wish_id}/claims/{claim_id}/release", response_model=ClaimResponse)

@@ -303,6 +303,7 @@ BEGIN
         details NVARCHAR(MAX) NULL,
         prev_hash VARCHAR(64) NULL,
         record_hash VARCHAR(64) NULL,
+        cosmos_doc_id NVARCHAR(100) NULL,
         created_at DATETIME2(7) NOT NULL CONSTRAINT DF_audit_log_created_at DEFAULT SYSUTCDATETIME(),
 
         CONSTRAINT FK_audit_log_changed_by FOREIGN KEY (changed_by) REFERENCES dbo.users(id)
@@ -434,6 +435,179 @@ OUTER APPLY (
 WHERE w.status IN ('open', 'partially_claimed')
   AND w.needed_by > SYSUTCDATETIME()
   AND i.status = 'verified';
+GO
+
+-- ==============================================================================
+-- ANALYTICS VIEWS FOR POWER BI DASHBOARDS & REPORTING
+-- Task 12 Requirements:
+-- 1. vw_wishes_by_category_month (posted, fulfilled)
+-- 2. vw_avg_delivery_time (hours)
+-- 3. vw_institutions_by_status
+-- 4. vw_stale_claim_rate
+-- 5. vw_top_categories
+-- ==============================================================================
+
+-- ------------------------------------------------------------------------------
+-- VIEW 1: vw_wishes_by_category_month
+-- Tracks monthly demand volume and fulfillment counts broken down by category.
+-- ------------------------------------------------------------------------------
+CREATE OR ALTER VIEW dbo.vw_wishes_by_category_month AS
+SELECT
+    FORMAT(w.created_at, 'yyyy-MM') AS month_year,
+    YEAR(w.created_at) AS [year],
+    MONTH(w.created_at) AS [month],
+    c.id AS category_id,
+    c.name AS category_name,
+    COUNT(w.id) AS wishes_posted,
+    COUNT(CASE WHEN w.status IN ('delivered', 'claimed') THEN 1 END) AS wishes_fulfilled,
+    COALESCE(SUM(w.qty_requested), 0) AS items_requested,
+    COALESCE(SUM(CASE WHEN w.status IN ('delivered', 'claimed') THEN w.qty_requested ELSE 0 END), 0) AS items_fulfilled,
+    CAST(
+        ROUND(
+            COUNT(CASE WHEN w.status IN ('delivered', 'claimed') THEN 1 END) * 100.0 / NULLIF(COUNT(w.id), 0),
+            2
+        ) AS DECIMAL(5,2)
+    ) AS fulfillment_rate_pct
+FROM dbo.wishes w
+INNER JOIN dbo.categories c ON w.category_id = c.id
+GROUP BY
+    FORMAT(w.created_at, 'yyyy-MM'),
+    YEAR(w.created_at),
+    MONTH(w.created_at),
+    c.id,
+    c.name;
+GO
+
+-- ------------------------------------------------------------------------------
+-- VIEW 2: vw_avg_delivery_time
+-- Measures mean fulfillment lead time (in hours and days) from pledge to delivery.
+-- ------------------------------------------------------------------------------
+CREATE OR ALTER VIEW dbo.vw_avg_delivery_time AS
+SELECT
+    FORMAT(COALESCE(d.confirmed_at, d.delivered_at, wc.created_at), 'yyyy-MM') AS month_year,
+    c.id AS category_id,
+    c.name AS category_name,
+    COUNT(d.id) AS completed_deliveries,
+    CAST(
+        ROUND(
+            AVG(CAST(DATEDIFF(MINUTE, wc.created_at, COALESCE(d.confirmed_at, d.delivered_at)) AS FLOAT) / 60.0),
+            2
+        ) AS DECIMAL(10,2)
+    ) AS avg_delivery_hours,
+    CAST(
+        ROUND(
+            AVG(CAST(DATEDIFF(MINUTE, wc.created_at, COALESCE(d.confirmed_at, d.delivered_at)) AS FLOAT) / 1440.0),
+            2
+        ) AS DECIMAL(10,2)
+    ) AS avg_delivery_days,
+    CAST(
+        ROUND(
+            MIN(CAST(DATEDIFF(MINUTE, wc.created_at, COALESCE(d.confirmed_at, d.delivered_at)) AS FLOAT) / 60.0),
+            2
+        ) AS DECIMAL(10,2)
+    ) AS min_delivery_hours,
+    CAST(
+        ROUND(
+            MAX(CAST(DATEDIFF(MINUTE, wc.created_at, COALESCE(d.confirmed_at, d.delivered_at)) AS FLOAT) / 60.0),
+            2
+        ) AS DECIMAL(10,2)
+    ) AS max_delivery_hours
+FROM dbo.deliveries d
+INNER JOIN dbo.wish_claims wc ON d.wish_claim_id = wc.id
+INNER JOIN dbo.wishes w ON wc.wish_id = w.id
+INNER JOIN dbo.categories c ON w.category_id = c.id
+WHERE d.status = 'confirmed'
+  AND COALESCE(d.confirmed_at, d.delivered_at) >= wc.created_at
+GROUP BY
+    FORMAT(COALESCE(d.confirmed_at, d.delivered_at, wc.created_at), 'yyyy-MM'),
+    c.id,
+    c.name;
+GO
+
+-- ------------------------------------------------------------------------------
+-- VIEW 3: vw_institutions_by_status
+-- Provides the verification funnel breakdown across all onboarding stages.
+-- ------------------------------------------------------------------------------
+CREATE OR ALTER VIEW dbo.vw_institutions_by_status AS
+SELECT
+    i.status,
+    COUNT(*) AS institution_count,
+    SUM(COUNT(*)) OVER() AS total_institutions,
+    CAST(
+        ROUND(
+            COUNT(*) * 100.0 / NULLIF(SUM(COUNT(*)) OVER(), 0),
+            2
+        ) AS DECIMAL(5,2)
+    ) AS percentage
+FROM dbo.institutions i
+GROUP BY i.status;
+GO
+
+-- ------------------------------------------------------------------------------
+-- VIEW 4: vw_stale_claim_rate
+-- Analyzes platform responsiveness and proportion of unfulfilled expired pledges.
+-- ------------------------------------------------------------------------------
+CREATE OR ALTER VIEW dbo.vw_stale_claim_rate AS
+SELECT
+    FORMAT(wc.created_at, 'yyyy-MM') AS month_year,
+    c.id AS category_id,
+    c.name AS category_name,
+    COUNT(wc.id) AS total_claims,
+    COUNT(CASE WHEN wc.status = 'active' THEN 1 END) AS active_claims,
+    COUNT(CASE WHEN wc.status = 'delivered' THEN 1 END) AS delivered_claims,
+    COUNT(CASE WHEN wc.status = 'released' THEN 1 END) AS released_claims,
+    COUNT(CASE WHEN wc.status = 'expired' THEN 1 END) AS expired_claims,
+    CAST(
+        ROUND(
+            COUNT(CASE WHEN wc.status = 'expired' THEN 1 END) * 100.0 / NULLIF(COUNT(wc.id), 0),
+            2
+        ) AS DECIMAL(5,2)
+    ) AS stale_claim_rate_pct
+FROM dbo.wish_claims wc
+INNER JOIN dbo.wishes w ON wc.wish_id = w.id
+INNER JOIN dbo.categories c ON w.category_id = c.id
+GROUP BY
+    FORMAT(wc.created_at, 'yyyy-MM'),
+    c.id,
+    c.name;
+GO
+
+-- ------------------------------------------------------------------------------
+-- VIEW 5: vw_top_categories
+-- Ranks item categories by demand volume and donor fulfillment success.
+-- ------------------------------------------------------------------------------
+CREATE OR ALTER VIEW dbo.vw_top_categories AS
+SELECT
+    c.id AS category_id,
+    c.name AS category_name,
+    COUNT(w.id) AS wishes_count,
+    COALESCE(SUM(w.qty_requested), 0) AS total_items_requested,
+    COALESCE(SUM(claims.claimed_qty), 0) AS total_items_claimed,
+    COALESCE(SUM(deliveries.delivered_qty), 0) AS total_items_delivered,
+    CAST(
+        ROUND(
+            COALESCE(SUM(deliveries.delivered_qty), 0) * 100.0 / NULLIF(SUM(w.qty_requested), 0),
+            2
+        ) AS DECIMAL(5,2)
+    ) AS fulfillment_rate_pct,
+    DENSE_RANK() OVER (ORDER BY COALESCE(SUM(w.qty_requested), 0) DESC) AS rank_by_demand
+FROM dbo.categories c
+LEFT JOIN dbo.wishes w ON c.id = w.category_id
+OUTER APPLY (
+    SELECT SUM(wc.qty) AS claimed_qty
+    FROM dbo.wish_claims wc
+    WHERE wc.wish_id = w.id
+) claims
+OUTER APPLY (
+    SELECT SUM(wc2.qty) AS delivered_qty
+    FROM dbo.wish_claims wc2
+    INNER JOIN dbo.deliveries d ON wc2.id = d.wish_claim_id
+    WHERE wc2.wish_id = w.id
+      AND d.status = 'confirmed'
+) deliveries
+GROUP BY
+    c.id,
+    c.name;
 GO
 
 -- ==============================================================================
@@ -821,4 +995,27 @@ BEGIN
     END CATCH
 END;
 GO
+
+-- ==============================================================================
+-- READ-ONLY SQL USER FOR POWER BI DESKTOP & SERVICE
+-- Task 12 Requirement: "Create a read-only SQL user for Power BI."
+-- Principle of Least Privilege: powerbi_reader receives SELECT only, DENY all writes.
+-- ==============================================================================
+IF EXISTS (SELECT 1 FROM sys.database_principals WHERE name = 'powerbi_reader')
+BEGIN
+    GRANT SELECT ON dbo.vw_wishes_by_category_month TO [powerbi_reader];
+    GRANT SELECT ON dbo.vw_avg_delivery_time TO [powerbi_reader];
+    GRANT SELECT ON dbo.vw_institutions_by_status TO [powerbi_reader];
+    GRANT SELECT ON dbo.vw_stale_claim_rate TO [powerbi_reader];
+    GRANT SELECT ON dbo.vw_top_categories TO [powerbi_reader];
+    GRANT SELECT ON dbo.v_open_wishes TO [powerbi_reader];
+    GRANT SELECT ON dbo.categories TO [powerbi_reader];
+    GRANT SELECT ON dbo.institutions TO [powerbi_reader];
+    GRANT SELECT ON dbo.wishes TO [powerbi_reader];
+    GRANT SELECT ON dbo.wish_claims TO [powerbi_reader];
+    GRANT SELECT ON dbo.deliveries TO [powerbi_reader];
+    DENY INSERT, UPDATE, DELETE ON SCHEMA::dbo TO [powerbi_reader];
+END
+GO
+
 

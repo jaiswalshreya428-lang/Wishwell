@@ -24,13 +24,14 @@ from app.schemas.institution import DocumentResponse, InstitutionDetailResponse
 
 router = APIRouter(prefix="/institutions", tags=["Institutions"])
 
+@router.get("/me", status_code=status.HTTP_200_OK)
 @router.get("/portal", status_code=status.HTTP_200_OK)
 async def get_institution_portal(
     current_user: User = Depends(require_role("institution")),
     db: AsyncSession = Depends(get_db)
 ):
     """
-    Institution private portal overview.
+    Institution private portal overview & profile retrieval.
     Strictly restricted to users with role 'institution'.
     """
     stmt = (
@@ -47,22 +48,48 @@ async def get_institution_portal(
             detail="Institution profile not found for this user."
         )
 
+    docs = []
+    for doc in institution.documents:
+        sas_url = storage_service.generate_sas_url(doc.blob_name, expiry_minutes=15)
+        docs.append({
+            "id": doc.id,
+            "institution_id": doc.institution_id,
+            "document_type": doc.document_type,
+            "file_name": doc.file_name,
+            "original_filename": doc.file_name,
+            "blob_name": doc.blob_name,
+            "file_size_bytes": doc.file_size_bytes,
+            "mime_type": doc.mime_type,
+            "sas_url": sas_url,
+            "sas_download_url": sas_url,
+            "created_at": doc.created_at.isoformat() if doc.created_at else None,
+        })
+
     return {
+        "id": institution.id,
         "institution_id": institution.id,
+        "user_id": institution.user_id,
         "name": institution.name,
         "registration_number": institution.registration_number,
-        "status": institution.status,
-        "contact_person": current_user.full_name,
-        "email": current_user.email,
+        "address": institution.address,
         "city": institution.city,
         "state": institution.state,
-        "documents_count": len(institution.documents)
+        "postal_code": institution.postal_code,
+        "phone": institution.phone,
+        "website_url": institution.website_url,
+        "description": institution.description,
+        "status": institution.status,
+        "created_at": institution.created_at.isoformat() if institution.created_at else None,
+        "contact_person": current_user.full_name,
+        "email": current_user.email,
+        "documents_count": len(institution.documents),
+        "documents": docs
     }
 
 @router.post("/documents", response_model=DocumentResponse, status_code=status.HTTP_201_CREATED)
 async def upload_institution_document(
     file: UploadFile = File(...),
-    document_type: str = Form(..., examples=["registration_certificate"]),
+    document_type: str = Form(..., max_length=50, examples=["registration_certificate"]),
     current_user: User = Depends(require_role("institution")),
     db: AsyncSession = Depends(get_db)
 ):

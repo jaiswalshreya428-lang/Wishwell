@@ -55,14 +55,20 @@ async def register(
 
     # 3. If institution, check for duplicate registration number
     if payload.role == "institution":
+        if not payload.institution:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Institution details are required for institution registration."
+            )
+        inst_data = payload.institution
         reg_stmt = select(Institution).where(
-            Institution.registration_number == payload.institution.registration_number
+            Institution.registration_number == inst_data.registration_number
         )
         existing_reg_result = await db.execute(reg_stmt)
         if existing_reg_result.scalar_one_or_none() is not None:
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,
-                detail=f"An institution with registration number '{payload.institution.registration_number}' is already registered."
+                detail=f"An institution with registration number '{inst_data.registration_number}' is already registered."
             )
 
     # 4. Create User entity with hashed password
@@ -78,7 +84,7 @@ async def register(
     await db.flush() # Flush to populate new_user.id for FK association
 
     # 5. If institution, create linked Institution profile in the same transaction
-    if payload.role == "institution":
+    if payload.role == "institution" and payload.institution:
         inst_data = payload.institution
         new_institution = Institution(
             user_id=new_user.id,
@@ -162,7 +168,7 @@ async def login(
         is_valid = verify_password(payload.password, user.password_hash)
 
     # Step 4: Handle Authentication Failure
-    if not is_valid:
+    if not is_valid or user is None:
         # Audit log for failed login attempt with hash chaining
         await record_audit_event(
             session=db,

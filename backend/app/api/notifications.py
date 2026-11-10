@@ -8,7 +8,7 @@ VIVA NOTES:
 - Supports filtering by read/unread state and mark-as-read transitions.
 """
 
-from typing import Optional
+from typing import Optional, List, Union
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update, func
@@ -51,6 +51,7 @@ async def list_notifications(
         unread_count=unread_count
     )
 
+@router.put("/{notification_id}/read", response_model=NotificationResponse)
 @router.patch("/{notification_id}/read", response_model=NotificationResponse)
 @router.post("/{notification_id}/read", response_model=NotificationResponse)
 async def mark_notification_as_read(

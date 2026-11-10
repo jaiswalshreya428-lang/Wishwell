@@ -28,13 +28,13 @@ from app.core.security import hash_password, create_access_token
 from app.core.rate_limit import login_rate_limiter
 from app.models.entities import User, Institution
 
-# Test SQLite file engine (shared across all threads and connections reliably)
-TEST_DB_FILE = Path(__file__).resolve().parent / "test_wishwell.db"
-TEST_DATABASE_URL = f"sqlite+aiosqlite:///{TEST_DB_FILE}"
+# Shared in-memory SQLite database across all test connections
+TEST_DATABASE_URL = "sqlite+aiosqlite:///file:wishwell_test_db?mode=memory&cache=shared&uri=true"
 
 test_async_engine = create_async_engine(
     TEST_DATABASE_URL,
     connect_args={"check_same_thread": False},
+    poolclass=StaticPool,
     echo=False
 )
 

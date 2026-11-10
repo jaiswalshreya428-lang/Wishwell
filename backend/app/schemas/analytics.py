@@ -8,7 +8,8 @@ VIVA NOTES:
 
 from datetime import datetime
 from typing import Optional, List
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, Field, ConfigDict, field_validator
+from app.core.sanitizer import escape_html
 
 class AuditVerificationResponse(BaseModel):
     is_valid: bool = Field(..., description="True if complete hash chain is intact and uncorrupted")
@@ -32,7 +33,13 @@ class AuditLogRowResponse(BaseModel):
     details: Optional[str]
     prev_hash: Optional[str]
     record_hash: Optional[str]
+    cosmos_doc_id: Optional[str] = None
     created_at: datetime
+
+    @field_validator("action", "details", "entity_type", mode="after")
+    @classmethod
+    def escape_audit_text(cls, v: Optional[str]) -> Optional[str]:
+        return escape_html(v) if v is not None else None
 
 class MonthlyWishTrend(BaseModel):
     month: str = Field(..., description="Calendar month formatted as YYYY-MM")

@@ -331,5 +331,16 @@ All endpoints in this section are restricted to role `'admin'`.
 - **Path**: `/api/admin/audit/logs`
 - **Role Access**: `admin`
 - **Query Parameters**: `limit` (default 50), `offset` (default 0).
-- **Output**: Chronological list of audit entries with `prev_hash` and `record_hash`.
+- **Output**: Chronological list of audit entries with `prev_hash`, `record_hash`, and `cosmos_doc_id`.
+
+### 8.3 Fetch Cosmos DB Audit Event Document (Semi-Structured JSON)
+- **Method**: `GET`
+- **Path**: `/api/admin/audit/events/{doc_id}`
+- **Role Access**: `admin`
+- **Description**: Fetches the raw semi-structured JSON document stored in Azure Cosmos DB container `audit_events` (or from resilient local fallback cache).
+- **Responses**:
+  - `200 OK`: JSON payload containing `{ id, entity, entity_id, action, old_status, new_status, changed_by, details, created_at, content_hash }`.
+  - `404 Not Found`: Event document with specified `doc_id` was not found.
+  - `403 Forbidden`: Caller lacks `admin` role.
+
 

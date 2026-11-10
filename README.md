@@ -22,6 +22,7 @@
 - **Frontend**: React 18, Vite, TypeScript, Tailwind CSS, Recharts, Lucide Icons.
 - **Backend**: Python 3.14 / 3.11+, FastAPI, SQLAlchemy 2.0 (Asyncio), Pydantic v2, Pillow.
 - **Database**: Microsoft SQL Server 2022 (T-SQL) in Docker (compatible with Azure SQL Database).
+- **Semi-Structured NoSQL**: Azure Cosmos DB (Core/SQL API) Serverless (containers: `audit_events`, `delivery_metadata`).
 - **Storage**: Private Azure Blob Storage / Azurite Emulator with 15-minute SAS URLs.
 - **Authentication**: JWT access tokens (HS256) stored in memory, Passlib (bcrypt).
 - **Testing**: Pytest (Asyncio), SQLite in-memory test engine with database trigger emulation.
@@ -103,6 +104,9 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 | `ACCESS_TOKEN_EXPIRE_MINUTES` | `1440` (24 hours) | Token lifespan |
 | `ENVIRONMENT` | `development` | Environment mode (`development`, `staging`, `production`) |
 | `CORS_ORIGINS` | `["http://localhost:5173", "http://127.0.0.1:5173"]` | Whitelisted frontend origins |
+| `COSMOS_ENDPOINT` | *(Optional in local dev)* | Azure Cosmos DB URI (e.g. `https://<account>.documents.azure.com:443/`) |
+| `COSMOS_KEY` | *(Optional in local dev)* | Azure Cosmos DB Primary Read/Write Key |
+| `COSMOS_DATABASE_NAME` | `wishwell-nosql` | Cosmos DB database name holding semi-structured containers |
 
 ---
 
@@ -141,3 +145,5 @@ Validates:
 - **Explainable Duplicate Detection**: Simple, transparent Jaccard token overlap ($\ge 50\%$) documented in [docs/DUPLICATE_DETECTION.md](docs/DUPLICATE_DETECTION.md).
 - **Zero Children Photos**: Anti-exploitation enforcement through Pillow image re-encoding, EXIF/GPS stripping, and item-only container policy.
 - **Append-Only Ledger**: Cryptographic hash chain ($\text{SHA-256}(\text{prev\_hash} \,\|\, \text{payload})$) verified via live endpoint `GET /api/admin/audit/verify`.
+- **Polyglot Persistence & Cryptographic Anchoring**: Semi-structured audit event details and delivery/courier metadata are stored as JSON documents in Azure Cosmos DB (`audit_events` partitioned by `/entity`, `delivery_metadata` partitioned by `/claim_id`). The SHA-256 hash of each Cosmos document is sealed inside SQL Server's append-only hash chain (`dbo.audit_log.cosmos_doc_id`), cryptographically binding relational and document stores. Resilient design ensures that if Cosmos DB is unavailable, core relational transactions complete seamlessly with a warning log. Admins can inspect the raw JSON document via `GET /api/admin/audit/events/{doc_id}`.
+- **Power BI Analytics & Reporting**: 5 dedicated SQL views (`vw_wishes_by_category_month`, `vw_avg_delivery_time`, `vw_institutions_by_status`, `vw_stale_claim_rate`, `vw_top_categories`), a 6-month historical dataset (~300 wishes, 150 claims, 100 deliveries in `db/seed_analytics.sql`), and a read-only user `powerbi_reader` documented in [docs/powerbi.md](docs/powerbi.md).

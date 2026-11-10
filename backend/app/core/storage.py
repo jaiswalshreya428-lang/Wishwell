@@ -123,7 +123,7 @@ class StorageService:
                 matched_mime = mime
                 break
 
-        if not matched_ext:
+        if not matched_ext or not matched_mime:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Invalid file content: only authentic PDF, JPG, and PNG documents are accepted."
@@ -180,15 +180,16 @@ class StorageService:
         expiry_time = datetime.now(timezone.utc) + timedelta(minutes=expiry_minutes)
 
         try:
+            acc_name = str(self.account_name or "devstoreaccount1")
             sas_token = generate_blob_sas(
-                account_name=self.account_name,
+                account_name=acc_name,
                 container_name=self.container_name,
                 blob_name=blob_name,
-                account_key=self.account_key,
+                account_key=str(self.account_key or ""),
                 permission=BlobSasPermissions(read=True),
                 expiry=expiry_time,
             )
-            base_url = f"http://127.0.0.1:10000/{self.account_name}/{self.container_name}/{blob_name}"
+            base_url = f"http://127.0.0.1:10000/{acc_name}/{self.container_name}/{blob_name}"
             return f"{base_url}?{sas_token}"
         except Exception:
             # Fallback signed URL format
@@ -261,15 +262,16 @@ class StorageService:
             return ""
         expiry_time = datetime.now(timezone.utc) + timedelta(minutes=expiry_minutes)
         try:
+            acc_name = str(self.account_name or "devstoreaccount1")
             sas_token = generate_blob_sas(
-                account_name=self.account_name,
+                account_name=acc_name,
                 container_name=DELIVERY_PROOFS_CONTAINER,
                 blob_name=blob_name,
-                account_key=self.account_key,
+                account_key=str(self.account_key or ""),
                 permission=BlobSasPermissions(read=True),
                 expiry=expiry_time,
             )
-            base_url = f"http://127.0.0.1:10000/{self.account_name}/{DELIVERY_PROOFS_CONTAINER}/{blob_name}"
+            base_url = f"http://127.0.0.1:10000/{acc_name}/{DELIVERY_PROOFS_CONTAINER}/{blob_name}"
             return f"{base_url}?{sas_token}"
         except Exception:
             return f"http://127.0.0.1:10000/{self.account_name}/{DELIVERY_PROOFS_CONTAINER}/{blob_name}?token=mock_sas_token"

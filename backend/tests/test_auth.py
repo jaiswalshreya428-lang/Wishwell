@@ -125,7 +125,8 @@ async def test_login_wrong_password_generic_error_and_audit(async_client: AsyncC
         result = await session.execute(stmt)
         logs = result.scalars().all()
         assert len(logs) > 0
-        assert "donor@wishwell.org" in logs[-1].details
+        last_details = logs[-1].details or ""
+        assert "donor@wishwell.org" in last_details
 
 @pytest.mark.asyncio
 async def test_login_nonexistent_email_generic_error(async_client: AsyncClient):

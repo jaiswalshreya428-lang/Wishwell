@@ -40,6 +40,26 @@ class RegisterRequest(BaseModel):
     # Required only when role == 'institution'
     institution: Optional[InstitutionProfileCreate] = None
 
+    @model_validator(mode="before")
+    @classmethod
+    def assemble_institution_payload(cls, data):
+        if isinstance(data, dict):
+            if data.get("role") == "institution" and not data.get("institution"):
+                inst_name = data.get("institution_name") or data.get("name")
+                if inst_name:
+                    data["institution"] = {
+                        "name": inst_name,
+                        "registration_number": data.get("registration_number", "PENDING-REG"),
+                        "address": data.get("address", "Address Provided on Verification"),
+                        "city": data.get("city", "City"),
+                        "state": data.get("state", "State"),
+                        "postal_code": data.get("postal_code", "00000"),
+                        "phone": data.get("phone", "0000000000"),
+                        "website_url": data.get("website_url"),
+                        "description": data.get("description"),
+                    }
+        return data
+
     @model_validator(mode="after")
     def validate_institution_payload(self):
         if self.role == "institution" and not self.institution:

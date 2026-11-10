@@ -19,13 +19,14 @@ VIVA DEFENSE NOTES:
 from datetime import datetime, timezone
 from typing import List, Optional
 from collections import defaultdict
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
 
 from app.core.database import get_db
 from app.core.dependencies import require_role
 from app.core.audit import verify_audit_chain_integrity, GENESIS_HASH
+from app.core.cosmos import cosmos_service
 from app.models.entities import User, Institution, Wish, WishClaim, Delivery, Category, AuditLog
 from app.schemas.analytics import (
     AuditVerificationResponse,
@@ -78,6 +79,24 @@ async def list_audit_logs(
     res = await db.execute(stmt)
     records = res.scalars().all()
     return [AuditLogRowResponse.model_validate(r) for r in records]
+
+@router.get("/audit/events/{doc_id}", response_model=dict)
+async def get_cosmos_audit_event(
+    doc_id: str,
+    entity: Optional[str] = Query(None, description="Cosmos DB partition key (/entity)"),
+    current_user: User = Depends(require_role("admin")),
+):
+    """
+    Fetches raw semi-structured JSON audit event from Azure Cosmos DB by document ID.
+    Restricted to role 'admin'.
+    """
+    doc = await cosmos_service.get_audit_event(doc_id, entity=entity)
+    if not doc:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Cosmos DB audit event #{doc_id} not found."
+        )
+    return doc
 
 # ==============================================================================
 # 2. POWER BI ANALYTICS ENDPOINTS
@@ -236,7 +255,9 @@ async def get_top_categories(
             )
             .where(Wish.category_id == cat.id)
         )
-        w_count, qty_req = wish_stats.first()
+        stat_row = wish_stats.first()
+        w_count = stat_row[0] if stat_row else 0
+        qty_req = stat_row[1] if stat_row else 0
 
         # Fulfilled items (confirmed delivery)
         delivered_items = await db.scalar(

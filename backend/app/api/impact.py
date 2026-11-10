@@ -28,6 +28,7 @@ from app.schemas.delivery import (
     DonorImpactResponse,
     CategoryImpact,
     ImpactTimelineItem,
+    InstitutionHelpedItem,
 )
 
 router = APIRouter(tags=["Impact"])
@@ -35,6 +36,7 @@ router = APIRouter(tags=["Impact"])
 @router.get("/donors/impact", response_model=DonorImpactResponse)
 @router.get("/donors/me/impact", response_model=DonorImpactResponse)
 @router.get("/impact", response_model=DonorImpactResponse)
+@router.get("/impact/donor", response_model=DonorImpactResponse)
 async def get_donor_impact(
     current_user: User = Depends(require_role("donor")),
     db: AsyncSession = Depends(get_db)
@@ -145,14 +147,44 @@ async def get_donor_impact(
             )
         )
 
+    # 5c. Partner Homes Breakdown
+    inst_helped_stmt = (
+        select(
+            Institution.id.label("institution_id"),
+            Institution.name.label("institution_name"),
+            Institution.city.label("city"),
+            Institution.state.label("state"),
+            func.sum(WishClaim.qty).label("items_received")
+        )
+        .join(Wish, Institution.id == Wish.institution_id)
+        .join(WishClaim, Wish.id == WishClaim.wish_id)
+        .join(Delivery, WishClaim.id == Delivery.wish_claim_id)
+        .where(WishClaim.donor_id == current_user.id, Delivery.status == "confirmed")
+        .group_by(Institution.id, Institution.name, Institution.city, Institution.state)
+    )
+    inst_helped_res = await db.execute(inst_helped_stmt)
+    institutions_helped_list = [
+        InstitutionHelpedItem(
+            institution_id=r.institution_id,
+            institution_name=r.institution_name,
+            city=r.city,
+            state=r.state,
+            items_received=r.items_received
+        )
+        for r in inst_helped_res.all()
+    ]
+
     # Sort combined timeline by date descending
     timeline_items.sort(key=lambda t: t.date, reverse=True)
 
     return DonorImpactResponse(
         total_wishes_fulfilled=wishes_fulfilled,
         total_items_delivered=items_delivered,
-        institutions_helped=institutions_helped,
+        institutions_helped=institutions_helped if institutions_helped > 0 else len(institutions_helped_list),
+        institutions_helped_count=institutions_helped if institutions_helped > 0 else len(institutions_helped_list),
+        institutions_helped_list=institutions_helped_list,
         items_delivered_by_category=category_impact,
+        items_by_category=category_impact,
         timeline=timeline_items
     )
 

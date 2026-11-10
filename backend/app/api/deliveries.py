@@ -18,7 +18,7 @@ VIVA DEFENSE NOTES:
 """
 
 from datetime import datetime, timezone
-from typing import Optional
+from typing import Optional, List
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
@@ -26,6 +26,7 @@ from sqlalchemy import select, func
 from app.core.database import get_db
 from app.core.dependencies import require_role
 from app.core.storage import storage_service
+from app.core.cosmos import cosmos_service
 from app.models.entities import User, Institution, Wish, WishClaim, Delivery, ThankYouNote, Notification, AuditLog
 from app.core.audit import record_audit_event
 from app.schemas.delivery import (
@@ -40,7 +41,7 @@ router = APIRouter(tags=["Deliveries"])
 @router.post("/claims/{claim_id}/deliver", response_model=DeliveryResponse, status_code=status.HTTP_201_CREATED)
 async def mark_claim_as_delivered(
     claim_id: int,
-    payload: DeliveryCreate = DeliveryCreate(),
+    payload: Optional[DeliveryCreate] = None,
     current_user: User = Depends(require_role("donor")),
     db: AsyncSession = Depends(get_db)
 ):
@@ -48,6 +49,8 @@ async def mark_claim_as_delivered(
     Donor marks a pledged claim as dispatched/delivered.
     Creates a delivery tracking record and notifies the children's home.
     """
+    if payload is None:
+        payload = DeliveryCreate()
     # 1. Fetch claim with parent wish and institution
     stmt = (
         select(WishClaim, Wish, Institution)
@@ -139,6 +142,24 @@ async def mark_claim_as_delivered(
         created_at=now_utc
     )
 
+    # 8. Store semi-structured delivery metadata in Cosmos DB (partition key: /claim_id)
+    try:
+        await cosmos_service.store_delivery_metadata(
+            claim_id=claim.id,
+            delivery_id=delivery.id,
+            status="delivered",
+            tracking_number=delivery.tracking_number,
+            carrier=delivery.carrier,
+            notes=None,
+            extra_info={
+                "donor_id": current_user.id,
+                "wish_id": wish.id,
+                "dispatched_at": now_utc.isoformat(),
+            }
+        )
+    except Exception as exc:
+        pass  # Resilient fallback: API action succeeds even if Cosmos DB encounters an issue
+
     await db.commit()
     await db.refresh(delivery)
 
@@ -147,24 +168,31 @@ async def mark_claim_as_delivered(
         wish_claim_id=claim.id,
         wish_id=wish.id,
         donor_id=claim.donor_id,
+        institution_id=institution.id,
         tracking_number=delivery.tracking_number,
         carrier=delivery.carrier,
         photo_url=delivery.photo_url,
         photo_sas_url=None,
+        proof_photo_blob_name=delivery.photo_url,
+        proof_photo_sas_url=None,
         status=delivery.status,
         delivered_at=delivery.delivered_at,
         confirmed_by=delivery.confirmed_by,
         confirmed_at=delivery.confirmed_at,
         confirmation_notes=delivery.confirmation_notes,
         created_at=delivery.created_at,
-        updated_at=delivery.updated_at
+        updated_at=delivery.updated_at,
+        item_name=wish.item_name,
+        qty=claim.qty,
+        wish_title=wish.title
     )
 
 @router.post("/deliveries/{delivery_id}/confirm", response_model=DeliveryResponse)
 async def confirm_delivery(
     delivery_id: int,
-    file: UploadFile = File(..., description="Proof photo of received physical items"),
-    notes: Optional[str] = Form(None, description="Optional delivery confirmation notes"),
+    file: Optional[UploadFile] = File(None, description="Proof photo of received physical items"),
+    photo: Optional[UploadFile] = File(None, description="Proof photo alias from frontend form data"),
+    notes: Optional[str] = Form(None, max_length=1000, description="Optional delivery confirmation notes"),
     current_user: User = Depends(require_role("institution")),
     db: AsyncSession = Depends(get_db)
 ):
@@ -175,6 +203,13 @@ async def confirm_delivery(
     - Donors CANNOT confirm their own deliveries (HTTP 403).
     - Image is validated, re-encoded with Pillow, all EXIF/GPS data stripped, and saved to private blob container.
     """
+    proof_file = photo or file
+    if proof_file is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Delivery proof photo is required."
+        )
+
     # 1. Fetch institution profile of the authenticated user
     inst_stmt = select(Institution).where(Institution.user_id == current_user.id)
     inst_res = await db.execute(inst_stmt)
@@ -219,10 +254,10 @@ async def confirm_delivery(
         )
 
     # 5. Process proof photo: Validate, re-encode with Pillow, strip EXIF/GPS
-    file_bytes = await file.read()
+    file_bytes = await proof_file.read()
     blob_name, file_size, mime_type = storage_service.upload_delivery_proof(
         file_bytes=file_bytes,
-        original_filename=file.filename or "delivery_proof.jpg"
+        original_filename=proof_file.filename or "delivery_proof.jpg"
     )
 
     now_utc = datetime.now(timezone.utc).replace(tzinfo=None)
@@ -278,6 +313,27 @@ async def confirm_delivery(
         created_at=now_utc
     )
 
+    # 10. Store semi-structured delivery confirmation metadata in Cosmos DB (partition key: /claim_id)
+    try:
+        await cosmos_service.store_delivery_metadata(
+            claim_id=claim.id,
+            delivery_id=delivery.id,
+            status="confirmed",
+            tracking_number=delivery.tracking_number,
+            carrier=delivery.carrier,
+            photo_blob=blob_name,
+            notes=notes,
+            extra_info={
+                "confirmed_by": current_user.id,
+                "institution_id": current_institution.id,
+                "confirmed_at": now_utc.isoformat(),
+                "photo_size_bytes": file_size,
+                "mime_type": mime_type,
+            }
+        )
+    except Exception as exc:
+        pass  # Resilient fallback: API action succeeds even if Cosmos DB encounters an issue
+
     await db.commit()
     await db.refresh(delivery)
 
@@ -288,18 +344,81 @@ async def confirm_delivery(
         wish_claim_id=claim.id,
         wish_id=wish.id,
         donor_id=claim.donor_id,
+        institution_id=current_institution.id,
         tracking_number=delivery.tracking_number,
         carrier=delivery.carrier,
         photo_url=delivery.photo_url,
         photo_sas_url=sas_url,
+        proof_photo_blob_name=delivery.photo_url,
+        proof_photo_sas_url=sas_url,
         status=delivery.status,
         delivered_at=delivery.delivered_at,
         confirmed_by=delivery.confirmed_by,
         confirmed_at=delivery.confirmed_at,
         confirmation_notes=delivery.confirmation_notes,
         created_at=delivery.created_at,
-        updated_at=delivery.updated_at
+        updated_at=delivery.updated_at,
+        item_name=wish.item_name,
+        qty=claim.qty,
+        wish_title=wish.title
     )
+
+@router.get("/deliveries/institution/pending", response_model=List[DeliveryResponse])
+async def get_pending_deliveries_for_institution(
+    current_user: User = Depends(require_role("institution")),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Returns all incoming deliveries dispatched by donors awaiting receipt confirmation by the institution.
+    """
+    inst_stmt = select(Institution).where(Institution.user_id == current_user.id)
+    inst_res = await db.execute(inst_stmt)
+    current_institution = inst_res.scalar_one_or_none()
+
+    if not current_institution:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Institution profile not found."
+        )
+
+    stmt = (
+        select(Delivery, WishClaim, Wish)
+        .join(WishClaim, Delivery.wish_claim_id == WishClaim.id)
+        .join(Wish, WishClaim.wish_id == Wish.id)
+        .where(
+            Wish.institution_id == current_institution.id,
+            Delivery.status.in_(["delivered", "pending_confirmation"])
+        )
+        .order_by(Delivery.created_at.desc())
+    )
+    res = await db.execute(stmt)
+    deliveries_list = []
+    for delivery, claim, wish in res.all():
+        sas_url = storage_service.generate_delivery_proof_sas_url(delivery.photo_url) if delivery.photo_url else None
+        deliveries_list.append(DeliveryResponse(
+            id=delivery.id,
+            wish_claim_id=claim.id,
+            wish_id=wish.id,
+            donor_id=claim.donor_id,
+            institution_id=current_institution.id,
+            tracking_number=delivery.tracking_number,
+            carrier=delivery.carrier,
+            photo_url=delivery.photo_url,
+            photo_sas_url=sas_url,
+            proof_photo_blob_name=delivery.photo_url,
+            proof_photo_sas_url=sas_url,
+            status=delivery.status,
+            delivered_at=delivery.delivered_at,
+            confirmed_by=delivery.confirmed_by,
+            confirmed_at=delivery.confirmed_at,
+            confirmation_notes=delivery.confirmation_notes,
+            created_at=delivery.created_at,
+            updated_at=delivery.updated_at,
+            item_name=wish.item_name,
+            qty=claim.qty,
+            wish_title=wish.title
+        ))
+    return deliveries_list
 
 @router.post("/deliveries/{delivery_id}/thank-you", response_model=ThankYouNoteResponse, status_code=status.HTTP_201_CREATED)
 async def post_thank_you_note(

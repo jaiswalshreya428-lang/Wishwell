@@ -102,15 +102,15 @@ async def test_audit_hash_chain_linkage_and_genesis():
 
         # 1. Entry 1 must link to GENESIS_HASH
         assert e1.prev_hash == GENESIS_HASH
-        assert len(e1.record_hash) == 64
+        assert e1.record_hash is not None and len(e1.record_hash) == 64
 
         # 2. Entry 2 must link to Entry 1's hash
         assert e2.prev_hash == e1.record_hash
-        assert len(e2.record_hash) == 64
+        assert e2.record_hash is not None and len(e2.record_hash) == 64
 
         # 3. Entry 3 must link to Entry 2's hash
         assert e3.prev_hash == e2.record_hash
-        assert len(e3.record_hash) == 64
+        assert e3.record_hash is not None and len(e3.record_hash) == 64
 
 @pytest.mark.asyncio
 async def test_admin_audit_verification_endpoint_valid_chain(async_client: AsyncClient, admin_token: str):

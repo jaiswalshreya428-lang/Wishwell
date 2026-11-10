@@ -13,8 +13,8 @@ export const DonorNotifications: React.FC = () => {
   const loadNotifications = async () => {
     setIsLoading(true);
     try {
-      const data = await api.deliveries.getNotifications();
-      setNotifications(data);
+      const data: any = await api.deliveries.getNotifications();
+      setNotifications(Array.isArray(data) ? data : data.items || []);
     } catch {
       showToast({
         type: 'error',

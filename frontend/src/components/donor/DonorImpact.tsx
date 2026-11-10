@@ -115,7 +115,7 @@ export const DonorImpact: React.FC<{ onBrowseWishes: () => void }> = ({ onBrowse
         <div className="bg-white rounded-2xl border border-cream-200 p-6 shadow-soft space-y-4">
           <h3 className="font-serif text-lg font-bold text-ink-900">Partner Homes You Helped</h3>
           <div className="divide-y divide-cream-100">
-            {impact.institutions_helped.map((inst) => (
+            {((impact as any).institutions_helped_list || (Array.isArray(impact.institutions_helped) ? impact.institutions_helped : [])).map((inst: any) => (
               <div key={inst.institution_id} className="py-3 flex items-center justify-between text-xs">
                 <div>
                   <h4 className="font-bold text-ink-900">{inst.institution_name}</h4>

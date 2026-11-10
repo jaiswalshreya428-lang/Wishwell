@@ -225,6 +225,7 @@ class AuditLog(Base):
     details: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     prev_hash: Mapped[Optional[str]] = mapped_column(String(64), nullable=True)
     record_hash: Mapped[Optional[str]] = mapped_column(String(64), nullable=True)
+    cosmos_doc_id: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=False), default=utc_now)
 
 class OpenWishView(Base):

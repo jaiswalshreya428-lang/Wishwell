@@ -101,7 +101,7 @@ async def create_wish(
             Wish.status.in_(["open", "partially_claimed"])
         )
         dup_res = await db.execute(dup_stmt)
-        open_wishes = dup_res.scalars().all()
+        open_wishes = list(dup_res.scalars().all())
 
         duplicates = find_duplicate_wishes(payload.item_name, open_wishes, similarity_threshold=0.5)
         if duplicates:
@@ -338,15 +338,22 @@ async def list_open_wishes(
     institution_id: Optional[int] = Query(None, description="Filter by institution ID"),
     needed_by_from: Optional[datetime] = Query(None, description="Filter wishes needed on or after this UTC timestamp"),
     needed_by_to: Optional[datetime] = Query(None, description="Filter wishes needed on or before this UTC timestamp"),
+    needed_by_after: Optional[datetime] = Query(None, description="Alias for needed_by_from"),
+    needed_by_before: Optional[datetime] = Query(None, description="Alias for needed_by_to"),
     search: Optional[str] = Query(None, description="Search keyword across item name, title, or description"),
     page: int = Query(1, ge=1, description="Page number (1-indexed)"),
     page_size: int = Query(10, ge=1, le=100, description="Items per page"),
+    limit: Optional[int] = Query(None, ge=1, le=100, description="Alias for page_size"),
     db: AsyncSession = Depends(get_db)
 ):
     """
     Lists open wishes for public and donor browsing.
     VIVA REQUIREMENT: Directly reads from dbo.v_open_wishes view with server-side pagination.
     """
+    effective_page_size = limit if limit is not None else page_size
+    from_date = needed_by_after if needed_by_after is not None else needed_by_from
+    to_date = needed_by_before if needed_by_before is not None else needed_by_to
+
     stmt = select(OpenWishView)
     count_stmt = select(func.count()).select_from(OpenWishView)
 
@@ -358,12 +365,12 @@ async def list_open_wishes(
     if institution_id is not None:
         filters.append(OpenWishView.institution_id == institution_id)
 
-    if needed_by_from is not None:
-        from_utc = needed_by_from.replace(tzinfo=None) if needed_by_from.tzinfo else needed_by_from
+    if from_date is not None:
+        from_utc = from_date.replace(tzinfo=None) if from_date.tzinfo else from_date
         filters.append(OpenWishView.needed_by >= from_utc)
 
-    if needed_by_to is not None:
-        to_utc = needed_by_to.replace(tzinfo=None) if needed_by_to.tzinfo else needed_by_to
+    if to_date is not None:
+        to_utc = to_date.replace(tzinfo=None) if to_date.tzinfo else to_date
         filters.append(OpenWishView.needed_by <= to_utc)
 
     if search:
@@ -384,11 +391,11 @@ async def list_open_wishes(
     total_res = await db.execute(count_stmt)
     total = total_res.scalar() or 0
 
-    total_pages = ceil(total / page_size) if total > 0 else 1
+    total_pages = ceil(total / effective_page_size) if total > 0 else 1
 
     # Order by needed_by ASC (urgent first) and wish_id ASC
-    offset = (page - 1) * page_size
-    stmt = stmt.order_by(OpenWishView.needed_by.asc(), OpenWishView.wish_id.asc()).offset(offset).limit(page_size)
+    offset = (page - 1) * effective_page_size
+    stmt = stmt.order_by(OpenWishView.needed_by.asc(), OpenWishView.wish_id.asc()).offset(offset).limit(effective_page_size)
 
     records_res = await db.execute(stmt)
     records = records_res.scalars().all()
@@ -399,7 +406,8 @@ async def list_open_wishes(
         items=items,
         total=total,
         page=page,
-        page_size=page_size,
+        page_size=effective_page_size,
+        limit=effective_page_size,
         total_pages=total_pages
     )
 

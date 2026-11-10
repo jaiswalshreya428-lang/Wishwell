@@ -12,8 +12,10 @@ VIVA NOTES:
 import uuid
 import logging
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, Request, status
+from fastapi import FastAPI, Request, HTTPException, status
 from fastapi.responses import JSONResponse
+from fastapi.exceptions import RequestValidationError
+from starlette.exceptions import HTTPException as StarletteHTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 from app.core.config import settings
@@ -54,9 +56,13 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         response.headers["X-XSS-Protection"] = "1; mode=block"
         # Control referrer leakage
         response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+        # Restrict browser capabilities / sensors
+        response.headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()"
+        # Content Security Policy (disallow frame embedding)
+        response.headers["Content-Security-Policy"] = "default-src 'self'; frame-ancestors 'none';"
         # Enforce HTTPS transport in production
         if settings.ENVIRONMENT != "development":
-            response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+            response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains; preload"
         return response
 
 app.add_middleware(SecurityHeadersMiddleware)
@@ -75,8 +81,22 @@ app.add_middleware(
 async def global_exception_handler(request: Request, exc: Exception):
     """
     Prevents leakage of stack traces, database schema info, or internal file paths to clients.
-    Logs full traceback internally with an incident UUID.
+    Properly preserves intentional HTTP exceptions (e.g. 400, 401, 403, 404, 409) and validation errors.
+    Logs unhandled 500 exceptions with an incident UUID.
     """
+    if isinstance(exc, (HTTPException, StarletteHTTPException)):
+        return JSONResponse(
+            status_code=exc.status_code,
+            content={"detail": exc.detail},
+            headers=getattr(exc, "headers", None)
+        )
+    if isinstance(exc, RequestValidationError):
+        val_errors = getattr(exc, "errors", lambda: [])()
+        return JSONResponse(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            content={"detail": val_errors}
+        )
+
     incident_id = str(uuid.uuid4())
     logger.error(f"Unhandled Exception [Incident {incident_id}] on {request.method} {request.url.path}: {exc}", exc_info=True)
     return JSONResponse(
@@ -98,5 +118,15 @@ async def root_index():
         "description": "Verified Wish-Matching Platform API",
         "docs_url": "/docs",
         "health_url": "/api/health",
+        "environment": settings.ENVIRONMENT
+    }
+
+@app.get("/health", tags=["Health"])
+async def root_health_check():
+    """Root health check alias for cloud load balancers and App Service probes."""
+    return {
+        "status": "ok",
+        "app_name": settings.PROJECT_NAME,
+        "version": settings.VERSION,
         "environment": settings.ENVIRONMENT
     }

@@ -279,11 +279,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                     className="w-full px-3.5 py-2 rounded-xl border border-cream-300 text-xs text-ink-900"
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-3 gap-2">
                   <input
                     type="text"
                     required
-                    placeholder="Reg. Number (Govt ID)"
+                    placeholder="Reg. Number"
                     value={instRegNo}
                     onChange={(e) => setInstRegNo(e.target.value)}
                     className="w-full px-3 py-2 rounded-xl border border-cream-300 text-xs text-ink-900"
@@ -294,6 +294,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                     placeholder="City"
                     value={instCity}
                     onChange={(e) => setInstCity(e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl border border-cream-300 text-xs text-ink-900"
+                  />
+                  <input
+                    type="text"
+                    required
+                    placeholder="State"
+                    value={instState}
+                    onChange={(e) => setInstState(e.target.value)}
                     className="w-full px-3 py-2 rounded-xl border border-cream-300 text-xs text-ink-900"
                   />
                 </div>

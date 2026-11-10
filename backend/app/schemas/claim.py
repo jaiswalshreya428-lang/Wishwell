@@ -25,6 +25,11 @@ class ClaimResponse(BaseModel):
     status: str
     created_at: datetime
     updated_at: datetime
+    wish_title: Optional[str] = None
+    item_name: Optional[str] = None
+    institution_name: Optional[str] = None
+    institution_city: Optional[str] = None
+    needed_by: Optional[datetime] = None
 
 class StaleClaimsReleaseResponse(BaseModel):
     message: str
