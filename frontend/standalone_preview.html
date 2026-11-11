@@ -4,13 +4,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WishWell — Verified Wish-Matching Platform (Live Browser Preview)</title>
+  <title>WishWell — Where Every Wish Ripples Into Real Care</title>
 
-  <!-- Typography: Fraunces & Plus Jakarta Sans -->
+  <!-- Typography: Fraunces (Display Serif), Plus Jakarta Sans (UI), JetBrains Mono (Audit Hashes) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=JetBrains+Mono:wght@400;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
     rel="stylesheet">
 
   <!-- Tailwind CSS CDN -->
@@ -20,14 +20,59 @@
       theme: {
         extend: {
           colors: {
-            cream: { 50: '#FDFBF7', 100: '#F8F4EE', 200: '#EFE8DD', 300: '#E2D7C7' },
-            terracotta: { 50: '#FDF7F5', 100: '#FAEFEA', 200: '#F4D8CD', 500: '#D96547', 600: '#BF5033', 700: '#9E3E26' },
-            sage: { 50: '#F3F6F4', 100: '#E5ECE7', 200: '#CDDCCF', 500: '#4B7A5C', 600: '#3C634A', 700: '#2E4E3A' },
-            ink: { 900: '#1A1816', 800: '#2C2825', 700: '#47423D', 600: '#68615A', 500: '#8C847C', 400: '#B6ACA2' }
+            well: {
+              950: '#07141A',
+              900: '#0B1F28',
+              800: '#102C38',
+              700: '#173E4D',
+              600: '#1F5164',
+              500: '#2A6A80',
+            },
+            spring: {
+              50: '#EEF9F7',
+              100: '#D4F0EB',
+              200: '#AAE1D8',
+              400: '#49B8A5',
+              500: '#1F8A7A',
+              600: '#166D60',
+              700: '#11544A',
+            },
+            coin: {
+              50: '#FFFBEB',
+              100: '#FEF3C7',
+              200: '#FDE68A',
+              300: '#FCD34D',
+              400: '#F5B942',
+              500: '#E59D1C',
+              600: '#C47E0E',
+            },
+            stone: {
+              50: '#FCFBF8',
+              100: '#FAF7F0',
+              200: '#F2ECE0',
+              300: '#E4DAC8',
+              400: '#CFC1AA',
+            },
+            ember: {
+              50: '#FDF4F0',
+              100: '#FAE2D7',
+              500: '#E0643A',
+              600: '#C84E27',
+              700: '#A33C1C',
+            },
+            slateink: {
+              900: '#112229',
+              800: '#1E343D',
+              700: '#354C54',
+              600: '#4E656E',
+              500: '#6D828A',
+              400: '#97A8AE',
+            }
           },
           fontFamily: {
             serif: ['Fraunces', 'Georgia', 'serif'],
             sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
           }
         }
       }
@@ -41,46 +86,299 @@
 
   <style>
     body {
-      background-color: #FDFBF7;
-      color: #1A1816;
+      background-color: #FAF7F0;
+      color: #112229;
     }
 
     *:focus-visible {
-      outline: 2px solid #BF5033;
+      outline: 2px solid #1F8A7A;
       outline-offset: 2px;
+    }
+
+    .well-sky {
+      background:
+        radial-gradient(circle at 75% 28%, rgba(245, 185, 66, 0.16), transparent 42%),
+        radial-gradient(circle at 20% 80%, rgba(31, 138, 122, 0.22), transparent 48%),
+        linear-gradient(160deg, #07141A 0%, #0D2631 48%, #143A47 100%);
+    }
+
+    .star-dots {
+      background-image:
+        radial-gradient(1.5px 1.5px at 30px 40px, rgba(252, 211, 77, 0.7), transparent),
+        radial-gradient(1.5px 1.5px at 140px 90px, rgba(255, 255, 255, 0.65), transparent),
+        radial-gradient(1px 1px at 260px 55px, rgba(170, 225, 216, 0.7), transparent),
+        radial-gradient(2px 2px at 390px 120px, rgba(245, 185, 66, 0.6), transparent),
+        radial-gradient(1.5px 1.5px at 510px 35px, rgba(255, 255, 255, 0.55), transparent);
+      background-size: 560px 180px;
+    }
+
+    @keyframes wellRipple {
+      0% {
+        transform: scale(0.75);
+        opacity: 0.75;
+      }
+      100% {
+        transform: scale(1.65);
+        opacity: 0;
+      }
+    }
+
+    @keyframes floatLantern {
+      0%, 100% {
+        transform: translateY(0px) rotate(-1deg);
+      }
+      50% {
+        transform: translateY(-7px) rotate(1deg);
+      }
+    }
+
+    @keyframes coinDrop {
+      0% {
+        transform: translateY(-38px) scale(1);
+        opacity: 0;
+      }
+      20% {
+        opacity: 1;
+      }
+      85% {
+        transform: translateY(22px) scale(0.85);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(34px) scale(0.3);
+        opacity: 0;
+      }
+    }
+
+    @keyframes shimmerWater {
+      0% {
+        background-position: 0% 50%;
+      }
+      100% {
+        background-position: 200% 50%;
+      }
+    }
+
+    .animate-well-ripple {
+      animation: wellRipple 3.2s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+    }
+
+    .animate-well-ripple-delay {
+      animation: wellRipple 3.2s cubic-bezier(0.22, 1, 0.36, 1) 1.6s infinite;
+    }
+
+    .animate-float-lantern {
+      animation: floatLantern 4.5s ease-in-out infinite;
+    }
+
+    .animate-coin-drop {
+      animation: coinDrop 0.9s cubic-bezier(0.45, 0, 0.55, 1) forwards;
+    }
+
+    .water-progress {
+      background: linear-gradient(90deg, #1F8A7A, #49B8A5, #F5B942, #1F8A7A);
+      background-size: 200% 100%;
+      animation: shimmerWater 5s linear infinite;
     }
   </style>
 </head>
 
-<body class="bg-cream-50 text-ink-900 font-sans antialiased min-h-screen">
+<body class="bg-stone-100 text-slateink-900 font-sans antialiased min-h-screen">
   <div id="root"></div>
 
   <script type="text/babel">
-    const { useState, useEffect } = React;
+    const { useState, useEffect, useMemo } = React;
 
-    // --- SEED DATA & MOCK STATE ---
+    // --- CUSTOM WISHING WELL SVG LOGO ---
+    function WishWellLogo({ size = 40 }) {
+      return (
+        <svg width={size} height={size} viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
+          <defs>
+            <linearGradient id="wellBg" x1="8" y1="6" x2="56" y2="58" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stopColor="#102C38" />
+              <stop offset="100%" stopColor="#1F8A7A" />
+            </linearGradient>
+            <linearGradient id="coinGold" x1="26" y1="18" x2="38" y2="30" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stopColor="#FDE68A" />
+              <stop offset="100%" stopColor="#E59D1C" />
+            </linearGradient>
+          </defs>
+          <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#wellBg)" stroke="#F5B942" strokeOpacity="0.45" strokeWidth="1.5" />
+          {/* Timber Roof */}
+          <path d="M16 24L32 12L48 24" stroke="#F5B942" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+          {/* Posts */}
+          <path d="M21 23V37M43 23V37" stroke="#E4DAC8" strokeWidth="2.5" strokeLinecap="round" />
+          {/* Glowing Hanging Lantern / Wishing Coin */}
+          <line x1="32" y1="14" x2="32" y2="21" stroke="#FCD34D" strokeWidth="1.5" />
+          <circle cx="32" cy="25" r="4.5" fill="url(#coinGold)" />
+          <circle cx="32" cy="25" r="7.5" fill="#F5B942" fillOpacity="0.22" />
+          {/* Stone Well Basin */}
+          <rect x="17" y="36" width="30" height="14" rx="4" fill="#FAF7F0" fillOpacity="0.95" />
+          <ellipse cx="32" cy="36" rx="15" ry="3.5" fill="#49B8A5" />
+          {/* Stone Masonry Lines */}
+          <path d="M24 39V44M32 44V50M40 39V44M17 44H47" stroke="#97A8AE" strokeWidth="1.2" strokeOpacity="0.7" />
+          {/* Water Ripples Underneath */}
+          <ellipse cx="32" cy="54.5" rx="18" ry="2.2" stroke="#6CE0CE" strokeOpacity="0.65" strokeWidth="1.2" />
+        </svg>
+      );
+    }
+
+    // --- INTERACTIVE HERO WISHING WELL ILLUSTRATION ---
+    function HeroWishingWell({ rippleCount, onTossCoin, coinAnimating }) {
+      return (
+        <div className="relative flex flex-col items-center justify-center select-none">
+          {/* Outer Ambient Halo */}
+          <div className="absolute w-72 h-72 rounded-full bg-spring-500/15 blur-3xl pointer-events-none" />
+          <div className="absolute -top-4 w-44 h-44 rounded-full bg-coin-400/15 blur-2xl pointer-events-none" />
+
+          <div className="relative bg-well-800/70 backdrop-blur-md border border-coin-400/25 rounded-3xl p-6 shadow-2xl w-full max-w-sm">
+            <div className="flex items-center justify-between text-[11px] mb-2">
+              <span className="inline-flex items-center gap-1.5 text-coin-300 font-semibold">
+                <span className="w-2 h-2 rounded-full bg-coin-400 animate-ping" />
+                The Wishing Well
+              </span>
+              <span className="px-2.5 py-0.5 rounded-full bg-spring-500/20 text-spring-200 border border-spring-400/30 font-bold">
+                {rippleCount} Ripples Cast
+              </span>
+            </div>
+
+            <div className="relative flex justify-center items-center py-1">
+              {/* Animated Gold Coin Dropping */}
+              {coinAnimating && (
+                <div className="absolute top-12 z-20 animate-coin-drop pointer-events-none">
+                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-coin-200 to-coin-500 border-2 border-coin-100 shadow-lg flex items-center justify-center text-[10px] font-bold text-well-950">
+                    ★
+                  </div>
+                </div>
+              )}
+
+              <svg viewBox="0 0 320 270" className="w-full max-w-[290px] h-auto overflow-visible" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="roofGrad" x1="60" y1="30" x2="260" y2="105" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stopColor="#C84E27" />
+                    <stop offset="50%" stopColor="#E0643A" />
+                    <stop offset="100%" stopColor="#B8431E" />
+                  </linearGradient>
+                  <linearGradient id="waterGrad" x1="85" y1="158" x2="235" y2="180" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stopColor="#11544A" />
+                    <stop offset="50%" stopColor="#49B8A5" />
+                    <stop offset="100%" stopColor="#166D60" />
+                  </linearGradient>
+                  <linearGradient id="stoneGrad" x1="80" y1="160" x2="240" y2="235" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stopColor="#FAF7F0" />
+                    <stop offset="100%" stopColor="#D6CCB8" />
+                  </linearGradient>
+                  <radialGradient id="lanternHalo" cx="0.5" cy="0.5" r="0.5">
+                    <stop offset="0%" stopColor="#FDE68A" stopOpacity="0.95" />
+                    <stop offset="45%" stopColor="#F5B942" stopOpacity="0.4" />
+                    <stop offset="100%" stopColor="#F5B942" stopOpacity="0" />
+                  </radialGradient>
+                </defs>
+
+                {/* Twinkling Stars & Floating Wish Sparks */}
+                <g className="animate-pulse">
+                  <path d="M52 46L54 51L59 53L54 55L52 60L50 55L45 53L50 51L52 46Z" fill="#FCD34D" />
+                  <path d="M270 36L271.5 40L275.5 41.5L271.5 43L270 47L268.5 43L264.5 41.5L268.5 40L270 36Z" fill="#AAE1D8" />
+                  <circle cx="88" cy="30" r="2" fill="#FDE68A" />
+                  <circle cx="242" cy="72" r="2.2" fill="#F5B942" />
+                  <circle cx="44" cy="112" r="1.8" fill="#6CE0CE" />
+                </g>
+
+                {/* Concentric Ground & Water Ripples */}
+                <ellipse cx="160" cy="236" rx="115" ry="18" stroke="#49B8A5" strokeOpacity="0.35" strokeWidth="1.5" className="origin-center animate-well-ripple" />
+                <ellipse cx="160" cy="236" rx="95" ry="14" stroke="#F5B942" strokeOpacity="0.3" strokeWidth="1.2" className="origin-center animate-well-ripple-delay" />
+                <ellipse cx="160" cy="236" rx="102" ry="15" fill="#07141A" fillOpacity="0.55" />
+
+                {/* Well Timber Roof */}
+                <path d="M68 96L160 32L252 96H68Z" fill="url(#roofGrad)" stroke="#F5B942" strokeOpacity="0.5" strokeWidth="2" strokeLinejoin="round" />
+                <path d="M84 96L160 44L236 96" stroke="#FDE68A" strokeOpacity="0.35" strokeWidth="1.5" />
+                {/* Roof Shingles Hint */}
+                <path d="M110 74H210M130 59H190" stroke="#9A3616" strokeWidth="2" strokeLinecap="round" />
+
+                {/* Wooden Support Beams */}
+                <rect x="92" y="96" width="12" height="68" rx="3" fill="#8C583A" />
+                <rect x="216" y="96" width="12" height="68" rx="3" fill="#8C583A" />
+                {/* Rope Roller */}
+                <rect x="86" y="114" width="148" height="8" rx="4" fill="#B57B52" />
+
+                {/* Hanging Golden Lantern */}
+                <g className="animate-float-lantern">
+                  <circle cx="160" cy="126" r="26" fill="url(#lanternHalo)" />
+                  <line x1="160" y1="96" x2="160" y2="112" stroke="#FCD34D" strokeWidth="2" />
+                  <rect x="151" y="112" width="18" height="24" rx="5" fill="#F5B942" stroke="#FFFBEB" strokeWidth="1.5" />
+                  <rect x="155" y="116" width="10" height="16" rx="3" fill="#FFFBEB" />
+                  <path d="M149 112H171M149 136H171" stroke="#B45309" strokeWidth="2" strokeLinecap="round" />
+                </g>
+
+                {/* Floating Wish Ribbons Rising */}
+                <g opacity="0.9">
+                  <rect x="115" y="132" width="14" height="9" rx="2" transform="rotate(-12 115 132)" fill="#D4F0EB" stroke="#49B8A5" strokeWidth="1" />
+                  <rect x="192" y="128" width="15" height="9" rx="2" transform="rotate(10 192 128)" fill="#FEF3C7" stroke="#F5B942" strokeWidth="1" />
+                </g>
+
+                {/* Shimmering Water Inside Rim */}
+                <ellipse cx="160" cy="164" rx="76" ry="15" fill="url(#waterGrad)" stroke="#E4DAC8" strokeWidth="4" />
+                <ellipse cx="160" cy="164" rx="46" ry="7" stroke="#FDE68A" strokeOpacity="0.6" strokeWidth="1.2" />
+                <ellipse cx="160" cy="164" rx="24" ry="3.5" stroke="#FFFFFF" strokeOpacity="0.5" strokeWidth="1" />
+
+                {/* Stone Well Wall */}
+                <path d="M84 166C84 174.5 118 181 160 181C202 181 236 174.5 236 166V224C236 233.5 202 241 160 241C118 241 84 233.5 84 224V166Z" fill="url(#stoneGrad)" stroke="#CFC1AA" strokeWidth="2" />
+
+                {/* Masonry Stone Blocks */}
+                <path d="M84 186C110 194 210 194 236 186" stroke="#BFB29A" strokeWidth="1.5" />
+                <path d="M84 206C110 214 210 214 236 206" stroke="#BFB29A" strokeWidth="1.5" />
+                <path d="M120 180V191M160 181V192M200 180V191" stroke="#BFB29A" strokeWidth="1.5" />
+                <path d="M102 190V209M140 192V211M180 192V211M218 190V209" stroke="#BFB29A" strokeWidth="1.5" />
+                <path d="M122 211V237M160 212V240M198 211V237" stroke="#BFB29A" strokeWidth="1.5" />
+
+                {/* Verified Emblem Carved on Well Stone */}
+                <circle cx="160" cy="208" r="11" fill="#1F8A7A" stroke="#FAF7F0" strokeWidth="2" />
+                <path d="M155.5 208L158.5 211L165 204.5" stroke="#FAF7F0" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+
+            <button
+              onClick={onTossCoin}
+              className="mt-2 w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-coin-400 to-coin-500 hover:brightness-105 active:scale-[0.98] text-well-950 font-bold text-xs shadow-lg transition flex items-center justify-center gap-2"
+            >
+              <span>✦</span>
+              <span>Toss a Wishing Coin &amp; Create a Ripple</span>
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    // --- FALLBACK SEED DATA ---
     const INITIAL_WISHES = [
-      { id: 1, category: "Educational Supplies", title: "25 Grade 8 Mathematics Textbooks", item: "NCERT Grade 8 Math Book", desc: "Required for children advancing to 8th grade semester.", requested: 25, claimed: 15, remaining: 10, home: "St. Mary's Children's Haven", city: "Bengaluru, KA", neededBy: "2026-11-20", status: "partially_claimed" },
-      { id: 2, category: "Footwear & Warm Clothing", title: "30 Thermal Winter Jackets", item: "Heavy Winter Fleece Jackets (Sizes 8-14)", desc: "Needed for cold winter months in the shelter.", requested: 30, claimed: 30, remaining: 0, home: "Little Angels Home", city: "Mysuru, KA", neededBy: "2026-11-15", status: "claimed" },
-      { id: 3, category: "Hygiene & Bedding", title: "40 Cotton Single Bed Sheets & Pillows", item: "100% Cotton Single Bedspreads", desc: "Replacing worn bedding across dormitory blocks.", requested: 40, claimed: 12, remaining: 28, home: "Hope Haven Children's Care", city: "Mangaluru, KA", neededBy: "2026-12-05", status: "open" },
-      { id: 4, category: "Sports & Nutrition", title: "15 Footballs & Badminton Rackets", item: "Sports Kit & Coaching Equipment", desc: "For daily physical training and youth recreation.", requested: 15, claimed: 5, remaining: 10, home: "St. Mary's Children's Haven", city: "Bengaluru, KA", neededBy: "2026-11-28", status: "partially_claimed" }
+      { id: 1, category: "Educational Supplies", title: "Mathematics Notebooks & Geometry Sets", item: "A4 Grid Math Notebooks & Geometry Box", desc: "Spiral grid notebooks and compass boxes for Class 8-10 students advancing this semester.", requested: 30, claimed: 10, remaining: 20, home: "St. Mary's Children's Haven", city: "Mumbai, MH", neededBy: "2026-12-01", status: "partially_claimed" },
+      { id: 2, category: "Bedding & Linen", title: "Winter Thermal Single Blankets", item: "Thermal Fleece Blanket Single Bed", desc: "Heavy fleece blankets for dormitory single beds during cold winter nights.", requested: 20, claimed: 5, remaining: 15, home: "St. Mary's Children's Haven", city: "Mumbai, MH", neededBy: "2026-11-26", status: "partially_claimed" },
+      { id: 3, category: "Clothing & Footwear", title: "Sturdy School Shoes (Sizes 3-6)", item: "Black Leather School Shoes (Pair)", desc: "Durable black school uniform shoes for resident boys and girls.", requested: 15, claimed: 0, remaining: 15, home: "St. Mary's Children's Haven", city: "Mumbai, MH", neededBy: "2026-12-11", status: "open" },
+      { id: 4, category: "Health & Hygiene", title: "Monthly Hygiene Care Packages", item: "Individual Child Hygiene Care Kit", desc: "Care kits containing soap bars, toothbrushes, toothpaste, and soft cotton towels.", requested: 45, claimed: 15, remaining: 30, home: "Hope Ridge Care Haven", city: "Bengaluru, KA", neededBy: "2026-12-05", status: "partially_claimed" },
+      { id: 5, category: "Sports & Recreation", title: "15 Footballs & Badminton Rackets", item: "Sports Kit & Coaching Equipment", desc: "For daily physical training, courtyard games, and youth team recreation.", requested: 15, claimed: 15, remaining: 0, home: "Little Angels Home", city: "Mysuru, KA", neededBy: "2026-11-28", status: "claimed" }
     ];
 
     const INITIAL_CLAIMS = [
-      { id: 101, wishId: 1, wishTitle: "25 Grade 8 Mathematics Textbooks", item: "NCERT Grade 8 Math Book", qty: 5, deadline: "2026-11-12", status: "active", home: "St. Mary's Children's Haven" },
-      { id: 102, wishId: 2, wishTitle: "30 Thermal Winter Jackets", item: "Winter Fleece Jackets", qty: 10, deadline: "2026-11-10", status: "delivered", home: "Little Angels Home" }
+      { id: 101, wishId: 2, wishTitle: "Winter Thermal Single Blankets", item: "Thermal Fleece Blanket Single Bed", qty: 5, deadline: "2026-11-25", status: "active", home: "St. Mary's Children's Haven" },
+      { id: 102, wishId: 5, wishTitle: "15 Footballs & Badminton Rackets", item: "Sports Kit & Coaching Equipment", qty: 10, deadline: "2026-11-18", status: "delivered", home: "Little Angels Home" }
     ];
 
     const AUDIT_LOGS = [
-      { id: 1, entity: "users #1", action: "SYSTEM_GENESIS", old_s: null, new_s: "active", prev: "0".repeat(64), hash: "7a8f9b2d8e4c1a5f6e7d8c9b0a1f2e3d4c5b6a7f8e9d0c1b2a3f4e5d6c7b8a9f", date: "2026-10-28 10:00:00" },
-      { id: 2, entity: "institutions #1", action: "REGISTER", old_s: null, new_s: "pending", prev: "7a8f9b2d8e4c1a5f6e7d8c9b0a1f2e3d4c5b6a7f8e9d0c1b2a3f4e5d6c7b8a9f", hash: "4c5b6a7f8e9d0c1b2a3f4e5d6c7b8a9f0e1d2c3b4a5f6e7d8c9b0a1f2e3d4c5b", date: "2026-10-28 10:15:00" },
-      { id: 3, entity: "institutions #1", action: "RECOMMEND", old_s: "pending", new_s: "recommended", prev: "4c5b6a7f8e9d0c1b2a3f4e5d6c7b8a9f0e1d2c3b4a5f6e7d8c9b0a1f2e3d4c5b", hash: "9e0d1c2b3a4f5e6d7c8b9a0f1e2d3c4b5a6f7e8d9c0b1a2f3e4d5c6b7a8f9e0d", date: "2026-10-28 11:30:00" },
-      { id: 4, entity: "institutions #1", action: "APPROVE", old_s: "recommended", new_s: "verified", prev: "9e0d1c2b3a4f5e6d7c8b9a0f1e2d3c4b5a6f7e8d9c0b1a2f3e4d5c6b7a8f9e0d", hash: "3b4a5f6e7d8c9b0a1f2e3d4c5b6a7f8e9d0c1b2a3f4e5d6c7b8a9f0e1d2c3b4a", date: "2026-10-28 12:00:00" },
-      { id: 5, entity: "wish_claims #101", action: "CLAIM_CREATED", old_s: null, new_s: "active", prev: "3b4a5f6e7d8c9b0a1f2e3d4c5b6a7f8e9d0c1b2a3f4e5d6c7b8a9f0e1d2c3b4a", hash: "d8c9b0a1f2e3d4c5b6a7f8e9d0c1b2a3f4e5d6c7b8a9f0e1d2c3b4a5f6e7d8c9", date: "2026-10-28 13:45:00" }
+      { id: 1, entity: "users #1", action: "SYSTEM_GENESIS", old_s: null, new_s: "active", prev: "0".repeat(64), hash: "7a8f9b2d8e4c1a5f6e7d8c9b0a1f2e3d4c5b6a7f8e9d0c1b2a3f4e5d6c7b8a9f", date: "2026-11-01 10:00:00" },
+      { id: 2, entity: "institutions #1", action: "REGISTER", old_s: null, new_s: "pending", prev: "7a8f9b2d8e4c1a5f6e7d8c9b0a1f2e3d4c5b6a7f8e9d0c1b2a3f4e5d6c7b8a9f", hash: "4c5b6a7f8e9d0c1b2a3f4e5d6c7b8a9f0e1d2c3b4a5f6e7d8c9b0a1f2e3d4c5b", date: "2026-11-01 10:15:00" },
+      { id: 3, entity: "institutions #1", action: "RECOMMEND", old_s: "pending", new_s: "recommended", prev: "4c5b6a7f8e9d0c1b2a3f4e5d6c7b8a9f0e1d2c3b4a5f6e7d8c9b0a1f2e3d4c5b", hash: "9e0d1c2b3a4f5e6d7c8b9a0f1e2d3c4b5a6f7e8d9c0b1a2f3e4d5c6b7a8f9e0d", date: "2026-11-02 11:30:00" },
+      { id: 4, entity: "institutions #1", action: "APPROVE", old_s: "recommended", new_s: "verified", prev: "9e0d1c2b3a4f5e6d7c8b9a0f1e2d3c4b5a6f7e8d9c0b1a2f3e4d5c6b7a8f9e0d", hash: "3b4a5f6e7d8c9b0a1f2e3d4c5b6a7f8e9d0c1b2a3f4e5d6c7b8a9f0e1d2c3b4a", date: "2026-11-02 12:00:00" },
+      { id: 5, entity: "wish_claims #101", action: "CLAIM_CREATED", old_s: null, new_s: "active", prev: "3b4a5f6e7d8c9b0a1f2e3d4c5b6a7f8e9d0c1b2a3f4e5d6c7b8a9f0e1d2c3b4a", hash: "d8c9b0a1f2e3d4c5b6a7f8e9d0c1b2a3f4e5d6c7b8a9f0e1d2c3b4a5f6e7d8c9", date: "2026-11-03 13:45:00" }
+    ];
+
+    const TICKER_ITEMS = [
+      { home: "St. Mary's Children's Haven", item: "15 Winter Fleece Blankets", city: "Mumbai", ripple: "#482" },
+      { home: "Little Angels Home", item: "24 Math Textbooks", city: "Mysuru", ripple: "#481" },
+      { home: "Hope Ridge Care Haven", item: "30 Hygiene Care Kits", city: "Bengaluru", ripple: "#480" },
     ];
 
     function App() {
-      const [role, setRole] = useState('guest'); // guest, donor, institution, verifier, admin
+      const [role, setRole] = useState('guest');
       const [view, setView] = useState('landing');
       const [wishes, setWishes] = useState(INITIAL_WISHES);
       const [claims, setClaims] = useState(INITIAL_CLAIMS);
@@ -89,13 +387,89 @@
       const [claimQty, setClaimQty] = useState(1);
       const [show409Error, setShow409Error] = useState(false);
       const [duplicateStepActive, setDuplicateStepActive] = useState(false);
+      const [newWishName, setNewWishName] = useState("Grade 8 NCERT Mathematics Notebook");
       const [auditValid, setAuditValid] = useState(null);
       const [toast, setToast] = useState(null);
+      const [searchQuery, setSearchQuery] = useState("");
+      const [categoryFilter, setCategoryFilter] = useState("All");
+      const [rippleCount, setRippleCount] = useState(482);
+      const [coinAnimating, setCoinAnimating] = useState(false);
+      const [tickerIdx, setTickerIdx] = useState(0);
+      const [apiConnected, setApiConnected] = useState(false);
+      const [activeStep, setActiveStep] = useState(0);
 
       const notify = (msg, type = 'success') => {
         setToast({ msg, type });
         setTimeout(() => setToast(null), 4000);
       };
+
+      // Rotate live ripple ticker
+      useEffect(() => {
+        const id = setInterval(() => {
+          setTickerIdx(i => (i + 1) % TICKER_ITEMS.length);
+        }, 4000);
+        return () => clearInterval(id);
+      }, []);
+
+      // Try connecting to live local FastAPI backend on port 8000 (gracefully falls back to demo state if offline)
+      useEffect(() => {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 1500);
+        fetch('http://127.0.0.1:8000/api/wishes?limit=12', { signal: controller.signal })
+          .then(r => r.ok ? r.json() : Promise.reject())
+          .then(data => {
+            if (data && Array.isArray(data.items) && data.items.length > 0) {
+              const mapped = data.items.map(w => ({
+                id: w.wish_id,
+                category: w.category_name,
+                title: w.wish_title,
+                item: w.item_name,
+                desc: w.wish_description,
+                requested: w.qty_requested,
+                claimed: w.qty_claimed,
+                remaining: w.qty_remaining,
+                home: w.institution_name,
+                city: `${w.institution_city}, ${w.institution_state}`,
+                neededBy: (w.needed_by || '').slice(0, 10),
+                status: w.wish_status,
+              }));
+              setWishes(mapped);
+              setApiConnected(true);
+            }
+          })
+          .catch(() => {
+            setApiConnected(false);
+          })
+          .finally(() => clearTimeout(timeout));
+      }, []);
+
+      const handleTossCoin = () => {
+        if (coinAnimating) return;
+        setCoinAnimating(true);
+        setTimeout(() => {
+          setRippleCount(c => c + 1);
+          notify("A wishing coin landed in the well — kindness ripple #" + (rippleCount + 1) + " created!");
+        }, 550);
+        setTimeout(() => setCoinAnimating(false), 950);
+      };
+
+      const categories = useMemo(() => {
+        const set = new Set(wishes.map(w => w.category));
+        return ["All", ...Array.from(set)];
+      }, [wishes]);
+
+      const filteredWishes = useMemo(() => {
+        return wishes.filter(w => {
+          const matchesCat = categoryFilter === "All" || w.category === categoryFilter;
+          const q = searchQuery.trim().toLowerCase();
+          const matchesSearch = !q ||
+            w.title.toLowerCase().includes(q) ||
+            w.item.toLowerCase().includes(q) ||
+            w.home.toLowerCase().includes(q) ||
+            w.category.toLowerCase().includes(q);
+          return matchesCat && matchesSearch;
+        });
+      }, [wishes, categoryFilter, searchQuery]);
 
       const handlePledge = () => {
         if (show409Error) {
@@ -103,7 +477,7 @@
           return;
         }
         if (selectedWish.remaining < claimQty) {
-          notify(`Cannot claim ${claimQty} items. Only ${selectedWish.remaining} remain available!`, "error");
+          notify(`Cannot claim ${claimQty} items. Only ${selectedWish.remaining} remain in the well!`, "error");
           return;
         }
         const updated = wishes.map(w => {
@@ -115,9 +489,10 @@
           return w;
         });
         setWishes(updated);
-        setClaims([{ id: Math.floor(Math.random() * 900) + 100, wishId: selectedWish.id, wishTitle: selectedWish.title, item: selectedWish.item, qty: claimQty, deadline: "2026-11-14", status: "active", home: selectedWish.home }, ...claims]);
+        setClaims([{ id: Math.floor(Math.random() * 900) + 100, wishId: selectedWish.id, wishTitle: selectedWish.title, item: selectedWish.item, qty: claimQty, deadline: "2026-11-25", status: "active", home: selectedWish.home }, ...claims]);
+        setRippleCount(c => c + 1);
         setClaimModalOpen(false);
-        notify(`Successfully pledged ${claimQty} item(s)! Deadline: 14 days.`);
+        notify(`Ripple cast! Pledged ${claimQty} item(s) toward "${selectedWish.title}".`);
         setView('my_claims');
       };
 
@@ -126,82 +501,113 @@
         if (!target) return;
         setClaims(claims.map(c => c.id === claimId ? { ...c, status: 'released' } : c));
         setWishes(wishes.map(w => w.id === target.wishId ? { ...w, claimed: Math.max(0, w.claimed - target.qty), remaining: w.remaining + target.qty, status: 'partially_claimed' } : w));
-        notify(`Claim #${claimId} voluntarily released. Quantity returned to open pool.`, 'info');
+        notify(`Claim #${claimId} released. Items returned to the open well.`, 'info');
       };
 
+      const jaccardPreview = useMemo(() => {
+        const a = new Set(newWishName.toLowerCase().split(/\W+/).filter(Boolean));
+        const b = new Set("A4 Grid Math Notebooks Geometry Box Mathematics".toLowerCase().split(/\W+/).filter(Boolean));
+        if (a.size === 0) return 0;
+        let inter = 0;
+        a.forEach(t => { if (b.has(t)) inter++; });
+        const union = new Set([...a, ...b]).size;
+        return Math.round((inter / union) * 100);
+      }, [newWishName]);
+
       return (
-        <div className="min-h-screen flex flex-col font-sans">
+        <div className="min-h-screen flex flex-col font-sans bg-stone-100 text-slateink-900">
           {/* TOAST NOTIFICATION */}
           {toast && (
-            <div className="fixed bottom-6 right-6 z-50 p-4 rounded-xl shadow-xl text-xs font-bold transition-all animate-bounce flex items-center space-x-2 border bg-white border-cream-300">
-              <span className={`w-2.5 h-2.5 rounded-full ${toast.type === 'error' ? 'bg-rose-500' : toast.type === 'info' ? 'bg-blue-500' : 'bg-emerald-500'}`} />
-              <span className="text-ink-900">{toast.msg}</span>
+            <div className="fixed bottom-6 right-6 z-50 px-4 py-3 rounded-2xl shadow-2xl text-xs font-bold flex items-center space-x-2.5 border bg-well-900 text-stone-100 border-coin-400/40 backdrop-blur-md">
+              <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${toast.type === 'error' ? 'bg-rose-400' : toast.type === 'info' ? 'bg-sky-400' : 'bg-coin-400'}`} />
+              <span>{toast.msg}</span>
             </div>
           )}
 
-          {/* NAVBAR */}
-          <header className="bg-cream-50/90 backdrop-blur border-b border-cream-200 sticky top-0 z-40">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
-              <div className="flex items-center space-x-3 cursor-pointer" onClick={() => setView('landing')}>
-                <div className="w-10 h-10 rounded-xl bg-terracotta-600 flex items-center justify-center text-white shadow font-bold text-lg">
-                  W
+          {/* TOP WELLSPRING NAVIGATION BAR */}
+          <header className="bg-well-900/95 backdrop-blur-md border-b border-well-700/70 sticky top-0 z-40 text-stone-100 shadow-lg">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between gap-4">
+              {/* Brand Emblem */}
+              <div className="flex items-center space-x-3 cursor-pointer group shrink-0" onClick={() => setView('landing')}>
+                <div className="transition-transform group-hover:scale-105">
+                  <WishWellLogo size={42} />
                 </div>
                 <div>
                   <div className="flex items-center space-x-2">
-                    <span className="font-serif text-2xl font-bold tracking-tight text-ink-900">WishWell</span>
-                    <span className="bg-sage-100 text-sage-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-sage-200">
+                    <span className="font-serif text-2xl font-bold tracking-tight text-stone-50">
+                      Wish<span className="text-coin-400">Well</span>
+                    </span>
+                    <span className="bg-spring-500/20 text-spring-200 text-[10px] font-bold px-2 py-0.5 rounded-full border border-spring-400/40 uppercase tracking-wider">
                       Verified
                     </span>
                   </div>
-                  <span className="text-[11px] text-ink-500 font-medium">Item-Only Matching for Children's Homes</span>
+                  <span className="text-[11px] text-slateink-400 font-medium hidden sm:block">
+                    Where Every Wish Ripples Into Real Care
+                  </span>
                 </div>
               </div>
 
-              {/* NAV BUTTONS */}
-              <nav className="hidden md:flex items-center space-x-2 text-xs font-bold">
-                <button onClick={() => setView('browse')} className={`px-3 py-2 rounded-lg transition ${view === 'browse' ? 'bg-terracotta-50 text-terracotta-700' : 'text-ink-700 hover:bg-cream-100'}`}>
-                  Browse Wishes
+              {/* Navigation Links */}
+              <nav className="hidden md:flex items-center space-x-1 text-xs font-bold">
+                <button
+                  onClick={() => setView('landing')}
+                  className={`px-3.5 py-2 rounded-xl transition ${view === 'landing' ? 'bg-well-700 text-coin-300 border border-coin-400/30' : 'text-stone-200 hover:bg-well-800'}`}
+                >
+                  The Well
+                </button>
+                <button
+                  onClick={() => setView('browse')}
+                  className={`px-3.5 py-2 rounded-xl transition ${view === 'browse' ? 'bg-well-700 text-coin-300 border border-coin-400/30' : 'text-stone-200 hover:bg-well-800'}`}
+                >
+                  Wishes in the Well
                 </button>
                 {role === 'donor' && (
                   <>
-                    <button onClick={() => setView('my_claims')} className={`px-3 py-2 rounded-lg transition ${view === 'my_claims' ? 'bg-terracotta-50 text-terracotta-700' : 'text-ink-700 hover:bg-cream-100'}`}>
+                    <button onClick={() => setView('my_claims')} className={`px-3.5 py-2 rounded-xl transition ${view === 'my_claims' ? 'bg-well-700 text-coin-300 border border-coin-400/30' : 'text-stone-200 hover:bg-well-800'}`}>
                       My Pledges
                     </button>
-                    <button onClick={() => setView('impact')} className={`px-3 py-2 rounded-lg transition ${view === 'impact' ? 'bg-terracotta-50 text-terracotta-700' : 'text-ink-700 hover:bg-cream-100'}`}>
-                      Personal Impact
+                    <button onClick={() => setView('impact')} className={`px-3.5 py-2 rounded-xl transition ${view === 'impact' ? 'bg-well-700 text-coin-300 border border-coin-400/30' : 'text-stone-200 hover:bg-well-800'}`}>
+                      My Ripples
                     </button>
                   </>
                 )}
                 {role === 'institution' && (
                   <>
-                    <button onClick={() => setView('inst_onboarding')} className={`px-3 py-2 rounded-lg transition ${view === 'inst_onboarding' ? 'bg-terracotta-50 text-terracotta-700' : 'text-ink-700 hover:bg-cream-100'}`}>
-                      Onboarding & Docs
+                    <button onClick={() => setView('inst_onboarding')} className={`px-3.5 py-2 rounded-xl transition ${view === 'inst_onboarding' ? 'bg-well-700 text-coin-300 border border-coin-400/30' : 'text-stone-200 hover:bg-well-800'}`}>
+                      Home Verification
                     </button>
-                    <button onClick={() => setView('inst_create')} className={`px-3 py-2 rounded-lg transition ${view === 'inst_create' ? 'bg-terracotta-50 text-terracotta-700' : 'text-ink-700 hover:bg-cream-100'}`}>
-                      + Post Wish (Duplicate Check)
+                    <button onClick={() => setView('inst_create')} className={`px-3.5 py-2 rounded-xl transition ${view === 'inst_create' ? 'bg-coin-400 text-well-950' : 'bg-ember-500 text-white hover:bg-ember-600'}`}>
+                      + Cast a Wish
                     </button>
                   </>
                 )}
                 {role === 'verifier' && (
-                  <button onClick={() => setView('verifier_queue')} className={`px-3 py-2 rounded-lg transition ${view === 'verifier_queue' ? 'bg-terracotta-50 text-terracotta-700' : 'text-ink-700 hover:bg-cream-100'}`}>
-                    Pending Queue
+                  <button onClick={() => setView('verifier_queue')} className={`px-3.5 py-2 rounded-xl transition ${view === 'verifier_queue' ? 'bg-well-700 text-coin-300 border border-coin-400/30' : 'text-stone-200 hover:bg-well-800'}`}>
+                    Inspection Queue
                   </button>
                 )}
                 {role === 'admin' && (
                   <>
-                    <button onClick={() => setView('admin_analytics')} className={`px-3 py-2 rounded-lg transition ${view === 'admin_analytics' ? 'bg-terracotta-50 text-terracotta-700' : 'text-ink-700 hover:bg-cream-100'}`}>
-                      Analytics Dashboard
+                    <button onClick={() => setView('admin_analytics')} className={`px-3.5 py-2 rounded-xl transition ${view === 'admin_analytics' ? 'bg-well-700 text-coin-300 border border-coin-400/30' : 'text-stone-200 hover:bg-well-800'}`}>
+                      Wellspring BI
                     </button>
-                    <button onClick={() => setView('admin_audit')} className={`px-3 py-2 rounded-lg transition ${view === 'admin_audit' ? 'bg-terracotta-50 text-terracotta-700' : 'text-ink-700 hover:bg-cream-100'}`}>
-                      Cryptographic Audit Log
+                    <button onClick={() => setView('admin_audit')} className={`px-3.5 py-2 rounded-xl transition ${view === 'admin_audit' ? 'bg-well-700 text-coin-300 border border-coin-400/30' : 'text-stone-200 hover:bg-well-800'}`}>
+                      Audit Chain
                     </button>
                   </>
                 )}
               </nav>
 
-              {/* 1-CLICK ROLE SWITCHER */}
-              <div className="flex items-center space-x-2">
-                <span className="text-[10px] font-bold text-ink-400 uppercase tracking-wider hidden sm:inline">Role:</span>
+              {/* Right: Live DB Status + 1-Click Role Switcher */}
+              <div className="flex items-center space-x-2.5 shrink-0">
+                <span
+                  title={apiConnected ? "Synced with local FastAPI & wishwell.db" : "Running offline preview mode"}
+                  className={`hidden lg:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold border ${apiConnected ? 'bg-spring-500/20 text-spring-200 border-spring-400/40' : 'bg-well-800 text-slateink-400 border-well-600'}`}
+                >
+                  <span className={`w-1.5 h-1.5 rounded-full ${apiConnected ? 'bg-spring-400 animate-pulse' : 'bg-coin-400'}`} />
+                  {apiConnected ? 'Live API • wishwell.db' : 'Preview State'}
+                </span>
+
                 <select
                   value={role}
                   onChange={(e) => {
@@ -212,108 +618,313 @@
                     else if (r === 'verifier') setView('verifier_queue');
                     else if (r === 'admin') setView('admin_analytics');
                     else setView('landing');
-                    notify(`Switched session persona to: ${r.toUpperCase()}`);
+                    notify(`Switched persona to: ${r.toUpperCase()}`);
                   }}
-                  className="bg-cream-200 border border-cream-300 text-ink-800 text-xs font-bold py-1.5 px-3 rounded-full cursor-pointer focus:outline-none"
+                  className="bg-well-800 border border-coin-400/35 text-coin-200 text-xs font-bold py-1.5 px-3 rounded-full cursor-pointer focus:outline-none hover:bg-well-700 transition"
                 >
-                  <option value="guest">Public Guest</option>
-                  <option value="donor">Sarah (Donor)</option>
-                  <option value="institution">St. Mary's (Home)</option>
-                  <option value="verifier">Marcus (Verifier)</option>
-                  <option value="admin">Elena (Admin)</option>
+                  <option value="guest">Persona: Public Guest</option>
+                  <option value="donor">Persona: Sarah (Donor)</option>
+                  <option value="institution">Persona: St. Mary's (Home)</option>
+                  <option value="verifier">Persona: Marcus (Verifier)</option>
+                  <option value="admin">Persona: Elena (Admin)</option>
                 </select>
               </div>
             </div>
           </header>
 
-          {/* MAIN BODY ROUTING */}
-          <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 py-8 w-full">
+          {/* MAIN CONTENT */}
+          <main className="flex-1 w-full">
+
             {/* VIEW 1: LANDING PAGE */}
             {view === 'landing' && (
-              <div className="space-y-16 py-8">
-                <div className="text-center max-w-3xl mx-auto space-y-6">
-                  <span className="px-3 py-1 rounded-full bg-cream-200 text-terracotta-700 text-xs font-bold tracking-wider uppercase">
-                    Direct, Verified, Privacy-Preserving
-                  </span>
-                  <h1 className="font-serif text-5xl sm:text-6xl font-bold text-ink-900 leading-tight">
-                    Real wishes from <span className="text-terracotta-600 underline decoration-cream-300">verified children&apos;s homes.</span>
-                  </h1>
-                  <p className="text-sm sm:text-base text-ink-600 leading-relaxed">
-                    Fulfill specific item-based requests directly. Homes undergo physical verification before posting. Every delivery is verified by item photo proof. <strong>Strictly zero photos of children.</strong>
-                  </p>
-                  <div className="flex items-center justify-center space-x-4 pt-4">
-                    <button onClick={() => setView('browse')} className="px-6 py-3 rounded-xl bg-terracotta-600 hover:bg-terracotta-700 text-white text-xs font-bold shadow-lg transition">
-                      Browse Open Wishes &rarr;
-                    </button>
-                    <button onClick={() => { setRole('institution'); setView('inst_onboarding'); }} className="px-6 py-3 rounded-xl bg-white border border-cream-300 text-ink-800 text-xs font-bold hover:bg-cream-100 transition">
-                      Children&apos;s Home Portal
-                    </button>
-                  </div>
-                </div>
+              <div className="space-y-20 pb-16">
+                {/* STARLIT WISHING WELL HERO */}
+                <section className="well-sky star-dots text-stone-100 relative overflow-hidden border-b border-well-700">
+                  <div className="max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-20 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center relative z-10">
+                    {/* Left Copy & CTAs */}
+                    <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
+                      <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-well-800/90 border border-coin-400/30 text-coin-300 text-xs font-bold">
+                        <span className="w-2 h-2 rounded-full bg-spring-400 animate-pulse" />
+                        <span>Item-Only Matching</span>
+                        <span className="text-slateink-400">&bull;</span>
+                        <span className="text-spring-200">Zero Child Photos</span>
+                      </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-6">
-                  <div className="p-6 rounded-2xl bg-white border border-cream-200 shadow-sm space-y-2">
-                    <span className="text-2xl font-serif text-terracotta-600 font-bold">01</span>
-                    <h3 className="font-serif text-lg font-bold">Two-Step Verification</h3>
-                    <p className="text-xs text-ink-600">Field verifiers physically inspect facilities; platform administrators grant final approval before any wish can be posted.</p>
+                      <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-stone-50 leading-[1.08]">
+                        Every wish cast into the well reaches{' '}
+                        <span className="relative inline-block text-coin-400">
+                          a child&apos;s hands.
+                          <svg className="w-full h-3 -mt-1" viewBox="0 0 320 14" fill="none">
+                            <path d="M2 9C75 2 185 13 318 5" stroke="#49B8A5" strokeWidth="3.5" strokeLinecap="round" />
+                          </svg>
+                        </span>
+                      </h1>
+
+                      <p className="text-sm sm:text-base text-stone-200/90 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+                        Unlike opaque charity funds, <strong className="text-coin-300">WishWell</strong> lets verified children&apos;s homes cast exact item wishes—textbooks, blankets, shoes, hygiene kits—and lets you fulfill them directly with tamper-evident tracking and item-only photo proof.
+                      </p>
+
+                      {/* Primary Action Buttons */}
+                      <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5 pt-1">
+                        <button
+                          onClick={() => setView('browse')}
+                          className="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-gradient-to-r from-coin-400 to-coin-500 hover:brightness-105 text-well-950 font-extrabold text-xs tracking-wide shadow-xl transition"
+                        >
+                          Explore Wishes in the Well &rarr;
+                        </button>
+                        <button
+                          onClick={() => { setRole('institution'); setView('inst_onboarding'); }}
+                          className="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-well-800/80 hover:bg-well-700 border border-spring-400/35 text-stone-100 font-bold text-xs transition"
+                        >
+                          Register a Children&apos;s Home
+                        </button>
+                      </div>
+
+                      {/* Live Ripple Ticker */}
+                      <div className="pt-2 flex justify-center lg:justify-start">
+                        <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-well-950/75 border border-well-700 text-xs text-stone-200 backdrop-blur-sm">
+                          <span className="w-2 h-2 rounded-full bg-spring-400 animate-ping" />
+                          <span className="text-spring-200 font-bold uppercase text-[10px] tracking-wider">
+                            Ripple {TICKER_ITEMS[tickerIdx].ripple}
+                          </span>
+                          <span>
+                            <strong>{TICKER_ITEMS[tickerIdx].home}</strong> received{' '}
+                            <span className="text-coin-300 font-semibold">{TICKER_ITEMS[tickerIdx].item}</span>{' '}
+                            <span className="text-slateink-400">({TICKER_ITEMS[tickerIdx].city})</span>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Right Interactive Wishing Well Illustration */}
+                    <div className="lg:col-span-5 flex justify-center">
+                      <HeroWishingWell
+                        rippleCount={rippleCount}
+                        onTossCoin={handleTossCoin}
+                        coinAnimating={coinAnimating}
+                      />
+                    </div>
                   </div>
-                  <div className="p-6 rounded-2xl bg-white border border-cream-200 shadow-sm space-y-2">
-                    <span className="text-2xl font-serif text-terracotta-600 font-bold">02</span>
-                    <h3 className="font-serif text-lg font-bold">Item-Only Delivery Proof</h3>
-                    <p className="text-xs text-ink-600">Photos of received items only. Image re-encoding automatically strips all EXIF and GPS geolocation metadata.</p>
+
+                  {/* Subtle Water Wave Divider */}
+                  <div className="w-full overflow-hidden leading-none">
+                    <svg viewBox="0 0 1440 56" className="w-full h-10 sm:h-14" preserveAspectRatio="none" fill="none">
+                      <path d="M0 24C240 54 480 2 720 26C960 50 1200 6 1440 30V56H0V24Z" fill="#FAF7F0" />
+                    </svg>
                   </div>
-                  <div className="p-6 rounded-2xl bg-white border border-cream-200 shadow-sm space-y-2">
-                    <span className="text-2xl font-serif text-terracotta-600 font-bold">03</span>
-                    <h3 className="font-serif text-lg font-bold">Cryptographic Audit Chain</h3>
-                    <p className="text-xs text-ink-600">Every pledge and state change is sealed into an append-only SHA-256 hash chain, protected by SQL Server triggers.</p>
+                </section>
+
+                {/* TRUST PILLARS */}
+                <section className="max-w-7xl mx-auto px-4 sm:px-6 space-y-10">
+                  <div className="text-center max-w-2xl mx-auto">
+                    <span className="text-xs font-bold text-spring-600 uppercase tracking-widest">Why WishWell</span>
+                    <h2 className="font-serif text-3xl sm:text-4xl font-bold text-slateink-900 mt-1">
+                      Crystal-Clear Trust in Every Drop
+                    </h2>
                   </div>
-                </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="p-7 rounded-3xl bg-stone-50 border border-stone-300 shadow-sm hover:shadow-md hover:border-spring-400 transition space-y-3">
+                      <div className="w-11 h-11 rounded-2xl bg-spring-100 text-spring-700 font-serif font-bold text-lg flex items-center justify-center">01</div>
+                      <h3 className="font-serif text-xl font-bold text-slateink-900">Two-Step Home Vetting</h3>
+                      <p className="text-xs sm:text-sm text-slateink-600 leading-relaxed">
+                        Field Verifiers physically inspect each children&apos;s home and check registration documents before Platform Admins grant final posting access.
+                      </p>
+                    </div>
+                    <div className="p-7 rounded-3xl bg-stone-50 border border-stone-300 shadow-sm hover:shadow-md hover:border-coin-400 transition space-y-3">
+                      <div className="w-11 h-11 rounded-2xl bg-coin-100 text-coin-600 font-serif font-bold text-lg flex items-center justify-center">02</div>
+                      <h3 className="font-serif text-xl font-bold text-slateink-900">Item-Only Photo Proof</h3>
+                      <p className="text-xs sm:text-sm text-slateink-600 leading-relaxed">
+                        <strong>Zero photos of children are allowed.</strong> Homes confirm delivery with photos of received supplies only—EXIF and GPS metadata automatically stripped.
+                      </p>
+                    </div>
+                    <div className="p-7 rounded-3xl bg-stone-50 border border-stone-300 shadow-sm hover:shadow-md hover:border-well-500 transition space-y-3">
+                      <div className="w-11 h-11 rounded-2xl bg-well-800 text-coin-300 font-serif font-bold text-lg flex items-center justify-center">03</div>
+                      <h3 className="font-serif text-xl font-bold text-slateink-900">SHA-256 Sealed Ledger</h3>
+                      <p className="text-xs sm:text-sm text-slateink-600 leading-relaxed">
+                        Every pledge, release, and delivery confirmation is cryptographically chained in an append-only ledger protected by database triggers.
+                      </p>
+                    </div>
+                  </div>
+                </section>
+
+                {/* HOW THE WISHING WELL WORKS (5 STEPS) */}
+                <section className="max-w-7xl mx-auto px-4 sm:px-6">
+                  <div className="rounded-3xl bg-stone-200/70 border border-stone-300 p-8 sm:p-12 space-y-8">
+                    <div className="text-center max-w-2xl mx-auto">
+                      <span className="text-xs font-bold text-ember-600 uppercase tracking-widest">Closed-Loop Lifecycle</span>
+                      <h2 className="font-serif text-3xl font-bold text-slateink-900 mt-1">
+                        From Wishing Well to Verified Delivery
+                      </h2>
+                    </div>
+
+                    <div className="flex flex-wrap justify-center gap-2">
+                      {["1. Cast Wish", "2. Drop Pledge", "3. Ship Direct", "4. Item Proof", "5. Gratitude"].map((label, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => setActiveStep(idx)}
+                          className={`px-4 py-1.5 rounded-full text-xs font-bold transition ${activeStep === idx ? 'bg-well-900 text-coin-300 shadow' : 'bg-white text-slateink-700 border border-stone-300 hover:bg-stone-50'}`}
+                        >
+                          {label}
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                      {[
+                        { num: "01", title: "Home Casts a Wish", desc: "Verified home lists exact item, quantity, and needed-by date (with Jaccard duplicate check)." },
+                        { num: "02", title: "Donor Drops Pledge", desc: "Donors claim partial or full quantities with row-level locks preventing double pledges." },
+                        { num: "03", title: "Direct Dispatch", desc: "Donor orders or delivers physical goods to the home with shipment tracking." },
+                        { num: "04", title: "Item-Only Proof", desc: "Home uploads item photo (EXIF stripped) confirming items arrived safely." },
+                        { num: "05", title: "Ripple Completed", desc: "Thank-you note delivered to donor and impact permanently sealed in audit log." },
+                      ].map((s, idx) => (
+                        <div
+                          key={idx}
+                          onClick={() => setActiveStep(idx)}
+                          className={`p-5 rounded-2xl border-2 cursor-pointer transition flex flex-col justify-between ${activeStep === idx ? 'bg-well-900 text-stone-100 border-coin-400 shadow-lg scale-[1.02]' : 'bg-white text-slateink-900 border-stone-300 hover:border-spring-400'}`}
+                        >
+                          <div>
+                            <span className={`font-serif text-2xl font-bold ${activeStep === idx ? 'text-coin-400' : 'text-spring-600'}`}>{s.num}</span>
+                            <h3 className="font-serif text-base font-bold mt-2 mb-1">{s.title}</h3>
+                            <p className={`text-xs leading-relaxed ${activeStep === idx ? 'text-stone-300' : 'text-slateink-600'}`}>{s.desc}</p>
+                          </div>
+                          <span className={`mt-4 pt-2 border-t text-[10px] font-bold uppercase tracking-wider ${activeStep === idx ? 'border-well-700 text-spring-200' : 'border-stone-200 text-slateink-400'}`}>
+                            Step {idx + 1} of 5
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </section>
+
+                {/* FEATURED WISHES IN THE WELL PREVIEW */}
+                <section className="max-w-7xl mx-auto px-4 sm:px-6 space-y-8">
+                  <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+                    <div>
+                      <span className="text-xs font-bold text-spring-600 uppercase tracking-widest">Active Wellspring</span>
+                      <h2 className="font-serif text-3xl font-bold text-slateink-900 mt-1">
+                        Urgent Wishes Waiting in the Well
+                      </h2>
+                    </div>
+                    <button
+                      onClick={() => setView('browse')}
+                      className="self-start px-5 py-2.5 rounded-xl bg-well-900 hover:bg-well-800 text-coin-300 text-xs font-bold shadow transition"
+                    >
+                      View All {wishes.length} Wishes &rarr;
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {wishes.slice(0, 3).map(w => {
+                      const pct = Math.min(100, Math.round((w.claimed / w.requested) * 100));
+                      return (
+                        <div key={w.id} className="p-6 rounded-3xl bg-white border border-stone-300 shadow-sm hover:shadow-xl hover:border-spring-400 transition flex flex-col justify-between space-y-4">
+                          <div className="space-y-2.5">
+                            <div className="flex items-center justify-between text-[10px] font-bold">
+                              <span className="px-2.5 py-1 rounded-full bg-spring-50 text-spring-700 border border-spring-200">{w.category}</span>
+                              <span className="px-2.5 py-1 rounded-full bg-coin-100 text-coin-600 border border-coin-200">{w.remaining} left</span>
+                            </div>
+                            <h3 className="font-serif text-lg font-bold text-slateink-900">{w.title}</h3>
+                            <p className="text-xs font-semibold text-spring-600">Item: {w.item}</p>
+                            <p className="text-xs text-slateink-600 line-clamp-2">{w.desc}</p>
+                            <div className="pt-2 border-t border-stone-200 text-[11px] text-slateink-500">
+                              <strong className="text-slateink-800">{w.home}</strong> &bull; {w.city}
+                            </div>
+                            <div className="space-y-1">
+                              <div className="flex justify-between text-[11px] font-bold text-slateink-700">
+                                <span>{w.claimed} / {w.requested} fulfilled</span>
+                                <span className="text-spring-600">{pct}%</span>
+                              </div>
+                              <div className="w-full bg-stone-200 h-2.5 rounded-full overflow-hidden">
+                                <div className="water-progress h-full rounded-full transition-all duration-500" style={{ width: `${pct}%` }} />
+                              </div>
+                            </div>
+                          </div>
+                          <button
+                            disabled={w.remaining === 0}
+                            onClick={() => { setSelectedWish(w); setClaimQty(1); setShow409Error(false); setClaimModalOpen(true); }}
+                            className={`w-full py-2.5 rounded-xl text-xs font-bold transition ${w.remaining > 0 ? 'bg-well-900 hover:bg-well-800 text-coin-300 shadow' : 'bg-stone-200 text-slateink-400 cursor-not-allowed'}`}
+                          >
+                            {w.remaining > 0 ? 'Drop a Pledge &rarr;' : 'Well Filled'}
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </section>
               </div>
             )}
 
             {/* VIEW 2: BROWSE WISHES */}
             {view === 'browse' && (
-              <div className="space-y-6">
-                <div className="border-b border-cream-200 pb-4 flex flex-col sm:flex-row justify-between sm:items-end gap-2">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 space-y-6">
+                <div className="bg-well-900 text-stone-100 rounded-3xl p-6 sm:p-8 flex flex-col md:flex-row md:items-center justify-between gap-4 border border-well-700">
                   <div>
-                    <h2 className="font-serif text-3xl font-bold text-ink-900">Browse Verified Wishes</h2>
-                    <p className="text-xs text-ink-600">Live items requested by verified homes, evaluated directly against SQL View v_open_wishes.</p>
+                    <span className="text-[11px] font-bold text-coin-400 uppercase tracking-widest">Live Wellspring Catalog</span>
+                    <h2 className="font-serif text-3xl font-bold mt-1">Wishes in the Well</h2>
+                    <p className="text-xs text-stone-300 mt-1">
+                      Evaluated against SQL view <code>v_open_wishes</code>. Pledge full or partial quantities directly.
+                    </p>
                   </div>
-                  <span className="text-xs font-bold text-ink-500">{wishes.length} active needs</span>
+                  <div className="flex flex-col sm:flex-row gap-2.5 w-full md:w-auto">
+                    <input
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="Search items, homes, categories..."
+                      className="px-4 py-2.5 rounded-xl bg-well-800 border border-well-600 text-xs text-stone-100 placeholder-slateink-400 focus:border-coin-400 focus:outline-none sm:w-64"
+                    />
+                  </div>
+                </div>
+
+                {/* Category Filter Chips */}
+                <div className="flex items-center gap-2 flex-wrap">
+                  {categories.map(cat => (
+                    <button
+                      key={cat}
+                      onClick={() => setCategoryFilter(cat)}
+                      className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition ${categoryFilter === cat ? 'bg-well-900 text-coin-300 shadow' : 'bg-white text-slateink-700 border border-stone-300 hover:bg-stone-50'}`}
+                    >
+                      {cat}
+                    </button>
+                  ))}
+                  <span className="ml-auto text-xs font-bold text-slateink-500">{filteredWishes.length} active wishes</span>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {wishes.map(w => {
-                    const pct = Math.round((w.claimed / w.requested) * 100);
+                  {filteredWishes.map(w => {
+                    const pct = Math.min(100, Math.round((w.claimed / w.requested) * 100));
                     return (
-                      <div key={w.id} className="p-6 rounded-2xl bg-white border border-cream-200 shadow hover:shadow-lg transition space-y-4 flex flex-col justify-between">
-                        <div className="space-y-2">
+                      <div key={w.id} className="p-6 rounded-3xl bg-white border border-stone-300 shadow-sm hover:shadow-xl hover:border-spring-400 transition space-y-4 flex flex-col justify-between">
+                        <div className="space-y-2.5">
                           <div className="flex justify-between items-center text-[10px] font-bold">
-                            <span className="px-2 py-0.5 rounded bg-terracotta-50 text-terracotta-700">{w.category}</span>
-                            <span className={`px-2 py-0.5 rounded ${w.status === 'claimed' ? 'bg-blue-100 text-blue-800' : 'bg-sage-100 text-sage-800'}`}>{w.status.replace('_', ' ')}</span>
+                            <span className="px-2.5 py-0.5 rounded-full bg-spring-50 text-spring-700 border border-spring-200">{w.category}</span>
+                            <span className={`px-2.5 py-0.5 rounded-full ${w.status === 'claimed' ? 'bg-well-800 text-coin-300' : 'bg-coin-100 text-coin-600'}`}>
+                              {w.status.replace('_', ' ')}
+                            </span>
                           </div>
-                          <h3 className="font-serif text-lg font-bold text-ink-900">{w.title}</h3>
-                          <p className="text-xs text-terracotta-600 font-semibold">Item: {w.item}</p>
-                          <p className="text-xs text-ink-600 line-clamp-2">{w.desc}</p>
-                          <div className="pt-2 text-[11px] text-ink-500 border-t border-cream-100">
-                            <strong>{w.home}</strong> &bull; {w.city}
+                          <h3 className="font-serif text-lg font-bold text-slateink-900">{w.title}</h3>
+                          <p className="text-xs text-spring-600 font-semibold">Item: {w.item}</p>
+                          <p className="text-xs text-slateink-600 line-clamp-2">{w.desc}</p>
+                          <div className="pt-2 text-[11px] text-slateink-500 border-t border-stone-200 flex justify-between">
+                            <span><strong className="text-slateink-800">{w.home}</strong> &bull; {w.city}</span>
+                            <span>Due {w.neededBy}</span>
                           </div>
                           <div className="space-y-1 pt-1">
-                            <div className="flex justify-between text-xs font-bold text-ink-700">
+                            <div className="flex justify-between text-xs font-bold text-slateink-700">
                               <span>{w.claimed} / {w.requested} pledged</span>
-                              <span className="text-terracotta-600">{w.remaining} remaining</span>
+                              <span className="text-spring-600">{w.remaining} remaining</span>
                             </div>
-                            <div className="w-full bg-cream-200 h-2 rounded-full overflow-hidden">
-                              <div className="bg-terracotta-600 h-full rounded-full transition-all" style={{ width: `${pct}%` }} />
+                            <div className="w-full bg-stone-200 h-2.5 rounded-full overflow-hidden">
+                              <div className="water-progress h-full rounded-full transition-all" style={{ width: `${pct}%` }} />
                             </div>
                           </div>
                         </div>
                         <button
                           disabled={w.remaining === 0}
                           onClick={() => { setSelectedWish(w); setClaimQty(1); setShow409Error(false); setClaimModalOpen(true); }}
-                          className={`w-full py-2.5 rounded-xl text-xs font-bold shadow transition ${w.remaining > 0 ? 'bg-terracotta-600 hover:bg-terracotta-700 text-white' : 'bg-cream-200 text-ink-400 cursor-not-allowed'}`}
+                          className={`w-full py-2.5 rounded-xl text-xs font-bold shadow transition ${w.remaining > 0 ? 'bg-well-900 hover:bg-well-800 text-coin-300' : 'bg-stone-200 text-slateink-400 cursor-not-allowed'}`}
                         >
-                          {w.remaining > 0 ? 'Pledge Items &rarr;' : 'Fully Pledged'}
+                          {w.remaining > 0 ? 'Drop a Pledge &rarr;' : 'Fully Pledged'}
                         </button>
                       </div>
                     );
@@ -324,34 +935,38 @@
 
             {/* VIEW 3: DONOR MY CLAIMS */}
             {view === 'my_claims' && (
-              <div className="space-y-6">
-                <div className="border-b border-cream-200 pb-4">
-                  <h2 className="font-serif text-3xl font-bold text-ink-900">My Pledged Claims</h2>
-                  <p className="text-xs text-ink-600">Track shipments and delivery deadlines. Overdue active claims are auto-released by sp_release_stale_claims.</p>
+              <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10 space-y-6">
+                <div className="border-b border-stone-300 pb-4 flex justify-between items-end">
+                  <div>
+                    <span className="text-xs font-bold text-spring-600 uppercase tracking-widest">Donor Fulfillment</span>
+                    <h2 className="font-serif text-3xl font-bold text-slateink-900">My Pledged Ripples</h2>
+                    <p className="text-xs text-slateink-600 mt-1">Track shipments and deadlines. Overdue pledges are returned to the well by <code>sp_release_stale_claims</code>.</p>
+                  </div>
+                  <button onClick={() => setView('browse')} className="px-4 py-2 rounded-xl bg-well-900 text-coin-300 text-xs font-bold">+ Pledge Another</button>
                 </div>
                 <div className="space-y-4">
                   {claims.map(c => (
-                    <div key={c.id} className="p-6 rounded-2xl bg-white border border-cream-200 shadow flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div key={c.id} className="p-6 rounded-3xl bg-white border border-stone-300 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                       <div>
                         <div className="flex items-center space-x-2">
-                          <span className="text-xs font-mono text-ink-400">Claim #{c.id}</span>
-                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${c.status === 'active' ? 'bg-amber-100 text-amber-800' : c.status === 'delivered' ? 'bg-blue-100 text-blue-800' : 'bg-ink-100 text-ink-600'}`}>{c.status}</span>
+                          <span className="text-xs font-mono text-slateink-400">Claim #{c.id}</span>
+                          <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase ${c.status === 'active' ? 'bg-coin-100 text-coin-600' : c.status === 'delivered' ? 'bg-spring-100 text-spring-700' : 'bg-stone-200 text-slateink-600'}`}>{c.status}</span>
                         </div>
-                        <h3 className="font-serif text-lg font-bold text-ink-900 mt-1">{c.qty}x {c.item}</h3>
-                        <p className="text-xs text-ink-600">{c.home} &bull; Deadline: <strong className="text-ink-800">{c.deadline}</strong></p>
+                        <h3 className="font-serif text-lg font-bold text-slateink-900 mt-1">{c.qty}x {c.item}</h3>
+                        <p className="text-xs text-slateink-600">{c.home} &bull; Deadline: <strong className="text-slateink-800">{c.deadline}</strong></p>
                       </div>
                       <div className="flex space-x-2">
                         {c.status === 'active' && (
                           <>
-                            <button onClick={() => handleReleaseClaim(c.id)} className="px-3 py-1.5 rounded-lg border border-cream-300 text-xs font-bold text-ink-700 hover:bg-cream-100">Release Claim</button>
-                            <button onClick={() => { setClaims(claims.map(x => x.id === c.id ? { ...x, status: 'delivered' } : x)); notify(`Claim #${c.id} marked as delivered! Home director notified to inspect items.`); }} className="px-4 py-1.5 rounded-lg bg-terracotta-600 text-white text-xs font-bold hover:bg-terracotta-700">Mark Delivered &rarr;</button>
+                            <button onClick={() => handleReleaseClaim(c.id)} className="px-3.5 py-2 rounded-xl border border-stone-300 text-xs font-bold text-slateink-700 hover:bg-stone-100">Release Claim</button>
+                            <button onClick={() => { setClaims(claims.map(x => x.id === c.id ? { ...x, status: 'delivered' } : x)); notify(`Claim #${c.id} marked as delivered! Home director notified to upload item photo proof.`); }} className="px-4 py-2 rounded-xl bg-well-900 text-coin-300 text-xs font-bold hover:bg-well-800">Mark Delivered &rarr;</button>
                           </>
                         )}
                         {c.status === 'delivered' && (
-                          <span className="text-xs font-bold text-blue-700 bg-blue-50 px-3 py-1 rounded border border-blue-200">Awaiting Photo Proof Confirmation</span>
+                          <span className="text-xs font-bold text-spring-700 bg-spring-50 px-3 py-1.5 rounded-xl border border-spring-200">Awaiting Item Photo Proof</span>
                         )}
                         {c.status === 'released' && (
-                          <span className="text-xs text-ink-400 font-medium">Voluntarily Released</span>
+                          <span className="text-xs text-slateink-400 font-medium">Returned to Well</span>
                         )}
                       </div>
                     </div>
@@ -362,161 +977,165 @@
 
             {/* VIEW 4: PERSONAL IMPACT */}
             {view === 'impact' && (
-              <div className="space-y-6">
-                <div className="border-b border-cream-200 pb-4">
-                  <h2 className="font-serif text-3xl font-bold text-ink-900">Your Giving Impact</h2>
-                  <p className="text-xs text-ink-600">Every delivered item verified with physical item photo proof.</p>
+              <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10 space-y-6">
+                <div className="bg-well-900 text-stone-100 rounded-3xl p-8 border border-well-700">
+                  <span className="text-xs font-bold text-coin-400 uppercase tracking-widest">Your Wellspring Legacy</span>
+                  <h2 className="font-serif text-3xl font-bold mt-1">Your Kindness Ripples</h2>
+                  <p className="text-xs text-stone-300 mt-1">Every delivered item verified with physical item-only photo proof.</p>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                  <div className="p-6 rounded-2xl bg-white border border-cream-200 shadow text-center">
-                    <span className="text-xs font-bold text-terracotta-600 uppercase">Wishes Fulfilled</span>
-                    <div className="font-serif text-4xl font-bold text-ink-900 mt-1">12</div>
+                  <div className="p-7 rounded-3xl bg-white border border-stone-300 shadow-sm text-center">
+                    <span className="text-xs font-bold text-ember-600 uppercase">Wishes Fulfilled</span>
+                    <div className="font-serif text-4xl font-bold text-slateink-900 mt-2">12</div>
                   </div>
-                  <div className="p-6 rounded-2xl bg-white border border-cream-200 shadow text-center">
-                    <span className="text-xs font-bold text-sage-600 uppercase">Physical Items Delivered</span>
-                    <div className="font-serif text-4xl font-bold text-sage-700 mt-1">85</div>
+                  <div className="p-7 rounded-3xl bg-white border border-stone-300 shadow-sm text-center">
+                    <span className="text-xs font-bold text-spring-600 uppercase">Physical Items Delivered</span>
+                    <div className="font-serif text-4xl font-bold text-spring-700 mt-2">85</div>
                   </div>
-                  <div className="p-6 rounded-2xl bg-white border border-cream-200 shadow text-center">
-                    <span className="text-xs font-bold text-amber-600 uppercase">Partner Homes Helped</span>
-                    <div className="font-serif text-4xl font-bold text-ink-900 mt-1">4</div>
+                  <div className="p-7 rounded-3xl bg-white border border-stone-300 shadow-sm text-center">
+                    <span className="text-xs font-bold text-coin-600 uppercase">Partner Homes Helped</span>
+                    <div className="font-serif text-4xl font-bold text-slateink-900 mt-2">4</div>
                   </div>
                 </div>
               </div>
             )}
 
-            {/* VIEW 5: INSTITUTION ONBOARDING & STATUS */}
+            {/* VIEW 5: INSTITUTION ONBOARDING */}
             {view === 'inst_onboarding' && (
-              <div className="space-y-6">
-                <div className="border-b border-cream-200 pb-4 flex justify-between items-center">
+              <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10 space-y-6">
+                <div className="border-b border-stone-300 pb-4 flex flex-col sm:flex-row justify-between sm:items-center gap-3">
                   <div>
-                    <h2 className="font-serif text-3xl font-bold text-ink-900">St. Mary&apos;s Children&apos;s Haven</h2>
-                    <p className="text-xs text-ink-600">Reg: REG-KA-2024-001 &bull; 4-Step Verification Lifecycle</p>
+                    <h2 className="font-serif text-3xl font-bold text-slateink-900">St. Mary&apos;s Children&apos;s Haven</h2>
+                    <p className="text-xs text-slateink-600">Reg: REG-MH-2018-0912 &bull; Two-Step Verification Lifecycle</p>
                   </div>
-                  <span className="px-3 py-1 bg-sage-100 text-sage-800 text-xs font-bold rounded-full border border-sage-200">Status: Verified</span>
+                  <span className="self-start px-3.5 py-1 bg-spring-100 text-spring-700 text-xs font-bold rounded-full border border-spring-200">Status: Verified</span>
                 </div>
 
-                <div className="p-6 rounded-2xl bg-white border border-cream-200 shadow space-y-4">
-                  <h3 className="font-serif text-lg font-bold">State Machine Verification Status</h3>
+                <div className="p-6 rounded-3xl bg-white border border-stone-300 shadow-sm space-y-4">
+                  <h3 className="font-serif text-lg font-bold">Verification State Machine</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-                    <div className="p-4 rounded-xl bg-sage-50 border border-sage-200 text-xs">
-                      <span className="font-bold text-sage-800">1. Registration</span>
-                      <p className="text-ink-500 mt-1">&check; Legal documents uploaded</p>
-                    </div>
-                    <div className="p-4 rounded-xl bg-sage-50 border border-sage-200 text-xs">
-                      <span className="font-bold text-sage-800">2. Field Verification</span>
-                      <p className="text-ink-500 mt-1">&check; Physical inspection passed</p>
-                    </div>
-                    <div className="p-4 rounded-xl bg-sage-50 border border-sage-200 text-xs">
-                      <span className="font-bold text-sage-800">3. Admin Approval</span>
-                      <p className="text-ink-500 mt-1">&check; Final compliance verified</p>
-                    </div>
-                    <div className="p-4 rounded-xl bg-sage-50 border border-sage-200 text-xs">
-                      <span className="font-bold text-sage-800">4. Wish Posting</span>
-                      <p className="text-ink-500 mt-1">&check; Active posting privileges</p>
-                    </div>
+                    {[
+                      { step: "1. Registration", note: "Legal documents uploaded" },
+                      { step: "2. Field Inspection", note: "Physical premises verified" },
+                      { step: "3. Admin Sign-Off", note: "Final compliance approved" },
+                      { step: "4. Wish Casting", note: "Active wish privileges" },
+                    ].map((st, i) => (
+                      <div key={i} className="p-4 rounded-2xl bg-spring-50 border border-spring-200 text-xs">
+                        <span className="font-bold text-spring-700">{st.step}</span>
+                        <p className="text-slateink-600 mt-1">&check; {st.note}</p>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
             )}
 
-            {/* VIEW 6: CREATE WISH WITH DUPLICATE DETECTION */}
+            {/* VIEW 6: CREATE WISH + JACCARD DUPLICATE CHECK */}
             {view === 'inst_create' && (
-              <div className="max-w-2xl mx-auto p-8 rounded-3xl bg-white border border-cream-200 shadow-md space-y-6">
-                <div>
-                  <h2 className="font-serif text-2xl font-bold text-ink-900">Post Item Wish (Duplicate Warning Step)</h2>
-                  <p className="text-xs text-ink-600">Demonstrating explainable Jaccard token overlap (&ge; 50%) duplicate-need detection.</p>
-                </div>
-
-                {duplicateStepActive && (
-                  <div className="p-5 rounded-2xl bg-amber-50 border-2 border-amber-300 text-xs space-y-3">
-                    <div className="font-bold text-amber-900 flex items-center space-x-1">
-                      <span>&Delta;</span>
-                      <span>Rule-Based Duplicate Need Detected (HTTP 409 Warning)</span>
-                    </div>
-                    <p className="text-amber-800 leading-relaxed">
-                      Your item <strong>&ldquo;NCERT Math Grade 8&rdquo;</strong> shares 75% token overlap with open Wish #1. You can revise details or override with the <code>confirm_duplicate</code> flag.
-                    </p>
-                    <div className="flex space-x-2 pt-1">
-                      <button onClick={() => setDuplicateStepActive(false)} className="px-3 py-1.5 rounded-lg bg-white border border-amber-300 font-bold text-amber-900">Revise Item Details</button>
-                      <button onClick={() => { setDuplicateStepActive(false); notify("Wish posted successfully with confirm_duplicate=True flag override!"); setView('browse'); }} className="px-3 py-1.5 rounded-lg bg-amber-700 text-white font-bold">Confirm & Post Anyway</button>
-                    </div>
-                  </div>
-                )}
-
-                <div className="space-y-4 text-xs">
+              <div className="max-w-2xl mx-auto px-4 py-10">
+                <div className="p-8 rounded-3xl bg-white border border-stone-300 shadow-md space-y-6">
                   <div>
-                    <label className="font-bold text-ink-700 uppercase">Item Name</label>
-                    <input defaultValue="Grade 8 NCERT Mathematics Textbook" className="w-full mt-1 p-2.5 rounded-xl border border-cream-300 bg-white" />
+                    <span className="text-xs font-bold text-spring-600 uppercase tracking-widest">Institution Wish Form</span>
+                    <h2 className="font-serif text-2xl font-bold text-slateink-900 mt-1">Cast a New Wish into the Well</h2>
+                    <p className="text-xs text-slateink-600 mt-1">Includes explainable Jaccard token-overlap (&ge; 50%) duplicate detection.</p>
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="font-bold text-ink-700 uppercase">Quantity Needed</label>
-                      <input type="number" defaultValue="20" className="w-full mt-1 p-2.5 rounded-xl border border-cream-300 bg-white" />
+
+                  {duplicateStepActive && (
+                    <div className="p-5 rounded-2xl bg-coin-50 border-2 border-coin-400 text-xs space-y-3">
+                      <div className="font-bold text-well-900 flex items-center justify-between">
+                        <span>Potential Duplicate Need Detected (HTTP 409)</span>
+                        <span className="px-2 py-0.5 rounded-full bg-coin-400 text-well-950 font-mono">{jaccardPreview}% overlap</span>
+                      </div>
+                      <p className="text-slateink-700 leading-relaxed">
+                        Your item <strong>&ldquo;{newWishName}&rdquo;</strong> overlaps with open Wish #1 (&ldquo;A4 Grid Math Notebooks &amp; Geometry Box&rdquo;). Revise details or override with <code>confirm_duplicate=True</code>.
+                      </p>
+                      <div className="flex space-x-2 pt-1">
+                        <button onClick={() => setDuplicateStepActive(false)} className="px-3.5 py-1.5 rounded-xl bg-white border border-coin-400 font-bold text-well-900">Revise Details</button>
+                        <button onClick={() => { setDuplicateStepActive(false); notify("Wish cast into the well with confirm_duplicate=True!"); setView('browse'); }} className="px-3.5 py-1.5 rounded-xl bg-well-900 text-coin-300 font-bold">Confirm &amp; Cast Anyway</button>
+                      </div>
                     </div>
+                  )}
+
+                  <div className="space-y-4 text-xs">
                     <div>
-                      <label className="font-bold text-ink-700 uppercase">Needed-By Date</label>
-                      <input type="date" defaultValue="2026-11-30" className="w-full mt-1 p-2.5 rounded-xl border border-cream-300 bg-white" />
+                      <label className="font-bold text-slateink-700 uppercase">Item Name</label>
+                      <input
+                        value={newWishName}
+                        onChange={(e) => setNewWishName(e.target.value)}
+                        className="w-full mt-1 p-3 rounded-xl border border-stone-300 bg-stone-50 focus:border-spring-500 focus:outline-none"
+                      />
                     </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="font-bold text-slateink-700 uppercase">Quantity Needed</label>
+                        <input type="number" defaultValue="20" className="w-full mt-1 p-3 rounded-xl border border-stone-300 bg-stone-50" />
+                      </div>
+                      <div>
+                        <label className="font-bold text-slateink-700 uppercase">Needed-By Date</label>
+                        <input type="date" defaultValue="2026-12-15" className="w-full mt-1 p-3 rounded-xl border border-stone-300 bg-stone-50" />
+                      </div>
+                    </div>
+                    <button onClick={() => setDuplicateStepActive(true)} className="w-full py-3 rounded-xl bg-well-900 hover:bg-well-800 text-coin-300 font-bold shadow transition">
+                      Validate &amp; Cast Wish into Well
+                    </button>
                   </div>
-                  <button onClick={() => setDuplicateStepActive(true)} className="w-full py-3 rounded-xl bg-terracotta-600 text-white font-bold hover:bg-terracotta-700 shadow">
-                    Validate & Post Wish
-                  </button>
                 </div>
               </div>
             )}
 
             {/* VIEW 7: VERIFIER QUEUE */}
             {view === 'verifier_queue' && (
-              <div className="space-y-6">
-                <div className="border-b border-cream-200 pb-4">
-                  <h2 className="font-serif text-3xl font-bold text-ink-900">Field Verifier Inspection Queue</h2>
-                  <p className="text-xs text-ink-600">Review government registration certificates and document physical premises compliance.</p>
+              <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10 space-y-6">
+                <div className="border-b border-stone-300 pb-4">
+                  <span className="text-xs font-bold text-spring-600 uppercase tracking-widest">Step 1 Verification</span>
+                  <h2 className="font-serif text-3xl font-bold text-slateink-900">Field Verifier Inspection Queue</h2>
+                  <p className="text-xs text-slateink-600 mt-1">Inspect private Azurite SAS registration records and confirm physical premises.</p>
                 </div>
-                <div className="p-6 rounded-2xl bg-white border border-cream-200 shadow space-y-4">
+                <div className="p-6 rounded-3xl bg-white border border-stone-300 shadow-sm space-y-4">
                   <div className="flex justify-between items-center">
-                    <h3 className="font-serif text-xl font-bold text-ink-900">Sunshine Orphan Care Home</h3>
-                    <span className="text-xs font-bold text-amber-800 bg-amber-100 px-3 py-1 rounded-full">Pending Inspection</span>
+                    <h3 className="font-serif text-xl font-bold text-slateink-900">Hope Village Child Center</h3>
+                    <span className="text-xs font-bold text-coin-600 bg-coin-100 px-3 py-1 rounded-full">Pending Inspection</span>
                   </div>
-                  <p className="text-xs text-ink-600">Hubballi, Karnataka &bull; Reg: REG-KA-2024-089</p>
-                  <div className="text-xs p-3 rounded-xl bg-cream-100 font-mono text-terracotta-700">
-                    Document: registration_certificate.pdf (Private Azurite SAS Token: ?se=15m&sig=...)
+                  <p className="text-xs text-slateink-600">New Delhi, Delhi &bull; Reg: REG-DL-2022-7731</p>
+                  <div className="text-xs p-3.5 rounded-xl bg-well-900 text-spring-200 font-mono">
+                    SAS Blob: registration_certificate.pdf (?se=15m&amp;sp=r&amp;sig=...)
                   </div>
                   <div className="flex justify-end space-x-3 pt-2">
-                    <button onClick={() => notify("Institution rejected with documented violation note.", "error")} className="px-4 py-2 rounded-xl border border-rose-200 text-rose-700 text-xs font-bold">Reject</button>
-                    <button onClick={() => notify("Inspection verified! Recommended for Step 2 Admin Approval.")} className="px-5 py-2 rounded-xl bg-amber-600 text-white text-xs font-bold hover:bg-amber-700">Recommend Institution &rarr;</button>
+                    <button onClick={() => notify("Institution rejected with documented audit note.", "error")} className="px-4 py-2 rounded-xl border border-rose-300 text-rose-700 text-xs font-bold">Reject</button>
+                    <button onClick={() => notify("Inspection verified! Recommended for Admin Approval.")} className="px-5 py-2 rounded-xl bg-spring-600 text-white text-xs font-bold hover:bg-spring-700">Recommend Institution &rarr;</button>
                   </div>
                 </div>
               </div>
             )}
 
-            {/* VIEW 8: ADMIN ANALYTICS & AUDIT */}
+            {/* VIEW 8: ADMIN ANALYTICS */}
             {view === 'admin_analytics' && (
-              <div className="space-y-6">
-                <div className="border-b border-cream-200 pb-4 flex justify-between items-end">
+              <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 space-y-6">
+                <div className="border-b border-stone-300 pb-4 flex flex-col sm:flex-row justify-between sm:items-end gap-3">
                   <div>
-                    <h2 className="font-serif text-3xl font-bold text-ink-900">Executive Analytics (Power BI Feed)</h2>
-                    <p className="text-xs text-ink-600">Aggregated KPIs from SQL Server transactions and triggers.</p>
+                    <span className="text-xs font-bold text-spring-600 uppercase tracking-widest">Power BI JSON Feed</span>
+                    <h2 className="font-serif text-3xl font-bold text-slateink-900">Wellspring Executive Analytics</h2>
                   </div>
-                  <button onClick={() => notify("Stored procedure sp_release_stale_claims executed! 0 stale claims expired.")} className="px-4 py-2 bg-ink-800 text-white text-xs font-bold rounded-xl shadow">
+                  <button onClick={() => notify("Stored procedure sp_release_stale_claims executed! 0 overdue claims expired.")} className="px-4 py-2.5 bg-well-900 text-coin-300 text-xs font-bold rounded-xl shadow">
                     Run sp_release_stale_claims
                   </button>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-4 gap-6">
-                  <div className="p-6 rounded-2xl bg-white border border-cream-200 shadow text-center">
-                    <span className="text-xs font-bold text-ink-500 uppercase">Avg Delivery Time</span>
-                    <div className="font-serif text-3xl font-bold mt-1">4.2 <span className="text-sm font-normal">days</span></div>
+                <div className="grid grid-cols-1 sm:grid-cols-4 gap-5">
+                  <div className="p-6 rounded-3xl bg-white border border-stone-300 shadow-sm text-center">
+                    <span className="text-xs font-bold text-slateink-500 uppercase">Avg Delivery Lead Time</span>
+                    <div className="font-serif text-3xl font-bold mt-2">4.2 <span className="text-sm font-normal">days</span></div>
                   </div>
-                  <div className="p-6 rounded-2xl bg-white border border-cream-200 shadow text-center">
-                    <span className="text-xs font-bold text-ink-500 uppercase">Stale-Claim Rate</span>
-                    <div className="font-serif text-3xl font-bold text-amber-600 mt-1">4.8%</div>
+                  <div className="p-6 rounded-3xl bg-white border border-stone-300 shadow-sm text-center">
+                    <span className="text-xs font-bold text-slateink-500 uppercase">Stale-Claim Rate</span>
+                    <div className="font-serif text-3xl font-bold text-coin-600 mt-2">4.8%</div>
                   </div>
-                  <div className="p-6 rounded-2xl bg-white border border-cream-200 shadow text-center">
-                    <span className="text-xs font-bold text-ink-500 uppercase">Fulfillment Rate</span>
-                    <div className="font-serif text-3xl font-bold text-emerald-600 mt-1">91.2%</div>
+                  <div className="p-6 rounded-3xl bg-white border border-stone-300 shadow-sm text-center">
+                    <span className="text-xs font-bold text-slateink-500 uppercase">Fulfillment Rate</span>
+                    <div className="font-serif text-3xl font-bold text-spring-600 mt-2">91.2%</div>
                   </div>
-                  <div className="p-6 rounded-2xl bg-white border border-cream-200 shadow text-center">
-                    <span className="text-xs font-bold text-ink-500 uppercase">Verified Homes</span>
-                    <div className="font-serif text-3xl font-bold text-ink-900 mt-1">18</div>
+                  <div className="p-6 rounded-3xl bg-white border border-stone-300 shadow-sm text-center">
+                    <span className="text-xs font-bold text-slateink-500 uppercase">Verified Homes</span>
+                    <div className="font-serif text-3xl font-bold text-slateink-900 mt-2">18</div>
                   </div>
                 </div>
               </div>
@@ -524,51 +1143,52 @@
 
             {/* VIEW 9: CRYPTOGRAPHIC AUDIT LOG */}
             {view === 'admin_audit' && (
-              <div className="space-y-6">
-                <div className="border-b border-cream-200 pb-4 flex flex-col sm:flex-row justify-between sm:items-end gap-3">
+              <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 space-y-6">
+                <div className="border-b border-stone-300 pb-4 flex flex-col sm:flex-row justify-between sm:items-end gap-3">
                   <div>
-                    <h2 className="font-serif text-3xl font-bold text-ink-900">Append-Only Cryptographic Audit Log</h2>
-                    <p className="text-xs text-ink-600">SHA-256 hash chains linking each event to its predecessor. Direct UPDATE/DELETE blocked by SQL triggers.</p>
+                    <span className="text-xs font-bold text-spring-600 uppercase tracking-widest">Append-Only Ledger</span>
+                    <h2 className="font-serif text-3xl font-bold text-slateink-900">SHA-256 Cryptographic Audit Chain</h2>
+                    <p className="text-xs text-slateink-600 mt-1">Direct UPDATE/DELETE blocked by database triggers.</p>
                   </div>
                   <button
                     onClick={() => {
                       setAuditValid(true);
-                      notify("Chain verification complete: All 5 rows cryptographically valid with zero broken links!");
+                      notify("Chain verified: 5/5 blocks valid with zero broken hash links!");
                     }}
-                    className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow flex items-center space-x-2"
+                    className="px-5 py-2.5 bg-well-900 hover:bg-well-800 text-coin-300 text-xs font-bold rounded-xl shadow"
                   >
-                    <span>&check; Verify Chain Integrity</span>
+                    &check; Verify Chain Integrity
                   </button>
                 </div>
 
                 {auditValid && (
-                  <div className="p-4 rounded-xl bg-sage-50 border border-sage-300 text-sage-950 text-xs font-bold flex items-center space-x-2">
-                    <span className="w-5 h-5 rounded-full bg-sage-600 text-white flex items-center justify-center">&check;</span>
-                    <span>100% Valid Cryptographic Chain: No broken pointers or tampered rows found across the database ledger.</span>
+                  <div className="p-4 rounded-2xl bg-spring-50 border border-spring-400 text-spring-700 text-xs font-bold flex items-center space-x-2">
+                    <span className="w-5 h-5 rounded-full bg-spring-600 text-white flex items-center justify-center">&check;</span>
+                    <span>100% Valid Cryptographic Chain: No broken pointers or tampered rows detected.</span>
                   </div>
                 )}
 
-                <div className="bg-white rounded-2xl border border-cream-200 overflow-x-auto shadow">
+                <div className="bg-white rounded-3xl border border-stone-300 overflow-x-auto shadow-sm">
                   <table className="w-full text-left text-xs font-mono">
-                    <thead className="bg-cream-100 text-ink-500 border-b border-cream-200 font-sans uppercase text-[10px]">
+                    <thead className="bg-well-900 text-coin-300 font-sans uppercase text-[10px]">
                       <tr>
-                        <th className="p-3">ID</th>
-                        <th className="p-3">Entity</th>
-                        <th className="p-3">Action</th>
-                        <th className="p-3">Prev Hash</th>
-                        <th className="p-3">Record Hash</th>
-                        <th className="p-3">Timestamp</th>
+                        <th className="p-3.5">Block</th>
+                        <th className="p-3.5">Entity</th>
+                        <th className="p-3.5">Action</th>
+                        <th className="p-3.5">Prev Hash</th>
+                        <th className="p-3.5">Record Hash</th>
+                        <th className="p-3.5">Timestamp</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-cream-100">
+                    <tbody className="divide-y divide-stone-200">
                       {AUDIT_LOGS.map(log => (
-                        <tr key={log.id} className="hover:bg-cream-50">
-                          <td className="p-3 font-bold text-ink-900 font-sans">#{log.id}</td>
-                          <td className="p-3 font-sans text-ink-800">{log.entity}</td>
-                          <td className="p-3 text-terracotta-700 font-bold font-sans">{log.action}</td>
-                          <td className="p-3 text-[10px] text-ink-400">{log.prev.slice(0, 10)}...</td>
-                          <td className="p-3 text-[10px] text-indigo-700 font-bold">{log.hash.slice(0, 10)}...</td>
-                          <td className="p-3 text-[10px] text-ink-500 font-sans">{log.date}</td>
+                        <tr key={log.id} className="hover:bg-stone-100">
+                          <td className="p-3.5 font-bold text-slateink-900 font-sans">#{log.id}</td>
+                          <td className="p-3.5 font-sans text-slateink-800">{log.entity}</td>
+                          <td className="p-3.5 text-spring-700 font-bold font-sans">{log.action}</td>
+                          <td className="p-3.5 text-[10px] text-slateink-400">{log.prev.slice(0, 12)}...</td>
+                          <td className="p-3.5 text-[10px] text-well-700 font-bold">{log.hash.slice(0, 12)}...</td>
+                          <td className="p-3.5 text-[10px] text-slateink-500 font-sans">{log.date}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -578,57 +1198,65 @@
             )}
           </main>
 
-          {/* CLAIM MODAL */}
+          {/* PLEDGE MODAL */}
           {claimModalOpen && selectedWish && (
-            <div className="fixed inset-0 bg-ink-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50">
-              <div className="bg-white rounded-3xl max-w-md w-full p-6 space-y-5 border border-cream-200 shadow-2xl">
+            <div className="fixed inset-0 bg-well-950/75 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+              <div className="bg-white rounded-3xl max-w-md w-full p-6 space-y-5 border border-stone-300 shadow-2xl">
                 <div className="flex justify-between items-start">
                   <div>
-                    <span className="text-[10px] font-bold text-terracotta-700 uppercase">{selectedWish.category}</span>
-                    <h3 className="font-serif text-xl font-bold text-ink-900">{selectedWish.title}</h3>
-                    <p className="text-xs text-ink-500">{selectedWish.home}</p>
+                    <span className="text-[10px] font-bold text-spring-600 uppercase tracking-wider">{selectedWish.category}</span>
+                    <h3 className="font-serif text-xl font-bold text-slateink-900 mt-0.5">{selectedWish.title}</h3>
+                    <p className="text-xs text-slateink-500">{selectedWish.home}</p>
                   </div>
-                  <button onClick={() => setClaimModalOpen(false)} className="text-ink-400 hover:text-ink-700 text-lg">&times;</button>
+                  <button onClick={() => setClaimModalOpen(false)} className="text-slateink-400 hover:text-slateink-800 text-xl font-bold">&times;</button>
                 </div>
 
-                <div className="p-3.5 rounded-xl bg-cream-100 text-xs flex justify-between items-center">
-                  <span>Available to pledge:</span>
-                  <span className="font-bold text-terracotta-700">{selectedWish.remaining} item(s)</span>
+                <div className="p-3.5 rounded-2xl bg-stone-100 text-xs flex justify-between items-center border border-stone-200">
+                  <span>Available in the well:</span>
+                  <span className="font-bold text-spring-700">{selectedWish.remaining} item(s)</span>
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-ink-700 uppercase">Pledge Quantity</label>
+                  <label className="text-xs font-bold text-slateink-700 uppercase">Pledge Quantity</label>
                   <div className="flex items-center space-x-3">
-                    <button onClick={() => setClaimQty(Math.max(1, claimQty - 1))} className="w-10 h-10 rounded-xl bg-cream-200 font-bold text-lg">-</button>
+                    <button onClick={() => setClaimQty(Math.max(1, claimQty - 1))} className="w-10 h-10 rounded-xl bg-stone-200 font-bold text-lg hover:bg-stone-300">-</button>
                     <span className="font-serif text-xl font-bold w-12 text-center">{claimQty}</span>
-                    <button onClick={() => setClaimQty(Math.min(selectedWish.remaining, claimQty + 1))} className="w-10 h-10 rounded-xl bg-cream-200 font-bold text-lg">+</button>
+                    <button onClick={() => setClaimQty(Math.min(selectedWish.remaining, claimQty + 1))} className="w-10 h-10 rounded-xl bg-stone-200 font-bold text-lg hover:bg-stone-300">+</button>
                   </div>
                 </div>
 
-                <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900">
-                  <strong>Calculated Deadline: 14 Days</strong>
-                  <p className="text-[11px] text-amber-800 mt-0.5">Enforced by database: default 14 days, capped by need date ({selectedWish.neededBy}).</p>
+                <div className="p-3.5 rounded-2xl bg-coin-50 border border-coin-300 text-xs text-well-900">
+                  <strong>14-Day Delivery Window</strong>
+                  <p className="text-[11px] text-slateink-700 mt-0.5">Bounded by the home&apos;s needed-by date ({selectedWish.neededBy}).</p>
                 </div>
 
-                {/* SIMULATE 409 CONFLICT TOGGLE */}
-                <div className="pt-1 flex items-center space-x-2 text-xs text-ink-600">
+                <div className="pt-1 flex items-center space-x-2 text-xs text-slateink-600">
                   <input type="checkbox" id="sim409" checked={show409Error} onChange={(e) => setShow409Error(e.target.checked)} className="cursor-pointer" />
-                  <label htmlFor="sim409" className="cursor-pointer select-none">Simulate 409 Concurrency Conflict (over-claim race)</label>
+                  <label htmlFor="sim409" className="cursor-pointer select-none">Simulate 409 Concurrency Conflict</label>
                 </div>
 
-                <div className="flex justify-end space-x-3 pt-2 border-t border-cream-200">
-                  <button onClick={() => setClaimModalOpen(false)} className="px-4 py-2 rounded-xl text-xs font-bold text-ink-600 hover:bg-cream-100">Cancel</button>
-                  <button onClick={handlePledge} className="px-5 py-2 rounded-xl bg-terracotta-600 hover:bg-terracotta-700 text-white text-xs font-bold shadow">
-                    Confirm Pledge of {claimQty} Item(s)
+                <div className="flex justify-end space-x-3 pt-2 border-t border-stone-200">
+                  <button onClick={() => setClaimModalOpen(false)} className="px-4 py-2 rounded-xl text-xs font-bold text-slateink-600 hover:bg-stone-100">Cancel</button>
+                  <button onClick={handlePledge} className="px-5 py-2.5 rounded-xl bg-well-900 hover:bg-well-800 text-coin-300 text-xs font-bold shadow">
+                    Drop Pledge ({claimQty} Item{claimQty > 1 ? 's' : ''})
                   </button>
                 </div>
               </div>
             </div>
           )}
 
-          {/* FOOTER */}
-          <footer className="bg-cream-100 border-t border-cream-200 py-6 text-center text-xs text-ink-500 mt-auto">
-            WishWell &copy; 2026 &bull; Strict Child Privacy Charter &bull; 3NF Relational Integrity &bull; Append-Only Hash Chain
+          {/* STARLIT WELL FOOTER */}
+          <footer className="bg-well-950 text-stone-200 border-t border-well-800 mt-auto">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+              <div className="flex items-center space-x-2.5">
+                <WishWellLogo size={28} />
+                <span className="font-serif font-bold text-base text-stone-100">Wish<span className="text-coin-400">Well</span></span>
+              </div>
+              <p className="text-slateink-400 text-center">
+                Strict Child Privacy Charter &bull; Zero Photos of Children &bull; Append-Only SHA-256 Audit Chain
+              </p>
+              <span className="text-coin-400 font-semibold">Starlit Wellspring Edition</span>
+            </div>
           </footer>
         </div>
       );
