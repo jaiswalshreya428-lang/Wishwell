@@ -531,3 +531,64 @@ async def test_list_wishes_needed_by_range_filter(async_client: AsyncClient, ins
     assert any(item["item_name"] == "Fleece Blankets Urgent" for item in items)
     assert not any(item["item_name"] == "Exam Preparation Guides" for item in items)
 
+@pytest.mark.asyncio
+async def test_category_plain_text_and_script_tag_rendering(async_client: AsyncClient, institution_token: str):
+    """
+    Test that categories and wishes with special characters (like '&' and '<script>')
+    are stored and returned as clean plain text without double-escaping entities into '&amp;'
+    and without XSS execution risk (React renders text safely).
+    """
+    await ensure_institution_verified()
+
+    # 1. Insert a category named 'A & B'
+    async with TestAsyncSessionLocal() as session:
+        cat_ab = Category(name="A & B", description="Bedding & Linen and Notebooks & Geometry")
+        session.add(cat_ab)
+        await session.commit()
+        cat_id = cat_ab.id
+
+    # 2. Verify GET /api/categories returns exact plain text 'A & B', NOT 'A &amp; B'
+    cat_resp = await async_client.get("/api/categories")
+    assert cat_resp.status_code == 200
+    categories = cat_resp.json()
+    matched = [c for c in categories if c["id"] == cat_id]
+    assert len(matched) == 1
+    assert matched[0]["name"] == "A & B"
+    assert "&amp;" not in matched[0]["name"]
+    assert matched[0]["description"] == "Bedding & Linen and Notebooks & Geometry"
+    assert "&amp;" not in matched[0]["description"]
+
+    # 3. Create a wish with '<script>' tag in title and description
+    script_payload = {
+        "title": "<script>alert('xss')</script> Science Kits",
+        "description": "Safe STEM kits & microscopes with <script> tags for testing",
+        "item_name": "STEM Microscope & Slides",
+        "qty_requested": 10,
+        "needed_by": future_date_str,
+        "category_id": cat_id,
+        "confirm_duplicate": True
+    }
+    wish_resp = await async_client.post(
+        "/api/wishes",
+        json=script_payload,
+        headers={"Authorization": f"Bearer {institution_token}"}
+    )
+    assert wish_resp.status_code == 201
+    created_wish = wish_resp.json()
+
+    # Must preserve plain text <script> without &lt;script&gt; double-escaping
+    # (React renders JSX text nodes safely as text, ensuring zero script execution)
+    assert created_wish["title"] == "<script>alert('xss')</script> Science Kits"
+    assert created_wish["item_name"] == "STEM Microscope & Slides"
+    assert "&amp;" not in created_wish["item_name"]
+    assert "&amp;" not in created_wish["description"]
+
+    # 4. Verify detail and open wishes views also return exact plain text
+    detail_resp = await async_client.get(f"/api/wishes/{created_wish['id']}")
+    assert detail_resp.status_code == 200
+    detail = detail_resp.json()
+    assert detail["title"] == "<script>alert('xss')</script> Science Kits"
+    assert detail["category_name"] == "A & B"
+    assert "&amp;" not in detail["category_name"]
+
+

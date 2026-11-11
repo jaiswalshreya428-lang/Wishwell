@@ -1,10 +1,12 @@
 """
-Input Sanitization & Output Escaping Utility
-Prevents Cross-Site Scripting (XSS) and injection attacks by escaping HTML entities.
+Input Sanitization & Plain Text Normalization Utility
 
 ARCHITECTURE NOTES:
-- Input is validated with Pydantic limits.
-- Output text is escaped via html.escape so user-supplied strings cannot be executed as HTML/JavaScript in client browsers.
+- React automatically escapes text when rendering JSX expressions into the DOM,
+  guaranteeing full XSS protection without running dangerouslySetInnerHTML.
+- The backend stores and returns clean plain text.
+- escape_html decodes any legacy HTML entities (like &amp;) back to standard plain text
+  to prevent double-escaping bugs (e.g. "Bedding &amp; Linen").
 """
 
 import html
@@ -12,18 +14,17 @@ from typing import Optional
 
 def escape_html(text: Optional[str]) -> Optional[str]:
     """
-    Escapes HTML special characters (&, <, >, ", ') into safe HTML entities.
-    Returns None if text is None.
+    Returns clean plain text, decoding any previously double-escaped HTML entities.
+    React natively handles DOM text escaping safely.
     """
     if text is None:
         return None
-    return html.escape(str(text), quote=True)
+    return html.unescape(str(text))
 
 def sanitize_plain_text(text: str) -> str:
     """
-    Trims and escapes plain text input.
+    Trims whitespace and returns clean plain text without entity escaping.
     """
     if not text:
         return ""
-    return html.escape(text.strip(), quote=True)
-
+    return html.unescape(str(text).strip())

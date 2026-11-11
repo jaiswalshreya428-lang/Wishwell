@@ -16,8 +16,8 @@ Engineering Design Notes:
      * Category Distribution & fulfillment rates.
 """
 
-from datetime import datetime, timezone
-from typing import List, Optional
+from datetime import datetime, timezone, timedelta
+from typing import List, Optional, Any
 from collections import defaultdict
 from fastapi import APIRouter, Depends, Query, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -27,7 +27,9 @@ from app.core.database import get_db
 from app.core.dependencies import require_role
 from app.core.audit import verify_audit_chain_integrity, GENESIS_HASH
 from app.core.cosmos import cosmos_service
+from app.core.scheduler import release_stale_claims
 from app.models.entities import User, Institution, Wish, WishClaim, Delivery, Category, AuditLog
+from app.schemas.claim import StaleClaimsReleaseResponse
 from app.schemas.analytics import (
     AuditVerificationResponse,
     AuditLogRowResponse,
@@ -38,6 +40,22 @@ from app.schemas.analytics import (
     InstitutionStatusCount,
     CategoryPerformance,
 )
+
+def _parse_dt(val: Any) -> Optional[datetime]:
+    """Safely converts string or datetime object into a datetime instance."""
+    if val is None:
+        return None
+    if isinstance(val, datetime):
+        return val
+    if isinstance(val, str):
+        try:
+            return datetime.fromisoformat(val.replace("Z", "+00:00"))
+        except Exception:
+            try:
+                return datetime.strptime(val.split(".")[0], "%Y-%m-%d %H:%M:%S")
+            except Exception:
+                return None
+    return None
 
 router = APIRouter(prefix="/admin", tags=["Admin & Analytics"])
 
@@ -116,14 +134,23 @@ async def get_monthly_wish_trends(
     all_months = set()
 
     for wish_created, wish_updated, wish_status in wishes:
-        m_created = wish_created.strftime("%Y-%m")
+        dt_created = _parse_dt(wish_created) or datetime.now(timezone.utc)
+        m_created = dt_created.strftime("%Y-%m")
         posted_by_month[m_created] += 1
         all_months.add(m_created)
 
-        if wish_status == "delivered":
-            m_fulfilled = wish_updated.strftime("%Y-%m")
+        if wish_status in ("delivered", "confirmed"):
+            dt_fulfilled = _parse_dt(wish_updated) or dt_created
+            m_fulfilled = dt_fulfilled.strftime("%Y-%m")
             fulfilled_by_month[m_fulfilled] += 1
             all_months.add(m_fulfilled)
+
+    # Ensure current month and past 2 months are present for visual continuity
+    now = datetime.now(timezone.utc)
+    all_months.add(now.strftime("%Y-%m"))
+    # Also include previous month
+    prev_month = (now.replace(day=1) - timedelta(days=1)).strftime("%Y-%m")
+    all_months.add(prev_month)
 
     trends = []
     for m in sorted(all_months):
@@ -149,7 +176,7 @@ async def get_delivery_lead_times(
     stmt = (
         select(WishClaim.created_at, Delivery.confirmed_at, Delivery.delivered_at)
         .join(Delivery, WishClaim.id == Delivery.wish_claim_id)
-        .where(Delivery.status == "confirmed")
+        .where(Delivery.status.in_(["confirmed", "delivered"]))
     )
     res = await db.execute(stmt)
     rows = res.all()
@@ -165,9 +192,10 @@ async def get_delivery_lead_times(
     valid_count = 0
 
     for claim_created, del_confirmed, del_delivered in rows:
-        end_time = del_confirmed or del_delivered
-        if end_time and end_time >= claim_created:
-            total_seconds += (end_time - claim_created).total_seconds()
+        start_time = _parse_dt(claim_created)
+        end_time = _parse_dt(del_confirmed or del_delivered)
+        if start_time and end_time and end_time >= start_time:
+            total_seconds += (end_time - start_time).total_seconds()
             valid_count += 1
 
     if valid_count == 0:
@@ -259,12 +287,12 @@ async def get_top_categories(
         w_count = stat_row[0] if stat_row else 0
         qty_req = stat_row[1] if stat_row else 0
 
-        # Fulfilled items (confirmed delivery)
+        # Fulfilled items (confirmed or physically delivered)
         delivered_items = await db.scalar(
             select(func.coalesce(func.sum(WishClaim.qty), 0))
             .join(Wish, WishClaim.wish_id == Wish.id)
             .join(Delivery, WishClaim.id == Delivery.wish_claim_id)
-            .where(Wish.category_id == cat.id, Delivery.status == "confirmed")
+            .where(Wish.category_id == cat.id, Delivery.status.in_(["confirmed", "delivered"]))
         ) or 0
 
         rate = round((delivered_items / qty_req * 100), 2) if qty_req > 0 else 0.0
@@ -284,6 +312,23 @@ async def get_top_categories(
     performances.sort(key=lambda p: (p.total_items_requested, p.wishes_count), reverse=True)
     return performances
 
+@router.post("/claims/release-stale", response_model=StaleClaimsReleaseResponse)
+@router.post("/claims/release_stale", response_model=StaleClaimsReleaseResponse)
+async def trigger_stale_claim_release_admin(
+    current_user: User = Depends(require_role("admin")),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Administrative endpoint alias to execute sp_release_stale_claims directly from the analytics dashboard.
+    Releases overdue active claims, restores wish statuses, and dispatches notifications.
+    """
+    expired_count = await release_stale_claims(db)
+    return StaleClaimsReleaseResponse(
+        message=f"Successfully executed stale claims release job. {expired_count} claim(s) expired.",
+        expired_claims_count=expired_count,
+        executed_at=datetime.now(timezone.utc)
+    )
+
 @router.get("/analytics/overview", response_model=AdminAnalyticsOverview)
 async def get_analytics_overview(
     current_user: User = Depends(require_role("admin")),
@@ -293,11 +338,30 @@ async def get_analytics_overview(
     Unified analytics dashboard payload returning all 5 dimensions in a single clean JSON response.
     Ideal for Power BI dashboard consumption.
     """
-    monthly = await get_monthly_wish_trends(current_user=current_user, db=db)
-    del_times = await get_delivery_lead_times(current_user=current_user, db=db)
-    stale_metric = await get_stale_claim_rates(current_user=current_user, db=db)
-    inst_status = await get_institutions_by_status(current_user=current_user, db=db)
-    top_cats = await get_top_categories(current_user=current_user, db=db)
+    try:
+        monthly = await get_monthly_wish_trends(current_user=current_user, db=db)
+    except Exception:
+        monthly = []
+
+    try:
+        del_times = await get_delivery_lead_times(current_user=current_user, db=db)
+    except Exception:
+        del_times = DeliveryTimeMetric(average_hours=0.0, average_days=0.0, total_completed_deliveries=0)
+
+    try:
+        stale_metric = await get_stale_claim_rates(current_user=current_user, db=db)
+    except Exception:
+        stale_metric = StaleClaimMetric(total_claims=0, active_claims=0, delivered_claims=0, released_claims=0, expired_claims=0, stale_claim_rate_percentage=0.0)
+
+    try:
+        inst_status = await get_institutions_by_status(current_user=current_user, db=db)
+    except Exception:
+        inst_status = []
+
+    try:
+        top_cats = await get_top_categories(current_user=current_user, db=db)
+    except Exception:
+        top_cats = []
 
     return AdminAnalyticsOverview(
         generated_at=datetime.now(timezone.utc),

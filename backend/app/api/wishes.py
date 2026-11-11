@@ -29,6 +29,7 @@ from app.core.duplicate_detector import find_duplicate_wishes
 from app.models.entities import User, Institution, Wish, Category, WishClaim, AuditLog, OpenWishView
 from app.core.audit import record_audit_event
 from app.schemas.wish import (
+    CategoryResponse,
     WishCreate,
     WishUpdate,
     WishResponse,
@@ -410,6 +411,17 @@ async def list_open_wishes(
         limit=effective_page_size,
         total_pages=total_pages
     )
+
+@router.get("/categories", response_model=List[CategoryResponse])
+async def list_categories_in_wishes(db: AsyncSession = Depends(get_db)):
+    """
+    Returns all available item categories.
+    Guaranteed route ordering before /{wish_id} to avoid string parsing collision.
+    """
+    stmt = select(Category).order_by(Category.id.asc())
+    res = await db.execute(stmt)
+    categories = res.scalars().all()
+    return [CategoryResponse.model_validate(c) for c in categories]
 
 @router.get("/{wish_id}", response_model=WishDetailResponse)
 async def get_wish_detail(

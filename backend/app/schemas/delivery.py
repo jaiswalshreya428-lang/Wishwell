@@ -56,11 +56,6 @@ class DeliveryResponse(BaseModel):
             self.proof_photo_sas_url = self.photo_sas_url
         return self
 
-    @field_validator("tracking_number", "carrier", "confirmation_notes", mode="after")
-    @classmethod
-    def escape_delivery_text(cls, v: Optional[str]) -> Optional[str]:
-        return escape_html(v) if v is not None else None
-
 class ThankYouNoteCreate(BaseModel):
     message: str = Field(..., min_length=5, max_length=4000, description="Thank-you message from institution to donor")
     impact_summary: Optional[str] = Field(None, max_length=1000, description="Summary of positive impact on the children")
@@ -79,11 +74,6 @@ class ThankYouNoteResponse(BaseModel):
     photo_sas_url: Optional[str] = None
     created_at: datetime
 
-    @field_validator("message", "impact_summary", mode="after")
-    @classmethod
-    def escape_note_text(cls, v: Optional[str]) -> Optional[str]:
-        return escape_html(v)
-
 class NotificationResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
@@ -94,11 +84,6 @@ class NotificationResponse(BaseModel):
     type: str
     is_read: bool
     created_at: datetime
-
-    @field_validator("title", "message", mode="after")
-    @classmethod
-    def escape_notification_text(cls, v: str) -> str:
-        return escape_html(v) or v
 
 class NotificationListResponse(BaseModel):
     items: List[NotificationResponse]
@@ -141,11 +126,6 @@ class ImpactTimelineItem(BaseModel):
         if not self.action:
             self.action = self.event_type
         return self
-
-    @field_validator("title", "description", "wish_title", "institution_name", mode="after")
-    @classmethod
-    def escape_timeline_text(cls, v: str) -> str:
-        return escape_html(v) or v
 
 class DonorImpactResponse(BaseModel):
     total_wishes_fulfilled: int

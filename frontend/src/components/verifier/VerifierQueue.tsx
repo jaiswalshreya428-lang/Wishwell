@@ -5,6 +5,7 @@ import { LoadingSpinner } from '../common/LoadingSpinner';
 import { EmptyState } from '../common/EmptyState';
 import { Modal } from '../common/Modal';
 import { useToast } from '../../context/ToastContext';
+import { WorkPageHeader } from '../layout/WorkPageHeader';
 
 export const VerifierQueue: React.FC = () => {
   const [institutions, setInstitutions] = useState<VerificationSummary[]>([]);
@@ -71,17 +72,18 @@ export const VerifierQueue: React.FC = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-      {/* Title */}
-      <div className="border-b border-cream-200 pb-6">
-        <span className="text-xs font-bold text-amber-700 uppercase tracking-widest">
-          Field Verifier Portal
-        </span>
-        <h1 className="font-serif text-3xl font-bold text-ink-900 mt-1">Pending Field Verifications</h1>
-        <p className="text-sm text-ink-600 mt-1">
-          Review legal registration proofs, inspect premises compliance, and document physical inspection recommendations.
-        </p>
-      </div>
+    <div className="space-y-8 pb-12">
+      <WorkPageHeader
+        badge="Field Verifier Portal"
+        title="Pending Field Verifications"
+        subtitle="Review legal registration proofs, inspect premises compliance, and document physical inspection recommendations."
+        stats={[
+          { label: 'Pending Inspection', value: institutions.length, helper: 'Awaiting field check' },
+          { label: 'Target SLA', value: '< 48h' },
+        ]}
+      />
+
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
 
       {isLoading && <LoadingSpinner label="Loading pending verification requests..." />}
 
@@ -175,6 +177,7 @@ export const VerifierQueue: React.FC = () => {
           ))}
         </div>
       )}
+      </div>
 
       {/* Decision Modal */}
       <Modal

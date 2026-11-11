@@ -80,11 +80,6 @@ class InstitutionSummary(BaseModel):
     state: str
     status: str
 
-    @field_validator("name", "city", "state", mode="after")
-    @classmethod
-    def escape_inst_text(cls, v: str) -> str:
-        return escape_html(v) or v
-
 class UserResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
@@ -94,11 +89,6 @@ class UserResponse(BaseModel):
     role: str
     created_at: datetime
     institution: Optional[InstitutionSummary] = None
-
-    @field_validator("full_name", mode="after")
-    @classmethod
-    def escape_user_text(cls, v: str) -> str:
-        return escape_html(v) or v
 
 class TokenResponse(BaseModel):
     access_token: str

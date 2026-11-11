@@ -6,6 +6,7 @@ import { EmptyState } from '../common/EmptyState';
 import { StatusBadge } from '../common/StatusBadge';
 import { Modal } from '../common/Modal';
 import { useToast } from '../../context/ToastContext';
+import { WorkPageHeader } from '../layout/WorkPageHeader';
 
 export const MyClaims: React.FC<{ onBrowseWishes: () => void }> = ({ onBrowseWishes }) => {
   const [claims, setClaims] = useState<WishClaim[]>([]);
@@ -84,25 +85,26 @@ export const MyClaims: React.FC<{ onBrowseWishes: () => void }> = ({ onBrowseWis
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-      {/* Header */}
-      <div className="border-b border-cream-200 pb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-        <div>
-          <span className="text-xs font-bold text-terracotta-600 uppercase tracking-widest">
-            Donor Dashboard
-          </span>
-          <h1 className="font-serif text-3xl font-bold text-ink-900 mt-1">My Active Pledges</h1>
-          <p className="text-sm text-ink-600 mt-1">
-            Track your claimed items, mark packages as dispatched, or release claims before their deadline.
-          </p>
-        </div>
-        <button
-          onClick={onBrowseWishes}
-          className="px-4 py-2 rounded-xl bg-cream-200 hover:bg-cream-300 text-xs font-bold text-ink-800 transition"
-        >
-          + Pledge Another Wish
-        </button>
-      </div>
+    <div className="space-y-8 pb-12">
+      <WorkPageHeader
+        badge="Donor Dashboard"
+        title="My Active Pledges"
+        subtitle="Track your claimed items, mark packages as dispatched, or release claims before their deadline."
+        stats={[
+          { label: 'Active Pledges', value: claims.filter((c) => c.status === 'active').length, helper: 'In fulfillment' },
+          { label: 'Delivered', value: claims.filter((c) => c.status === 'delivered').length, helper: 'Verified & received' },
+        ]}
+        action={
+          <button
+            onClick={onBrowseWishes}
+            className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-coral-500 to-coral-600 hover:brightness-110 text-white font-bold text-xs shadow-warm transition"
+          >
+            + Pledge Another Wish
+          </button>
+        }
+      />
+
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
 
       {isLoading && <LoadingSpinner label="Loading your pledges..." />}
 
@@ -186,6 +188,7 @@ export const MyClaims: React.FC<{ onBrowseWishes: () => void }> = ({ onBrowseWis
           })}
         </div>
       )}
+      </div>
 
       {/* Mark as Delivered Modal */}
       <Modal

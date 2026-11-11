@@ -5,6 +5,7 @@ import { LoadingSpinner } from '../common/LoadingSpinner';
 import { EmptyState } from '../common/EmptyState';
 import { StatusBadge } from '../common/StatusBadge';
 import { useToast } from '../../context/ToastContext';
+import { WorkPageHeader } from '../layout/WorkPageHeader';
 
 export const MyWishesList: React.FC<{ onCreateWish: () => void }> = ({ onCreateWish }) => {
   const [wishes, setWishes] = useState<Wish[]>([]);
@@ -71,25 +72,26 @@ export const MyWishesList: React.FC<{ onCreateWish: () => void }> = ({ onCreateW
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-      {/* Header */}
-      <div className="border-b border-cream-200 pb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-        <div>
-          <span className="text-xs font-bold text-terracotta-600 uppercase tracking-widest">
-            Institution Hub
-          </span>
-          <h1 className="font-serif text-3xl font-bold text-ink-900 mt-1">Our Posted Wishes</h1>
-          <p className="text-sm text-ink-600 mt-1">
-            Manage your item requests. Per platform integrity rules, wishes with active pledges cannot be edited or deleted.
-          </p>
-        </div>
-        <button
-          onClick={onCreateWish}
-          className="px-5 py-2.5 rounded-xl bg-terracotta-600 hover:bg-terracotta-700 text-white text-xs font-bold shadow-soft transition"
-        >
-          + Post New Wish
-        </button>
-      </div>
+    <div className="space-y-8 pb-12">
+      <WorkPageHeader
+        badge="Institution Hub"
+        title="Our Posted Wishes"
+        subtitle="Manage your item requests. Per platform integrity rules, wishes with active pledges cannot be edited or deleted."
+        stats={[
+          { label: 'Total Wishes', value: wishes.length, helper: 'Created by home' },
+          { label: 'Open Pledges', value: wishes.filter((w) => w.status === 'open' || w.status === 'partially_claimed').length, helper: 'Awaiting donors' },
+        ]}
+        action={
+          <button
+            onClick={onCreateWish}
+            className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-coral-500 to-coral-600 hover:brightness-110 text-white text-xs font-bold shadow-warm transition"
+          >
+            + Post New Wish
+          </button>
+        }
+      />
+
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
 
       {isLoading && <LoadingSpinner label="Loading your wishes..." />}
 
@@ -160,6 +162,7 @@ export const MyWishesList: React.FC<{ onCreateWish: () => void }> = ({ onCreateW
           })}
         </div>
       )}
+      </div>
     </div>
   );
 };

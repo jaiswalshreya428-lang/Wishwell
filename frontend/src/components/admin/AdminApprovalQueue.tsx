@@ -5,6 +5,7 @@ import { LoadingSpinner } from '../common/LoadingSpinner';
 import { EmptyState } from '../common/EmptyState';
 import { Modal } from '../common/Modal';
 import { useToast } from '../../context/ToastContext';
+import { WorkPageHeader } from '../layout/WorkPageHeader';
 
 export const AdminApprovalQueue: React.FC = () => {
   const [institutions, setInstitutions] = useState<VerificationSummary[]>([]);
@@ -62,19 +63,18 @@ export const AdminApprovalQueue: React.FC = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-      {/* Title */}
-      <div className="border-b border-cream-200 pb-6">
-        <span className="text-xs font-bold text-emerald-700 uppercase tracking-widest">
-          Platform Governance
-        </span>
-        <h1 className="font-serif text-3xl font-bold text-ink-900 mt-1">
-          Final Administrative Approval Queue
-        </h1>
-        <p className="text-sm text-ink-600 mt-1">
-          Step 2 of the two-step verification state machine. Grant verified status and wish posting privileges.
-        </p>
-      </div>
+    <div className="space-y-8 pb-12">
+      <WorkPageHeader
+        badge="Platform Governance"
+        title="Final Administrative Approval Queue"
+        subtitle="Step 2 of the two-step verification state machine. Grant verified status and wish posting privileges to children's homes."
+        stats={[
+          { label: 'Recommended', value: institutions.length, helper: 'Awaiting review' },
+          { label: 'Platform Trust', value: '100% Vetted' },
+        ]}
+      />
+
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
 
       {isLoading && <LoadingSpinner label="Loading recommended institutions..." />}
 
@@ -169,6 +169,7 @@ export const AdminApprovalQueue: React.FC = () => {
           ))}
         </div>
       )}
+      </div>
 
       {/* Decision Modal */}
       <Modal

@@ -277,7 +277,7 @@ export const CreateWishForm: React.FC<CreateWishFormProps> = ({ onSuccess, onCan
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-7 py-2.5 rounded-xl bg-terracotta-600 hover:bg-terracotta-700 text-white text-xs font-bold tracking-wide shadow-soft transition disabled:opacity-50"
+              className="px-7 py-2.5 rounded-xl bg-gradient-to-r from-coral-500 to-coral-600 hover:brightness-110 text-white text-xs font-bold tracking-wide shadow-warm transition disabled:opacity-50"
             >
               {isSubmitting ? 'Validating...' : 'Post Wish for Pledges'}
             </button>

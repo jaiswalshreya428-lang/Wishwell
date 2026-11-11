@@ -20,11 +20,6 @@ class CategoryResponse(BaseModel):
     name: str
     description: Optional[str] = None
 
-    @field_validator("name", "description", mode="after")
-    @classmethod
-    def escape_category_text(cls, v: Optional[str]) -> Optional[str]:
-        return escape_html(v) if v is not None else None
-
 class WishBase(BaseModel):
     title: str = Field(..., min_length=3, max_length=200, description="Short title describing the need")
     description: str = Field(..., min_length=5, max_length=2000, description="Detailed context or explanation of the need")
@@ -56,11 +51,6 @@ class WishResponse(WishBase):
     created_at: datetime
     updated_at: datetime
 
-    @field_validator("title", "description", "item_name", mode="after")
-    @classmethod
-    def escape_text_outputs(cls, v: str) -> str:
-        return escape_html(v) or v
-
 class SimilarWishSummary(BaseModel):
     id: int
     title: str
@@ -69,11 +59,6 @@ class SimilarWishSummary(BaseModel):
     status: str
     similarity_score: float
     match_reason: str
-
-    @field_validator("title", "item_name", mode="after")
-    @classmethod
-    def escape_similar_text(cls, v: str) -> str:
-        return escape_html(v) or v
 
 class DuplicateWarningDetail(BaseModel):
     message: str
@@ -101,11 +86,6 @@ class OpenWishViewResponse(BaseModel):
     institution_city: str
     institution_state: str
     institution_status: str
-
-    @field_validator("wish_title", "item_name", "wish_description", mode="after")
-    @classmethod
-    def escape_view_text(cls, v: str) -> str:
-        return escape_html(v) or v
 
 class WishListResponse(BaseModel):
     items: List[OpenWishViewResponse]
@@ -144,8 +124,3 @@ class WishDetailResponse(BaseModel):
     institution_state: str
     institution_status: str
     category_name: str
-
-    @field_validator("title", "description", "item_name", mode="after")
-    @classmethod
-    def escape_detail_text(cls, v: str) -> str:
-        return escape_html(v) or v

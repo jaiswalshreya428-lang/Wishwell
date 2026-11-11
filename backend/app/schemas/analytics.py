@@ -8,7 +8,7 @@ ARCHITECTURE NOTES:
 
 from datetime import datetime
 from typing import Optional, List
-from pydantic import BaseModel, Field, ConfigDict, field_validator
+from pydantic import BaseModel, Field, ConfigDict, field_validator, computed_field
 from app.core.sanitizer import escape_html
 
 class AuditVerificationResponse(BaseModel):
@@ -19,6 +19,33 @@ class AuditVerificationResponse(BaseModel):
     broken_at_id: Optional[int] = Field(None, description="Record ID where tampering or broken linkage was detected")
     error_detail: Optional[str] = Field(None, description="Diagnostic error explanation if invalid")
     verified_at: datetime = Field(..., description="Timestamp of verification execution")
+
+    @computed_field
+    @property
+    def total_records_checked(self) -> int:
+        return self.total_records_verified
+
+    @computed_field
+    @property
+    def tampered_row_id(self) -> Optional[int]:
+        return self.broken_at_id
+
+    @computed_field
+    @property
+    def broken_link_index(self) -> Optional[int]:
+        return self.broken_at_id
+
+    @computed_field
+    @property
+    def message(self) -> str:
+        if self.is_valid:
+            return f"Hash chain integrity mathematically verified across {self.total_records_verified} blocks."
+        return self.error_detail or f"Tampering detected at block #{self.broken_at_id}."
+
+    @computed_field
+    @property
+    def checked_at(self) -> str:
+        return self.verified_at.isoformat()
 
 class AuditLogRowResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -35,11 +62,6 @@ class AuditLogRowResponse(BaseModel):
     record_hash: Optional[str]
     cosmos_doc_id: Optional[str] = None
     created_at: datetime
-
-    @field_validator("action", "details", "entity_type", mode="after")
-    @classmethod
-    def escape_audit_text(cls, v: Optional[str]) -> Optional[str]:
-        return escape_html(v) if v is not None else None
 
 class MonthlyWishTrend(BaseModel):
     month: str = Field(..., description="Calendar month formatted as YYYY-MM")
@@ -73,6 +95,21 @@ class CategoryPerformance(BaseModel):
     total_items_delivered: int
     fulfillment_rate_percentage: float
 
+    @computed_field
+    @property
+    def total_wishes(self) -> int:
+        return self.wishes_count
+
+    @computed_field
+    @property
+    def fulfilled_wishes(self) -> int:
+        return self.total_items_delivered
+
+    @computed_field
+    @property
+    def fulfillment_rate(self) -> float:
+        return self.fulfillment_rate_percentage
+
 class AdminAnalyticsOverview(BaseModel):
     generated_at: datetime
     monthly_wishes: List[MonthlyWishTrend]
@@ -80,4 +117,14 @@ class AdminAnalyticsOverview(BaseModel):
     stale_claims: StaleClaimMetric
     institutions_by_status: List[InstitutionStatusCount]
     top_categories: List[CategoryPerformance]
+
+    @computed_field
+    @property
+    def monthly_trends(self) -> List[MonthlyWishTrend]:
+        return self.monthly_wishes
+
+    @computed_field
+    @property
+    def institution_breakdown(self) -> List[InstitutionStatusCount]:
+        return self.institutions_by_status
 

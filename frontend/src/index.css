@@ -2,26 +2,154 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --bg-night: #231F3D;
+  --bg-plum: #3A2A55;
+  --primary-coral: #E4572E;
+  --primary-coral-hover: #C9441F;
+  --accent-marigold: #F6B93B;
+  --secondary-teal: #1F8A7A;
+  --tint-blush: #FBE0D3;
+  --tint-sage: #DCE9D6;
+  --tint-butter: #FFF1C9;
+  --surface-card: #FFFBF5;
+  --ink-text: #1E1A2B;
+  --muted-text: #6A6378;
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
     -webkit-tap-highlight-color: transparent;
+    background-color: #FFFBF5;
+    color: #1E1A2B;
   }
 
   body {
-    background-color: #FDFBF7;
-    color: #1A1816;
+    background: linear-gradient(180deg, #FDF7F2 0%, #FFFBF5 35%, #F7FAF6 70%, #FFFDF9 100%);
+    background-attachment: fixed;
+    color: #1E1A2B;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    min-height: 100vh;
   }
 
-  /* Accessible visible keyboard focus styles across all interactive elements */
+  /* Accessible visible keyboard focus rings meeting WCAG AA */
   *:focus-visible {
-    outline: 2px solid #BF5033;
+    outline: 2px solid #E4572E;
     outline-offset: 2px;
   }
 }
 
-@layer utilities {
-  .font-feature-tabular {
-    font-variant-numeric: tabular-nums;
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
+}
+
+/* ========================================================================= */
+/* ATMOSPHERE & MOTION KEYFRAMES (Transform & Opacity Only for 60fps)         */
+/* ========================================================================= */
+
+@keyframes fairy-twinkle {
+  0%, 100% {
+    opacity: 0.95;
+    transform: scale(1);
+    filter: drop-shadow(0 0 6px rgba(246, 185, 59, 0.8));
+  }
+  50% {
+    opacity: 0.35;
+    transform: scale(0.85);
+    filter: drop-shadow(0 0 2px rgba(246, 185, 59, 0.25));
+  }
+}
+
+@keyframes lamp-glow {
+  0%, 100% {
+    opacity: 0.92;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.65;
+    transform: scale(0.96);
+  }
+}
+
+@keyframes drift-slow {
+  0%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(40px, -25px, 0);
+  }
+}
+
+@keyframes drift-medium {
+  0%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(-35px, 30px, 0);
+  }
+}
+
+@keyframes drift-reverse {
+  0%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(25px, -35px, 0);
+  }
+}
+
+@keyframes float-subtle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.animate-fairy-twinkle {
+  animation: fairy-twinkle 3s ease-in-out infinite;
+}
+
+.animate-lamp-glow {
+  animation: lamp-glow 4.5s ease-in-out infinite;
+}
+
+.animate-drift-slow {
+  animation: drift-slow 30s ease-in-out infinite;
+}
+
+.animate-drift-medium {
+  animation: drift-medium 36s ease-in-out infinite;
+}
+
+.animate-drift-reverse {
+  animation: drift-reverse 32s ease-in-out infinite;
+}
+
+.animate-float-subtle {
+  animation: float-subtle 4s ease-in-out infinite;
+}
+
+/* Starry speckle texture for dark indigo areas */
+.dark-starry-bg {
+  background-color: #231F3D !important;
+  background-image: 
+    radial-gradient(circle 1.5px at 20px 30px, rgba(246, 185, 59, 0.45), transparent),
+    radial-gradient(circle 2px at 120px 80px, rgba(255, 255, 255, 0.55), transparent),
+    radial-gradient(circle 1.5px at 240px 140px, rgba(246, 185, 59, 0.4), transparent),
+    radial-gradient(circle 1.5px at 380px 50px, rgba(255, 255, 255, 0.45), transparent),
+    radial-gradient(circle 2px at 520px 110px, rgba(246, 185, 59, 0.5), transparent),
+    linear-gradient(180deg, #1C1832 0%, #231F3D 50%, #2B2344 100%) !important;
+  background-repeat: repeat, repeat, repeat, repeat, repeat, no-repeat;
+  background-size: 600px 200px, 600px 200px, 600px 200px, 600px 200px, 600px 200px, 100% 100%;
 }

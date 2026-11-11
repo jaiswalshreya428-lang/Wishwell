@@ -4,6 +4,7 @@ import { api } from '../../api/endpoints';
 import { Modal } from '../common/Modal';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
+import { SuccessBurst } from '../atmosphere/SuccessBurst';
 
 interface ClaimModalProps {
   wish: OpenWishViewItem | null;
@@ -24,6 +25,7 @@ export const ClaimModal: React.FC<ClaimModalProps> = ({
   const { showToast } = useToast();
   const [qty, setQty] = useState<number>(1);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const [conflictError, setConflictError] = useState<string | null>(null);
 
   if (!wish) return null;
@@ -75,8 +77,7 @@ export const ClaimModal: React.FC<ClaimModalProps> = ({
         title: 'Pledge Confirmed!',
         message: `You successfully claimed ${qty}x ${wish.item_name}. Please ship within the deadline.`,
       });
-      onSuccess();
-      onClose();
+      setIsSuccess(true);
     } catch (err: any) {
       if (err.status === 409 || err.name === 'OverClaimError') {
         setConflictError(
@@ -98,6 +99,18 @@ export const ClaimModal: React.FC<ClaimModalProps> = ({
       title="Pledge to Fulfill Wish"
       subtitle={`For ${wish.institution_name} in ${wish.institution_city}, ${wish.institution_state}`}
     >
+      {isSuccess ? (
+        <div className="py-8 flex items-center justify-center">
+          <SuccessBurst
+            message={`Confirmed: ${qty}x ${wish.item_name} Pledged!`}
+            onComplete={() => {
+              setIsSuccess(false);
+              onSuccess();
+              onClose();
+            }}
+          />
+        </div>
+      ) : (
       <form onSubmit={handleClaim} className="space-y-6">
         {/* Item summary card */}
         <div className="p-4 rounded-xl bg-cream-100/70 border border-cream-200">
@@ -203,6 +216,7 @@ export const ClaimModal: React.FC<ClaimModalProps> = ({
           </button>
         </div>
       </form>
+      )}
     </Modal>
   );
 };

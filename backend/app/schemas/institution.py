@@ -30,11 +30,6 @@ class DocumentResponse(BaseModel):
             self.sas_url = self.sas_download_url
         return self
 
-    @field_validator("file_name", "original_filename", mode="after")
-    @classmethod
-    def escape_doc_name(cls, v: Optional[str]) -> Optional[str]:
-        return escape_html(v) if v is not None else None
-
 class InstitutionDocumentItem(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
@@ -59,11 +54,6 @@ class InstitutionDocumentItem(BaseModel):
         elif not self.sas_download_url and self.sas_url:
             self.sas_download_url = self.sas_url
         return self
-
-    @field_validator("file_name", "original_filename", mode="after")
-    @classmethod
-    def escape_doc_name(cls, v: Optional[str]) -> Optional[str]:
-        return escape_html(v) if v is not None else None
 
 class VerificationRecommendationInfo(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -99,11 +89,6 @@ class InstitutionVerificationSummary(BaseModel):
             self.institution_id = self.id
         return self
 
-    @field_validator("name", "address", "city", "state", "description", mode="after")
-    @classmethod
-    def escape_summary_text(cls, v: Optional[str]) -> Optional[str]:
-        return escape_html(v) if v is not None else None
-
 class InstitutionDetailResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
@@ -128,8 +113,3 @@ class InstitutionDetailResponse(BaseModel):
         if self.institution_id is None:
             self.institution_id = self.id
         return self
-
-    @field_validator("name", "address", "city", "state", "description", mode="after")
-    @classmethod
-    def escape_detail_text(cls, v: Optional[str]) -> Optional[str]:
-        return escape_html(v) if v is not None else None

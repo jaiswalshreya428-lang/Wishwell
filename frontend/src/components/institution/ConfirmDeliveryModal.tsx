@@ -3,6 +3,7 @@ import { Delivery } from '../../types';
 import { api } from '../../api/endpoints';
 import { Modal } from '../common/Modal';
 import { useToast } from '../../context/ToastContext';
+import { SuccessBurst } from '../atmosphere/SuccessBurst';
 
 interface ConfirmDeliveryModalProps {
   delivery: Delivery | null;
@@ -20,6 +21,7 @@ export const ConfirmDeliveryModal: React.FC<ConfirmDeliveryModalProps> = ({
   const [photo, setPhoto] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   const { showToast } = useToast();
 
   if (!delivery) return null;
@@ -44,8 +46,7 @@ export const ConfirmDeliveryModal: React.FC<ConfirmDeliveryModalProps> = ({
         title: 'Delivery Confirmed!',
         message: 'Photo proof verified, EXIF stripped, and stored securely. Donor notified.',
       });
-      onSuccess();
-      onClose();
+      setIsSuccess(true);
     } catch (err: any) {
       showToast({
         type: 'error',
@@ -64,6 +65,18 @@ export const ConfirmDeliveryModal: React.FC<ConfirmDeliveryModalProps> = ({
       title="Confirm Item Delivery Receipt"
       subtitle={`Delivery #${delivery.id} &bull; Claim #${delivery.wish_claim_id}`}
     >
+      {isSuccess ? (
+        <div className="py-8 flex items-center justify-center">
+          <SuccessBurst
+            message="Delivery Confirmed & EXIF Metadata Stripped!"
+            onComplete={() => {
+              setIsSuccess(false);
+              onSuccess();
+              onClose();
+            }}
+          />
+        </div>
+      ) : (
       <form onSubmit={handleConfirm} className="space-y-6">
         {/* Child Privacy Warning */}
         <div className="p-4 rounded-xl bg-sage-50 border border-sage-200 text-sage-900 text-xs space-y-1.5 leading-relaxed">
@@ -135,6 +148,7 @@ export const ConfirmDeliveryModal: React.FC<ConfirmDeliveryModalProps> = ({
           </button>
         </div>
       </form>
+      )}
     </Modal>
   );
 };

@@ -213,16 +213,23 @@ export interface InstitutionStatusCount {
 export interface CategoryPerformance {
   category_id: number;
   category_name: string;
-  total_wishes: number;
-  fulfilled_wishes: number;
-  fulfillment_rate: number;
+  wishes_count?: number;
+  total_items_requested?: number;
+  total_items_delivered?: number;
+  fulfillment_rate_percentage?: number;
+  total_wishes?: number;
+  fulfilled_wishes?: number;
+  fulfillment_rate?: number;
 }
 
 export interface AdminAnalyticsOverview {
-  monthly_trends: MonthlyWishTrend[];
+  generated_at?: string;
+  monthly_wishes?: MonthlyWishTrend[];
+  monthly_trends?: MonthlyWishTrend[];
   delivery_time: DeliveryTimeMetric;
   stale_claims: StaleClaimMetric;
-  institution_breakdown: InstitutionStatusCount[];
+  institutions_by_status?: InstitutionStatusCount[];
+  institution_breakdown?: InstitutionStatusCount[];
   top_categories: CategoryPerformance[];
 }
 
