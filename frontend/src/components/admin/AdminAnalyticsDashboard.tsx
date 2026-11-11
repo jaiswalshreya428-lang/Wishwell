@@ -160,10 +160,10 @@ export const AdminAnalyticsDashboard: React.FC = () => {
             <button
               onClick={loadAnalytics}
               disabled={isLoading}
-              className="px-3.5 py-2 rounded-xl bg-[#3A2A55]/80 hover:bg-[#3A2A55] text-[#FFFBF5] text-xs font-semibold transition flex items-center space-x-2 border border-[#F6B93B]/20 active:scale-95"
+              className="px-3.5 py-2 rounded-xl bg-white hover:bg-cream-100 text-ink-900 text-xs font-semibold transition flex items-center space-x-2 border border-[#D0E2EE] shadow-xs active:scale-95"
               title="Refresh all metrics from the database"
             >
-              <RefreshCw className={`w-3.5 h-3.5 text-[#F6B93B] ${isLoading ? 'animate-spin' : ''}`} />
+              <RefreshCw className={`w-3.5 h-3.5 text-coral-600 ${isLoading ? 'animate-spin' : ''}`} />
               <span>Refresh Metrics</span>
             </button>
 
@@ -434,7 +434,7 @@ export const AdminAnalyticsDashboard: React.FC = () => {
                 const theme = getCategoryTheme(cat.category_name);
 
                 return (
-                  <div key={cat.category_id} className="p-4 rounded-2xl bg-[#FFFBF5] border border-cream-200/80 space-y-2.5 shadow-soft-sm">
+                  <div key={cat.category_id} className="p-4 rounded-2xl bg-white border border-[#D8E6F0] space-y-2.5 shadow-soft-sm">
                     <div className="flex items-center justify-between text-xs">
                       <div className="flex items-center gap-2">
                         <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: theme.primary }} />

@@ -326,23 +326,23 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   return (
     <div className="space-y-24 sm:space-y-32 pb-24 overflow-x-hidden selection:bg-terracotta-100 selection:text-terracotta-900">
       {/* ========================================================================= */}
-      {/* 1. HERO SECTION WITH HOMELY ATMOSPHERE & MOTION BACKGROUND                 */}
+      {/* 1. HERO SECTION WITH SOOTHING LIGHT BLUE & LIGHT GREEN ATMOSPHERE          */}
       {/* ========================================================================= */}
       <section
-        style={{ backgroundColor: '#231F3D' }}
-        className="relative pt-6 sm:pt-12 pb-0 overflow-hidden bg-[#231F3D] bg-gradient-to-b from-[#1C1832] via-[#231F3D] to-[#2B2344] text-[#FFFBF5] dark-starry-bg shadow-night"
+        style={{ backgroundColor: '#EFF6FC' }}
+        className="relative pt-6 sm:pt-14 pb-0 overflow-hidden bg-gradient-to-b from-[#EFF6FC] via-[#F3F9F7] to-[#E9F5F1] text-[#0F172A] border-b border-[#D8E6F0]"
       >
         {/* Fairy lights string across the top of hero */}
         <FairyLights className="absolute top-0 left-0 right-0 z-20" bulbCount={18} />
 
-        {/* Drifting soft gradient blobs + breathing lamp glow */}
+        {/* Drifting soft gradient blobs + breathing soothing glow */}
         <HeroGlowBlobs />
 
-        {/* Floating fireflies / dust motes canvas (20 particles) */}
+        {/* Floating fireflies / dust motes canvas (15 particles) */}
         <FirefliesCanvas
-          maxParticlesDesktop={20}
-          maxParticlesMobile={10}
-          speedMultiplier={0.9}
+          maxParticlesDesktop={15}
+          maxParticlesMobile={8}
+          speedMultiplier={0.7}
         />
 
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -354,21 +354,21 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           >
             {/* Top Pill Badge */}
             <motion.div variants={itemFadeUp} className="inline-flex items-center">
-              <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#3A2A55]/90 border border-[#F6B93B]/30 text-xs font-semibold text-[#F6B93B] shadow-sm backdrop-blur-sm">
-                <span className="w-2 h-2 rounded-full bg-[#F6B93B] animate-pulse" />
+              <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/95 border border-[#BAE6FD] text-xs font-semibold text-[#0369A1] shadow-xs backdrop-blur-sm">
+                <span className="w-2 h-2 rounded-full bg-[#0D9488]" />
                 <span>A Verified, Privacy-First Matching Platform</span>
-                <span className="text-[#AEA6BF]">&bull;</span>
-                <span className="text-[#6CE0CE] font-medium hidden sm:inline">Zero Photos of Children</span>
+                <span className="text-[#BAE6FD]">&bull;</span>
+                <span className="text-[#0D9488] font-medium hidden sm:inline">Zero Photos of Children</span>
               </span>
             </motion.div>
 
             {/* Main Headline with Self-Drawing Underline */}
             <motion.h1
               variants={itemFadeUp}
-              className="font-serif text-4xl sm:text-6xl lg:text-7xl font-bold text-[#F6B93B] tracking-tight leading-[1.08] drop-shadow-md"
+              className="font-serif text-4xl sm:text-6xl lg:text-7xl font-bold text-[#0F172A] tracking-tight leading-[1.08]"
             >
               Real, tangible wishes from <br className="hidden sm:inline" />
-              <span className="relative inline-block text-coral-400">
+              <span className="relative inline-block text-[#E4572E]">
                 <span>verified children&apos;s homes.</span>
                 {/* Self-drawing SVG Underline */}
                 <svg
@@ -379,7 +379,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 >
                   <motion.path
                     d="M3 11C70 4 190 2 397 13"
-                    stroke="#F6B93B"
+                    stroke="#0284C7"
                     strokeWidth="4"
                     strokeLinecap="round"
                     initial={{ pathLength: 0 }}
@@ -395,14 +395,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             </motion.h1>
 
             {/* Subtitle with soft scrim behind text for WCAG AA readability */}
-            <motion.div variants={itemFadeUp} className="max-w-2xl mx-auto px-5 py-2.5 rounded-2xl bg-[#19152B]/80 border border-[#3A2A55] backdrop-blur-sm shadow-sm">
-              <p className="text-base sm:text-lg text-[#E6E0F0] leading-relaxed font-normal">
+            <motion.div variants={itemFadeUp} className="max-w-2xl mx-auto px-5 py-3 rounded-2xl bg-white/90 border border-[#D5E6F2] shadow-xs backdrop-blur-sm">
+              <p className="text-base sm:text-lg text-[#475569] leading-relaxed font-normal">
                 No vague money pools. Document-verified homes list exact item needs—from school bags to winter coats.
                 Donors pledge items, deliver directly, and receive physical item photo confirmation.
               </p>
             </motion.div>
 
-            {/* Call to Action Buttons with Coral #E4572E */}
+            {/* Call to Action Buttons */}
             <motion.div
               variants={itemFadeUp}
               className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2"
@@ -420,7 +420,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 whileHover={shouldReduceMotion ? undefined : { y: -2 }}
                 whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
                 onClick={onRegister}
-                className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-[#3A2A55]/80 hover:bg-[#3A2A55] text-[#FFFBF5] font-bold text-sm border border-[#F6B93B]/25 shadow-soft transition flex items-center justify-center gap-2"
+                className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white hover:bg-[#EBF4FA] text-[#0F172A] font-bold text-sm border border-[#D0E2EE] shadow-soft transition flex items-center justify-center gap-2"
               >
                 <span>Register as Donor or Home</span>
               </motion.button>
@@ -430,7 +430,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               <motion.div variants={itemFadeUp} className="pt-1">
                 <button
                   onClick={onExploreFlow}
-                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#AEA6BF] hover:text-[#F6B93B] transition"
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#64748B] hover:text-[#0284C7] transition"
                 >
                   <span>See the 5-step transparent lifecycle</span>
                   <ChevronDown className="w-3.5 h-3.5 animate-bounce" />
@@ -440,12 +440,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
             {/* Recently Fulfilled Ticker */}
             <motion.div variants={itemFadeUp} className="pt-2">
-              <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-[#19152B]/80 border border-[#3A2A55] text-xs text-[#D4CEE0] shadow-sm backdrop-blur-sm">
+              <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/95 border border-[#D0E2EE] text-xs text-[#475569] shadow-xs backdrop-blur-sm">
                 <span className="flex h-2 w-2 relative">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-teal-500"></span>
                 </span>
-                <span className="font-semibold text-[#6CE0CE] uppercase tracking-wider text-[10px]">Just Fulfilled:</span>
+                <span className="font-semibold text-[#0D9488] uppercase tracking-wider text-[10px]">Just Fulfilled:</span>
                 <AnimatePresence mode="wait">
                   <motion.span
                     key={tickerIndex}
@@ -455,10 +455,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                     transition={{ duration: 0.3 }}
                     className="font-medium"
                   >
-                    <strong className="text-[#FFFBF5]">{RECENT_FULFILLMENTS[tickerIndex].home}</strong> received{' '}
-                    <span className="text-coral-400 font-semibold">{RECENT_FULFILLMENTS[tickerIndex].item}</span>{' '}
-                    <span className="text-[#AEA6BF] hidden sm:inline">({RECENT_FULFILLMENTS[tickerIndex].city})</span> &bull;{' '}
-                    <span className="text-[#AEA6BF]">{RECENT_FULFILLMENTS[tickerIndex].time}</span>
+                    <strong className="text-[#0F172A]">{RECENT_FULFILLMENTS[tickerIndex].home}</strong> received{' '}
+                    <span className="text-coral-600 font-semibold">{RECENT_FULFILLMENTS[tickerIndex].item}</span>{' '}
+                    <span className="text-[#64748B] hidden sm:inline">({RECENT_FULFILLMENTS[tickerIndex].city})</span> &bull;{' '}
+                    <span className="text-[#64748B]">{RECENT_FULFILLMENTS[tickerIndex].time}</span>
                   </motion.span>
                 </AnimatePresence>
               </div>
@@ -507,7 +507,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
         {/* Paper-cut skyline at bottom of hero with glowing home windows and subtle parallax */}
         <PaperCutSkyline className="mt-8" />
-        <TornPaperDivider position="bottom" fillColor="#FDF8F1" />
+        <TornPaperDivider position="bottom" fillColor="#F0F6FB" />
       </section>
 
       {/* ========================================================================= */}
@@ -724,75 +724,75 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       </section>
 
       {/* ========================================================================= */}
-      {/* 4. LIVE IMPACT STATS WITH NIGHT INDIGO CARD & RECHARTS                   */}
+      {/* 4. LIVE IMPACT STATS WITH SOOTHING LIGHT BLUE & GREEN CARD                 */}
       {/* ========================================================================= */}
       <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="rounded-4xl bg-[#231F3D] bg-gradient-to-br from-[#1C1832] via-[#231F3D] to-[#2B2344] border border-[#3A2A55] p-8 sm:p-12 shadow-night text-[#FFFBF5] dark-starry-bg relative overflow-hidden">
-          {/* Subtle marigold glow inside dark stats card */}
+        <div className="rounded-4xl bg-white bg-gradient-to-br from-[#F0F7FD] via-[#FFFFFF] to-[#EFF8F5] border border-[#D5E6E3] p-8 sm:p-12 shadow-soft text-[#0F172A] relative overflow-hidden">
+          {/* Subtle cyan glow inside stats card */}
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute -top-20 -right-20 w-80 h-80 rounded-full bg-[#F6B93B]/10 blur-3xl animate-lamp-glow"
+            className="pointer-events-none absolute -top-20 -right-20 w-80 h-80 rounded-full bg-[#38BDF8]/15 blur-3xl animate-lamp-glow"
           />
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
             {/* Numeric Counters */}
             <div className="lg:col-span-5 space-y-6">
               <div>
-                <span className="text-xs font-bold text-[#F6B93B] uppercase tracking-widest flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5" />
+                <span className="text-xs font-bold text-[#0284C7] uppercase tracking-widest flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-[#0D9488]" />
                   <span>Demonstrated Impact</span>
                 </span>
-                <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#FFFBF5] mt-1.5">
+                <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#0F172A] mt-1.5">
                   Every Number Is a Real Child Supported
                 </h2>
-                <p className="text-xs sm:text-sm text-[#D4CEE0] mt-2 leading-relaxed">
+                <p className="text-xs sm:text-sm text-[#475569] mt-2 leading-relaxed">
                   WishWell matches tangible essentials directly with verified children&apos;s homes. Here is what donors and homes have accomplished together.
                 </p>
               </div>
 
               <div className="grid grid-cols-2 gap-4 pt-2">
-                <div className="p-4 rounded-2xl bg-[#19152B]/80 border border-[#3A2A55] shadow-sm">
-                  <div className="text-2xl sm:text-3xl font-serif font-black text-coral-400">
+                <div className="p-4 rounded-2xl bg-white border border-[#D2E2EE] shadow-xs">
+                  <div className="text-2xl sm:text-3xl font-serif font-black text-coral-600">
                     <AnimatedCounter value={480} suffix="+" />
                   </div>
-                  <p className="text-xs font-semibold text-[#FFFBF5] mt-1">Wishes Fulfilled</p>
-                  <p className="text-[11px] text-[#AEA6BF]">100% item matched</p>
+                  <p className="text-xs font-semibold text-[#0F172A] mt-1">Wishes Fulfilled</p>
+                  <p className="text-[11px] text-[#64748B]">100% item matched</p>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-[#19152B]/80 border border-[#3A2A55] shadow-sm">
-                  <div className="text-2xl sm:text-3xl font-serif font-black text-[#6CE0CE]">
+                <div className="p-4 rounded-2xl bg-white border border-[#D2E2EE] shadow-xs">
+                  <div className="text-2xl sm:text-3xl font-serif font-black text-[#0D9488]">
                     <AnimatedCounter value={42} suffix="" />
                   </div>
-                  <p className="text-xs font-semibold text-[#FFFBF5] mt-1">Verified Homes</p>
-                  <p className="text-[11px] text-[#AEA6BF]">Document approved</p>
+                  <p className="text-xs font-semibold text-[#0F172A] mt-1">Verified Homes</p>
+                  <p className="text-[11px] text-[#64748B]">Document approved</p>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-[#19152B]/80 border border-[#3A2A55] shadow-sm">
-                  <div className="text-2xl sm:text-3xl font-serif font-black text-[#F6B93B]">
+                <div className="p-4 rounded-2xl bg-white border border-[#D2E2EE] shadow-xs">
+                  <div className="text-2xl sm:text-3xl font-serif font-black text-[#0284C7]">
                     <AnimatedCounter value={3850} suffix="+" />
                   </div>
-                  <p className="text-xs font-semibold text-[#FFFBF5] mt-1">Items Delivered</p>
-                  <p className="text-[11px] text-[#AEA6BF]">Direct to institution</p>
+                  <p className="text-xs font-semibold text-[#0F172A] mt-1">Items Delivered</p>
+                  <p className="text-[11px] text-[#64748B]">Direct to institution</p>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-[#19152B]/80 border border-[#3A2A55] shadow-sm">
-                  <div className="text-2xl sm:text-3xl font-serif font-black text-[#FFFBF5]">
+                <div className="p-4 rounded-2xl bg-white border border-[#D2E2EE] shadow-xs">
+                  <div className="text-2xl sm:text-3xl font-serif font-black text-[#0F172A]">
                     <AnimatedCounter value={100} suffix="%" />
                   </div>
-                  <p className="text-xs font-semibold text-[#FFFBF5] mt-1">Item Photo Proof</p>
-                  <p className="text-[11px] text-[#AEA6BF]">Zero child photos</p>
+                  <p className="text-xs font-semibold text-[#0F172A] mt-1">Item Photo Proof</p>
+                  <p className="text-[11px] text-[#64748B]">Zero child photos</p>
                 </div>
               </div>
             </div>
 
             {/* Mini Recharts Bar Chart */}
-            <div className="lg:col-span-7 bg-[#19152B]/90 p-6 sm:p-8 rounded-3xl border border-[#3A2A55] shadow-night backdrop-blur-sm">
+            <div className="lg:col-span-7 bg-white p-6 sm:p-8 rounded-3xl border border-[#D2E2EE] shadow-soft backdrop-blur-sm">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h3 className="font-serif text-base font-bold text-[#FFFBF5]">Items Delivered by Category</h3>
-                  <p className="text-xs text-[#AEA6BF]">Distribution of verified physical goods provided</p>
+                  <h3 className="font-serif text-base font-bold text-[#0F172A]">Items Delivered by Category</h3>
+                  <p className="text-xs text-[#64748B]">Distribution of verified physical goods provided</p>
                 </div>
-                <span className="text-[11px] font-semibold text-[#6CE0CE] bg-[#1F8A7A]/25 px-2.5 py-1 rounded-full border border-[#1F8A7A]/40">
+                <span className="text-[11px] font-semibold text-[#0D9488] bg-[#0D9488]/10 px-2.5 py-1 rounded-full border border-[#0D9488]/20">
                   Live Audit Data
                 </span>
               </div>
@@ -810,7 +810,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                       dataKey="category"
                       axisLine={false}
                       tickLine={false}
-                      tick={{ fill: '#D4CEE0', fontSize: 12, fontWeight: 500 }}
+                      tick={{ fill: '#475569', fontSize: 12, fontWeight: 500 }}
                       width={110}
                     />
                     <Tooltip
@@ -818,9 +818,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                         if (active && payload && payload.length) {
                           const data = payload[0].payload;
                           return (
-                            <div className="bg-[#231F3D] text-[#FFFBF5] border border-[#3A2A55] p-2.5 rounded-xl shadow-night text-xs">
-                              <p className="font-bold">{data.category}</p>
-                              <p className="text-[#F6B93B] font-feature-tabular">
+                            <div className="bg-white text-[#0F172A] border border-[#D2E2EE] p-2.5 rounded-xl shadow-soft text-xs">
+                              <p className="font-bold text-[#0F172A]">{data.category}</p>
+                              <p className="text-[#0284C7] font-feature-tabular font-semibold">
                                 {data.delivered.toLocaleString()} items delivered
                               </p>
                             </div>
@@ -838,14 +838,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 </ResponsiveContainer>
               </div>
 
-              <div className="mt-4 pt-4 border-t border-[#3A2A55]/80 flex items-center justify-between text-xs text-[#AEA6BF]">
+              <div className="mt-4 pt-4 border-t border-[#E2EDF5] flex items-center justify-between text-xs text-[#64748B]">
                 <span className="flex items-center gap-1.5">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-[#1F8A7A]" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#0D9488]" />
                   Verified physical receipts on file
                 </span>
                 <button
                   onClick={onBrowseWishes}
-                  className="font-bold text-coral-400 hover:text-coral-300 transition"
+                  className="font-bold text-[#0284C7] hover:text-[#0369A1] transition"
                 >
                   View All Open Wishes &rarr;
                 </button>
@@ -928,7 +928,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                       },
                   }}
                   whileHover={shouldReduceMotion ? undefined : { y: -7, rotate: 0, scale: 1.01 }}
-                  className={`bg-[#FFFBF5] rounded-3xl border-2 border-dashed ${theme.border} hover:border-coral-500 p-6 flex flex-col justify-between shadow-soft hover:shadow-card transition-all duration-200 relative overflow-hidden group ${shouldReduceMotion ? '' : tiltClass
+                  className={`bg-white rounded-3xl border-2 border-dashed ${theme.border} hover:border-coral-500 p-6 flex flex-col justify-between shadow-soft hover:shadow-card transition-all duration-200 relative overflow-hidden group ${shouldReduceMotion ? '' : tiltClass
                     } hover:rotate-0`}
                 >
                   {/* Category gentle gradient header wash */}
@@ -1157,40 +1157,40 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       </section>
 
       {/* ========================================================================= */}
-      {/* 8. CALL TO ACTION SECTION BEFORE FOOTER */}
+      {/* 8. CALL TO ACTION SECTION BEFORE FOOTER                                   */}
       {/* ========================================================================= */}
       <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="rounded-4xl bg-[#1A162F] bg-gradient-to-br from-night-900 via-plum-800 to-night-950 text-white p-8 sm:p-14 text-center shadow-2xl relative overflow-hidden border border-plum-700/40">
+        <div className="rounded-4xl bg-[#E4572E] bg-gradient-to-br from-[#E4572E] via-[#E8643B] to-[#D3461D] text-white p-8 sm:p-14 text-center shadow-warm relative overflow-hidden border border-[#D3461D]">
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute -top-24 -left-24 w-80 h-80 bg-marigold-400/15 blur-3xl rounded-full"
+            className="pointer-events-none absolute -top-24 -left-24 w-80 h-80 bg-white/15 blur-3xl rounded-full"
           />
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute -bottom-24 -right-24 w-80 h-80 bg-coral-500/15 blur-3xl rounded-full"
+            className="pointer-events-none absolute -bottom-24 -right-24 w-80 h-80 bg-[#F6B93B]/25 blur-3xl rounded-full"
           />
 
           <div className="max-w-2xl mx-auto space-y-5 relative z-10">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-marigold-300 text-xs font-semibold backdrop-blur-sm border border-white/10">
-              <HeartHandshake className="w-4 h-4" />
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/20 text-white text-xs font-semibold backdrop-blur-sm border border-white/25">
+              <HeartHandshake className="w-4 h-4 text-white" />
               <span>Join Hundreds of Verified Donors</span>
             </div>
-            <h2 className="font-serif text-3xl sm:text-5xl font-bold leading-tight">
+            <h2 className="font-serif text-3xl sm:text-5xl font-bold leading-tight text-white">
               Bring a Tangible Smile to a Child in Need
             </h2>
-            <p className="text-xs sm:text-sm text-cream-200 leading-relaxed max-w-lg mx-auto">
+            <p className="text-xs sm:text-sm text-white/90 leading-relaxed max-w-lg mx-auto">
               Choose a wish, order the exact needed item, and receive physical photo proof that your gift made a difference.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-3">
               <button
                 onClick={onBrowseWishes}
-                className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-gradient-to-r from-coral-500 to-coral-600 hover:brightness-110 text-white font-bold text-xs tracking-wide shadow-warm transition"
+                className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-white hover:bg-[#FFF9F5] text-[#E4572E] font-bold text-xs tracking-wide shadow-soft transition"
               >
                 Browse Open Wishes Now &rarr;
               </button>
               <button
                 onClick={onRegister}
-                className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 text-cream-100 font-bold text-xs border border-white/20 shadow-soft transition backdrop-blur-sm"
+                className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-white/15 hover:bg-white/25 text-white font-bold text-xs border border-white/30 shadow-soft transition backdrop-blur-sm"
               >
                 Register Children&apos;s Home
               </button>

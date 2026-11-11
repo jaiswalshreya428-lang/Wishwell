@@ -34,31 +34,31 @@ export const HeroGlowBlobs: React.FC = () => {
       aria-hidden="true"
       className="pointer-events-none absolute inset-0 overflow-hidden select-none z-0"
     >
-      {/* Blob 1: Terracotta warmth, drifting top-left (28s loop) */}
+      {/* Blob 1: Soothing light sky blue, drifting top-left (28s loop) */}
       <div
-        className="absolute -top-32 -left-32 w-[520px] h-[520px] rounded-full blur-3xl opacity-35 bg-gradient-to-br from-terracotta-200 via-terracotta-300 to-transparent animate-drift-slow"
+        className="absolute -top-32 -left-32 w-[520px] h-[520px] rounded-full blur-3xl opacity-40 bg-gradient-to-br from-sky-200 via-sky-100 to-transparent animate-drift-slow"
         style={{
           transform: shouldReduceMotion ? 'none' : undefined,
         }}
       />
 
-      {/* Blob 2: Marigold warmth, drifting top-right (36s loop) */}
+      {/* Blob 2: Soothing light mint/sage green, drifting top-right (36s loop) */}
       <div
-        className="absolute -top-20 -right-28 w-[600px] h-[560px] rounded-full blur-3xl opacity-30 bg-gradient-to-bl from-marigold-200 via-marigold-100 to-transparent animate-drift-medium"
+        className="absolute -top-20 -right-28 w-[600px] h-[560px] rounded-full blur-3xl opacity-35 bg-gradient-to-bl from-emerald-100 via-teal-100 to-transparent animate-drift-medium"
         style={{
           transform: shouldReduceMotion ? 'none' : undefined,
         }}
       />
 
-      {/* Blob 3: Soft peach & cream center-depth (32s loop) */}
+      {/* Blob 3: Soft airy sky-mint center-depth (32s loop) */}
       <div
-        className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[720px] h-[480px] rounded-full blur-3xl opacity-25 bg-gradient-to-t from-cream-200 via-terracotta-100 to-transparent animate-drift-reverse"
+        className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[720px] h-[480px] rounded-full blur-3xl opacity-30 bg-gradient-to-t from-teal-50 via-sky-50 to-transparent animate-drift-reverse"
         style={{
           transform: shouldReduceMotion ? 'none' : undefined,
         }}
       />
 
-      {/* Breathing Lamp Glow: Soft cozy focal warmth that tracks mouse */}
+      {/* Breathing Ambient Glow: Calming, serene sky-blue & seafoam glow that gently tracks mouse */}
       <motion.div
         animate={
           shouldReduceMotion
@@ -72,7 +72,7 @@ export const HeroGlowBlobs: React.FC = () => {
         className="absolute top-12 left-1/2 -translate-x-1/2 w-[650px] sm:w-[850px] h-[500px] rounded-full pointer-events-none blur-2xl animate-lamp-glow"
         style={{
           background:
-            'radial-gradient(ellipse at center, rgba(242, 180, 65, 0.22) 0%, rgba(196, 85, 47, 0.10) 45%, rgba(253, 248, 241, 0) 75%)',
+            'radial-gradient(ellipse at center, rgba(56, 189, 248, 0.18) 0%, rgba(45, 212, 191, 0.14) 45%, rgba(240, 249, 255, 0) 75%)',
         }}
       />
     </div>

@@ -127,7 +127,7 @@ export const TornPaperDivider: React.FC<{
   position?: 'top' | 'bottom';
   fillColor?: string;
   className?: string;
-}> = ({ position = 'bottom', fillColor = '#FDF8F1', className = '' }) => {
+}> = ({ position = 'bottom', fillColor = '#F0F6FB', className = '' }) => {
   const isTop = position === 'top';
 
   return (

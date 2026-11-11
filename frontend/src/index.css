@@ -3,32 +3,34 @@
 @tailwind utilities;
 
 :root {
-  --bg-night: #231F3D;
-  --bg-plum: #3A2A55;
+  --bg-night: #1E293B;
+  --bg-plum: #334155;
   --primary-coral: #E4572E;
   --primary-coral-hover: #C9441F;
-  --accent-marigold: #F6B93B;
-  --secondary-teal: #1F8A7A;
-  --tint-blush: #FBE0D3;
-  --tint-sage: #DCE9D6;
-  --tint-butter: #FFF1C9;
-  --surface-card: #FFFBF5;
-  --ink-text: #1E1A2B;
-  --muted-text: #6A6378;
+  --accent-marigold: #F59E0B;
+  --secondary-teal: #0D9488;
+  --soothing-blue: #EFF6FC;
+  --soothing-green: #EFF8F5;
+  --tint-blush: #F1F5F9;
+  --tint-sage: #E6F4EA;
+  --tint-butter: #EBF5FB;
+  --surface-card: #FFFFFF;
+  --ink-text: #0F172A;
+  --muted-text: #475569;
 }
 
 @layer base {
   html {
     scroll-behavior: smooth;
     -webkit-tap-highlight-color: transparent;
-    background-color: #FFFBF5;
-    color: #1E1A2B;
+    background-color: #F8FAFC;
+    color: #0F172A;
   }
 
   body {
-    background: linear-gradient(180deg, #FDF7F2 0%, #FFFBF5 35%, #F7FAF6 70%, #FFFDF9 100%);
+    background: linear-gradient(180deg, #F0F6FB 0%, #FFFFFF 28%, #F1F8F5 65%, #F4F9FD 100%);
     background-attachment: fixed;
-    color: #1E1A2B;
+    color: #0F172A;
     font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
     min-height: 100vh;
   }
@@ -140,16 +142,15 @@
   animation: float-subtle 4s ease-in-out infinite;
 }
 
-/* Starry speckle texture for dark indigo areas */
+/* Starry speckle texture for dark areas (neutral without forced purple) */
 .dark-starry-bg {
-  background-color: #231F3D !important;
+  background-color: transparent;
   background-image: 
-    radial-gradient(circle 1.5px at 20px 30px, rgba(246, 185, 59, 0.45), transparent),
-    radial-gradient(circle 2px at 120px 80px, rgba(255, 255, 255, 0.55), transparent),
-    radial-gradient(circle 1.5px at 240px 140px, rgba(246, 185, 59, 0.4), transparent),
-    radial-gradient(circle 1.5px at 380px 50px, rgba(255, 255, 255, 0.45), transparent),
-    radial-gradient(circle 2px at 520px 110px, rgba(246, 185, 59, 0.5), transparent),
-    linear-gradient(180deg, #1C1832 0%, #231F3D 50%, #2B2344 100%) !important;
-  background-repeat: repeat, repeat, repeat, repeat, repeat, no-repeat;
-  background-size: 600px 200px, 600px 200px, 600px 200px, 600px 200px, 600px 200px, 100% 100%;
+    radial-gradient(circle 1.5px at 20px 30px, rgba(246, 185, 59, 0.35), transparent),
+    radial-gradient(circle 2px at 120px 80px, rgba(255, 255, 255, 0.45), transparent),
+    radial-gradient(circle 1.5px at 240px 140px, rgba(246, 185, 59, 0.3), transparent),
+    radial-gradient(circle 1.5px at 380px 50px, rgba(255, 255, 255, 0.35), transparent),
+    radial-gradient(circle 2px at 520px 110px, rgba(246, 185, 59, 0.4), transparent);
+  background-repeat: repeat, repeat, repeat, repeat, repeat;
+  background-size: 600px 200px, 600px 200px, 600px 200px, 600px 200px, 600px 200px;
 }

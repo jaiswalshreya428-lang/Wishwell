@@ -39,14 +39,14 @@ export const PaperCutSkyline: React.FC<{ className?: string }> = ({ className = 
           {/* Distant soft hill */}
           <path
             d="M0 80C240 50 480 95 720 65C960 35 1200 70 1440 50V140H0V80Z"
-            fill="#F6ECE1"
+            fill="#E6F2FA"
             opacity="0.85"
           />
           {/* Distant tiny trees & pines */}
-          <path d="M180 58L186 70H174L180 58Z" fill="#D8C3AC" />
-          <path d="M192 61L197 71H187L192 61Z" fill="#D8C3AC" />
-          <path d="M840 52L846 64H834L840 52Z" fill="#D8C3AC" />
-          <path d="M1220 54L1226 66H1214L1220 54Z" fill="#D8C3AC" />
+          <path d="M180 58L186 70H174L180 58Z" fill="#A9D0ED" />
+          <path d="M192 61L197 71H187L192 61Z" fill="#A9D0ED" />
+          <path d="M840 52L846 64H834L840 52Z" fill="#A9D0ED" />
+          <path d="M1220 54L1226 66H1214L1220 54Z" fill="#A9D0ED" />
         </svg>
       </motion.div>
 
@@ -67,7 +67,7 @@ export const PaperCutSkyline: React.FC<{ className?: string }> = ({ className = 
           {/* Middle undulating ridge */}
           <path
             d="M0 95C280 75 520 110 800 80C1080 50 1300 85 1440 75V140H0V95Z"
-            fill="#EADCCB"
+            fill="#D5E8F5"
           />
 
           {/* House 1 (Left): Small shelter with chimney & warm glowing window */}
@@ -123,15 +123,15 @@ export const PaperCutSkyline: React.FC<{ className?: string }> = ({ className = 
           className="w-full h-full object-cover"
           preserveAspectRatio="none"
         >
-          {/* Foreground rolling curve matching #FDF8F1 base surface */}
+          {/* Foreground rolling curve matching soothing #F0F6FB base surface */}
           <path
             d="M0 115C360 90 720 130 1080 105C1240 92 1360 108 1440 100V140H0V115Z"
-            fill="#FDF8F1"
+            fill="#F0F6FB"
           />
           {/* Subtle paper-cut shadow line */}
           <path
             d="M0 115C360 90 720 130 1080 105C1240 92 1360 108 1440 100"
-            stroke="#EADCCB"
+            stroke="#CFE2F0"
             strokeWidth="1.5"
             strokeLinecap="round"
           />

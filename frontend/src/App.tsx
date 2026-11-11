@@ -334,7 +334,7 @@ const AppContent: React.FC = () => {
               </button>
               <button
                 onClick={() => navigate('/admin/analytics')}
-                className="p-2.5 rounded-xl bg-[#231F3D] hover:bg-[#3A2A55] text-white font-semibold transition"
+                className="p-2.5 rounded-xl bg-ink-800 hover:bg-ink-900 text-white font-semibold transition"
               >
                 Admin Analytics
               </button>
@@ -351,7 +351,7 @@ const AppContent: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#FBE0D3]/35 via-[#FFFBF5] to-[#DCE9D6]/30 flex flex-col font-sans text-ink-900 relative selection:bg-coral-100 selection:text-coral-900">
+    <div className="min-h-screen bg-gradient-to-b from-[#F0F6FB] via-[#FFFFFF] to-[#EFF8F5] flex flex-col font-sans text-ink-900 relative selection:bg-sky-100 selection:text-sky-900">
       {/* Homely Atmosphere: Thin coral scroll-progress bar */}
       <ScrollProgressBar />
 
