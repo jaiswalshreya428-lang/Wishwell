@@ -174,6 +174,7 @@ const AppContent: React.FC = () => {
           <LandingPage
             onBrowseWishes={() => navigate('/browse')}
             onRegister={() => setAuthModalOpen(true)}
+            onClaimWish={(wish) => setSelectedWishForClaim(wish)}
             onExploreFlow={() => {
               const el = document.getElementById('how-it-works');
               el?.scrollIntoView({ behavior: 'smooth' });
@@ -351,12 +352,25 @@ const AppContent: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#F0F6FB] via-[#FFFFFF] to-[#EFF8F5] flex flex-col font-sans text-ink-900 relative selection:bg-sky-100 selection:text-sky-900">
-      {/* Homely Atmosphere: Thin coral scroll-progress bar */}
+    <div className="min-h-screen bg-gradient-to-b from-[#E2EFF2] via-[#EFF5F1] to-[#E8F2EC] flex flex-col font-sans text-[#192D2A] relative selection:bg-teal-100 selection:text-teal-900">
+      {/* Homely Atmosphere: Thin vintage brass-to-verdigris scroll-progress bar */}
       <ScrollProgressBar />
 
-      {/* Tactile Handmade Atmosphere: Clearly visible paper-grain texture across the whole app (8.5% opacity) */}
-      <PaperGrain opacity={0.085} />
+      {/* Tactile Handmade Atmosphere: Archival vellum paper-grain texture across the whole app */}
+      <PaperGrain opacity={0.095} />
+
+      {/* Subtle Fixed Well-Water Concentric Ripple Watermark */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-0 z-0 overflow-hidden opacity-[0.045] select-none flex items-center justify-center"
+      >
+        <svg viewBox="0 0 800 800" className="w-[1100px] h-[1100px] max-w-none" fill="none">
+          <circle cx="400" cy="400" r="140" stroke="#215B54" strokeWidth="1.5" strokeDasharray="6 6" />
+          <circle cx="400" cy="400" r="220" stroke="#215B54" strokeWidth="1.2" />
+          <circle cx="400" cy="400" r="300" stroke="#C69749" strokeWidth="1" strokeDasharray="4 8" />
+          <circle cx="400" cy="400" r="380" stroke="#215B54" strokeWidth="1" />
+        </svg>
+      </div>
 
       {/* 1-Click Interactive Demo Role Switcher Bar (Always Visible at Top of App) */}
       <DemoRoleBar navigate={navigate} />

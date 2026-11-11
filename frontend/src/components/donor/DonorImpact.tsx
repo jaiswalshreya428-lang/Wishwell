@@ -33,7 +33,7 @@ export const DonorImpact: React.FC<{ onBrowseWishes: () => void }> = ({ onBrowse
       <div className="space-y-8 pb-16">
         <WorkPageHeader
           badge="Donor Journey"
-          badgeIcon={<Gift className="w-3.5 h-3.5 text-[#E4572E]" />}
+          badgeIcon={<Gift className="w-3.5 h-3.5 text-[#B65038]" />}
           title="Your Generosity at Work"
           subtitle="Every item you deliver is directly accounted for with physical photo proof and verified by recipient children's homes."
         />
@@ -51,16 +51,16 @@ export const DonorImpact: React.FC<{ onBrowseWishes: () => void }> = ({ onBrowse
 
   return (
     <div className="space-y-8 pb-16">
-      {/* 1. Sunlight Page Header Band */}
+      {/* 1. Vintage Sage & Vellum Page Header Band */}
       <WorkPageHeader
         badge="Personal Impact"
-        badgeIcon={<Gift className="w-3.5 h-3.5 text-[#E4572E]" />}
+        badgeIcon={<Gift className="w-3.5 h-3.5 text-[#B65038]" />}
         title="Your Generosity at Work"
         subtitle="Every item you deliver is directly accounted for with physical photo proof and verified by recipient children's homes."
         actions={
           <button
             onClick={onBrowseWishes}
-            className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-coral-500 to-coral-600 hover:brightness-110 text-white font-bold text-xs tracking-wide shadow-soft transition active:scale-95 flex items-center gap-2"
+            className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-coral-500 to-coral-600 hover:brightness-110 text-[#FAF6EC] font-bold text-xs tracking-wide shadow-soft transition active:scale-95 flex items-center gap-2"
           >
             <Sparkles className="w-3.5 h-3.5" />
             <span>Pledge More Items</span>
@@ -75,7 +75,7 @@ export const DonorImpact: React.FC<{ onBrowseWishes: () => void }> = ({ onBrowse
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.35, delay: 0.05 }}
-            className="bg-white rounded-3xl border border-[#D8E6F0] p-6 shadow-soft hover:shadow-card hover:-translate-y-0.5 transition-all"
+            className="bg-[#FBF9F3] rounded-3xl border border-[#D4CAB0] p-6 shadow-soft hover:shadow-card hover:-translate-y-0.5 transition-all"
           >
             <div className="flex items-center justify-between">
               <span className="text-xs font-semibold text-coral-600 uppercase tracking-wider">
@@ -88,14 +88,14 @@ export const DonorImpact: React.FC<{ onBrowseWishes: () => void }> = ({ onBrowse
             <div className="font-serif text-4xl font-bold text-ink-900 mt-3 font-feature-tabular">
               {impact.total_wishes_fulfilled}
             </div>
-            <p className="text-xs text-ink-500 mt-1">Completely received & confirmed</p>
+            <p className="text-xs text-ink-500 mt-1">Completely received &amp; confirmed</p>
           </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.35, delay: 0.1 }}
-            className="bg-white rounded-3xl border border-[#D8E6F0] p-6 shadow-soft hover:shadow-card hover:-translate-y-0.5 transition-all"
+            className="bg-[#FBF9F3] rounded-3xl border border-[#D4CAB0] p-6 shadow-soft hover:shadow-card hover:-translate-y-0.5 transition-all"
           >
             <div className="flex items-center justify-between">
               <span className="text-xs font-semibold text-teal-700 uppercase tracking-wider">
@@ -115,7 +115,7 @@ export const DonorImpact: React.FC<{ onBrowseWishes: () => void }> = ({ onBrowse
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.35, delay: 0.15 }}
-            className="bg-white rounded-3xl border border-[#D8E6F0] p-6 shadow-soft hover:shadow-card hover:-translate-y-0.5 transition-all"
+            className="bg-[#FBF9F3] rounded-3xl border border-[#D4CAB0] p-6 shadow-soft hover:shadow-card hover:-translate-y-0.5 transition-all"
           >
             <div className="flex items-center justify-between">
               <span className="text-xs font-semibold text-marigold-600 uppercase tracking-wider">
@@ -135,7 +135,7 @@ export const DonorImpact: React.FC<{ onBrowseWishes: () => void }> = ({ onBrowse
         {/* Items by Category & Homes Helped Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Category Breakdown with Category Color Coding */}
-          <div className="bg-white rounded-3xl border border-[#D8E6F0] p-6 sm:p-7 shadow-soft space-y-4">
+          <div className="bg-[#FBF9F3] rounded-3xl border border-[#D4CAB0] p-6 sm:p-7 shadow-soft space-y-4">
             <h3 className="font-serif text-lg font-bold text-ink-900">Items Delivered by Category</h3>
             <div className="space-y-3.5 pt-1">
               {impact.items_by_category.map((cat) => {
@@ -146,7 +146,7 @@ export const DonorImpact: React.FC<{ onBrowseWishes: () => void }> = ({ onBrowse
                 );
 
                 return (
-                  <div key={cat.category_id} className="space-y-1.5 p-3 rounded-2xl bg-white border border-[#E2EDF5]">
+                  <div key={cat.category_id} className="space-y-1.5 p-3 rounded-2xl bg-[#FFFDF8] border border-[#E5DEC9]">
                     <div className="flex justify-between text-xs font-semibold text-ink-800">
                       <div className="flex items-center gap-2">
                         <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: theme.primary }} />
@@ -156,7 +156,7 @@ export const DonorImpact: React.FC<{ onBrowseWishes: () => void }> = ({ onBrowse
                         {cat.total_quantity} items ({percent}%)
                       </span>
                     </div>
-                    <div className="w-full bg-[#E2EDF5] rounded-full h-2 overflow-hidden flex shadow-inner">
+                    <div className="w-full bg-[#E5DEC9] rounded-full h-2 overflow-hidden flex shadow-inner">
                       <motion.div
                         initial={{ width: 0 }}
                         whileInView={{ width: `${percent}%` }}
@@ -173,9 +173,9 @@ export const DonorImpact: React.FC<{ onBrowseWishes: () => void }> = ({ onBrowse
           </div>
 
           {/* Partner Homes Helped */}
-          <div className="bg-white rounded-3xl border border-[#D8E6F0] p-6 sm:p-7 shadow-soft space-y-4">
+          <div className="bg-[#FBF9F3] rounded-3xl border border-[#D4CAB0] p-6 sm:p-7 shadow-soft space-y-4">
             <h3 className="font-serif text-lg font-bold text-ink-900">Partner Homes You Supported</h3>
-            <div className="divide-y divide-[#E2EDF5]">
+            <div className="divide-y divide-[#E5DEC9]">
               {((impact as any).institutions_helped_list || (Array.isArray(impact.institutions_helped) ? impact.institutions_helped : [])).map((inst: any) => (
                 <div key={inst.institution_id} className="py-3.5 flex items-center justify-between text-xs">
                   <div>
@@ -192,7 +192,7 @@ export const DonorImpact: React.FC<{ onBrowseWishes: () => void }> = ({ onBrowse
         </div>
 
         {/* Visual Impact Timeline */}
-        <div className="bg-white rounded-3xl border border-[#D8E6F0] p-6 sm:p-8 shadow-soft space-y-6">
+        <div className="bg-[#FBF9F3] rounded-3xl border border-[#D4CAB0] p-6 sm:p-8 shadow-soft space-y-6">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="font-serif text-xl font-bold text-ink-900">Chronological Impact Timeline</h3>

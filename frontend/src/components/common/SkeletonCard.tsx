@@ -2,7 +2,7 @@ import React from 'react';
 
 export const SkeletonWishCard: React.FC = () => {
   return (
-    <div className="bg-white rounded-3xl p-6 border border-cream-200 shadow-soft-sm flex flex-col justify-between h-[360px] animate-pulse">
+    <div className="bg-[#FBF8F1] rounded-3xl p-6 border border-cream-200 shadow-soft-sm flex flex-col justify-between h-[360px] animate-pulse">
       <div>
         <div className="flex items-center justify-between mb-4">
           <div className="w-14 h-14 rounded-2xl bg-cream-200" />

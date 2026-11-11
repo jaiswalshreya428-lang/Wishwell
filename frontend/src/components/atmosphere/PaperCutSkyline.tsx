@@ -36,22 +36,22 @@ export const PaperCutSkyline: React.FC<{ className?: string }> = ({ className = 
           className="w-full h-full object-cover"
           preserveAspectRatio="none"
         >
-          {/* Distant soft hill */}
+          {/* Distant soft sage-mist hill */}
           <path
             d="M0 80C240 50 480 95 720 65C960 35 1200 70 1440 50V140H0V80Z"
-            fill="#E6F2FA"
-            opacity="0.85"
+            fill="#D8E5DE"
+            opacity="0.9"
           />
           {/* Distant tiny trees & pines */}
-          <path d="M180 58L186 70H174L180 58Z" fill="#A9D0ED" />
-          <path d="M192 61L197 71H187L192 61Z" fill="#A9D0ED" />
-          <path d="M840 52L846 64H834L840 52Z" fill="#A9D0ED" />
-          <path d="M1220 54L1226 66H1214L1220 54Z" fill="#A9D0ED" />
+          <path d="M180 58L186 70H174L180 58Z" fill="#9BBCAE" />
+          <path d="M192 61L197 71H187L192 61Z" fill="#9BBCAE" />
+          <path d="M840 52L846 64H834L840 52Z" fill="#9BBCAE" />
+          <path d="M1220 54L1226 66H1214L1220 54Z" fill="#9BBCAE" />
         </svg>
       </motion.div>
 
       {/* ======================================================== */}
-      {/* LAYER 2: Middle hill with cozy homes & glowing windows    */}
+      {/* LAYER 2: Middle hill with cozy homes, wishing well & glow*/}
       {/* ======================================================== */}
       <motion.div
         style={{ y: yMiddle }}
@@ -67,44 +67,53 @@ export const PaperCutSkyline: React.FC<{ className?: string }> = ({ className = 
           {/* Middle undulating ridge */}
           <path
             d="M0 95C280 75 520 110 800 80C1080 50 1300 85 1440 75V140H0V95Z"
-            fill="#D5E8F5"
+            fill="#C7D9CF"
           />
 
           {/* House 1 (Left): Small shelter with chimney & warm glowing window */}
           <g transform="translate(120, 58)">
-            <rect x="0" y="16" width="28" height="24" rx="2" fill="#C4552F" />
-            <path d="M-4 17L14 3L32 17H-4Z" fill="#9E3F1F" />
-            <rect x="20" y="6" width="4" height="10" fill="#80331A" />
+            <rect x="0" y="16" width="28" height="24" rx="2" fill="#A84637" />
+            <path d="M-4 17L14 3L32 17H-4Z" fill="#8D3628" />
+            <rect x="20" y="6" width="4" height="10" fill="#722B1F" />
             {/* Glowing window */}
-            <rect x="7" y="23" width="7" height="8" rx="1" fill="#F2B441" />
-            <rect x="17" y="23" width="7" height="8" rx="1" fill="#F2B441" />
+            <rect x="7" y="23" width="7" height="8" rx="1" fill="#E8C266" />
+            <rect x="17" y="23" width="7" height="8" rx="1" fill="#E8C266" />
           </g>
 
           {/* House 2 (Center-Left): Children's Home with double roof */}
           <g transform="translate(420, 64)">
-            <rect x="0" y="14" width="36" height="26" rx="2" fill="#1F5C57" />
-            <path d="M-4 15L18 0L40 15H-4Z" fill="#184945" />
-            <rect x="6" y="4" width="5" height="11" fill="#133936" />
+            <rect x="0" y="14" width="36" height="26" rx="2" fill="#215B54" />
+            <path d="M-4 15L18 0L40 15H-4Z" fill="#194641" />
+            <rect x="6" y="4" width="5" height="11" fill="#133632" />
             {/* Windows glowing with dusk light */}
-            <rect x="6" y="20" width="8" height="9" rx="1" fill="#F2B441" />
-            <rect x="22" y="20" width="8" height="9" rx="1" fill="#F2B441" />
-            <rect x="15" y="28" width="6" height="12" rx="1" fill="#FDF8F1" />
+            <rect x="6" y="20" width="8" height="9" rx="1" fill="#E8C266" />
+            <rect x="22" y="20" width="8" height="9" rx="1" fill="#E8C266" />
+            <rect x="15" y="28" width="6" height="12" rx="1" fill="#FAF7F0" />
+          </g>
+
+          {/* Miniature Courtyard Wishing Well Silhouette (Center) */}
+          <g transform="translate(710, 50)">
+            <rect x="4" y="14" width="3" height="14" fill="#6E4E37" />
+            <rect x="21" y="14" width="3" height="14" fill="#6E4E37" />
+            <path d="M0 15L14 4L28 15H0Z" fill="#A84637" />
+            <rect x="3" y="26" width="22" height="12" rx="2" fill="#E5DEC9" stroke="#9B907A" strokeWidth="1" />
+            <circle cx="14" cy="18" r="2" fill="#E8C266" />
           </g>
 
           {/* House 3 (Center-Right): Warm cottage */}
           <g transform="translate(980, 52)">
-            <rect x="0" y="14" width="30" height="24" rx="2" fill="#C4552F" />
-            <path d="M-3 15L15 2L33 15H-3Z" fill="#9E3F1F" />
+            <rect x="0" y="14" width="30" height="24" rx="2" fill="#A84637" />
+            <path d="M-3 15L15 2L33 15H-3Z" fill="#8D3628" />
             {/* Glowing warm window */}
-            <rect x="8" y="21" width="8" height="8" rx="1" fill="#F2B441" />
-            <rect x="19" y="21" width="5" height="10" rx="1" fill="#FDF2D5" />
+            <rect x="8" y="21" width="8" height="8" rx="1" fill="#E8C266" />
+            <rect x="19" y="21" width="5" height="10" rx="1" fill="#FAF2DE" />
           </g>
 
           {/* House 4 (Right): Small community house */}
           <g transform="translate(1310, 60)">
-            <rect x="0" y="14" width="26" height="22" rx="2" fill="#2E7972" />
-            <path d="M-3 15L13 3L29 15H-3Z" fill="#1F5C57" />
-            <rect x="7" y="20" width="6" height="7" rx="1" fill="#F2B441" />
+            <rect x="0" y="14" width="26" height="22" rx="2" fill="#2E776E" />
+            <path d="M-3 15L13 3L29 15H-3Z" fill="#215B54" />
+            <rect x="7" y="20" width="6" height="7" rx="1" fill="#E8C266" />
           </g>
         </svg>
       </motion.div>
@@ -123,15 +132,15 @@ export const PaperCutSkyline: React.FC<{ className?: string }> = ({ className = 
           className="w-full h-full object-cover"
           preserveAspectRatio="none"
         >
-          {/* Foreground rolling curve matching soothing #F0F6FB base surface */}
+          {/* Foreground rolling curve matching soothing mist-sage #EFF5F1 base */}
           <path
             d="M0 115C360 90 720 130 1080 105C1240 92 1360 108 1440 100V140H0V115Z"
-            fill="#F0F6FB"
+            fill="#EFF5F1"
           />
           {/* Subtle paper-cut shadow line */}
           <path
             d="M0 115C360 90 720 130 1080 105C1240 92 1360 108 1440 100"
-            stroke="#CFE2F0"
+            stroke="#C7D6CE"
             strokeWidth="1.5"
             strokeLinecap="round"
           />

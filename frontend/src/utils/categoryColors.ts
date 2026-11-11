@@ -33,112 +33,112 @@ export interface CategoryTheme {
 export function getCategoryTheme(categoryNameOrId: string | number | undefined | null): CategoryTheme {
   const norm = String(categoryNameOrId || '').toLowerCase().trim();
 
-  // 1. Bedding & Linen -> Plum
+  // 1. Bedding & Linen -> Heather Plum
   if (norm.includes('bed') || norm.includes('linen') || norm.includes('blanket') || norm.includes('pillow')) {
     return {
       name: 'Bedding & Linen',
-      primary: '#533E78',
-      tint: '#F3EBF9',
-      border: '#D8C5E8',
-      gradient: 'from-[#F3EBF9]/90 to-transparent',
-      badgeBg: 'bg-[#F3EBF9]',
-      badgeText: 'text-[#533E78]',
-      badgeBorder: 'border-[#D8C5E8]',
+      primary: '#5E4B6B',
+      tint: '#F2EEF5',
+      border: '#D6CCE0',
+      gradient: 'from-[#F2EEF5]/90 to-transparent',
+      badgeBg: 'bg-[#F2EEF5]',
+      badgeText: 'text-[#544363]',
+      badgeBorder: 'border-[#D6CCE0]',
       washiColor: 'plum',
       hoverShadow: 'hover:shadow-plum/15',
     };
   }
 
-  // 2. Clothing & Footwear -> Coral
+  // 2. Clothing & Footwear -> Antique Terracotta
   if (norm.includes('cloth') || norm.includes('footwear') || norm.includes('wear') || norm.includes('shoe') || norm.includes('coat')) {
     return {
       name: 'Clothing & Footwear',
-      primary: '#E4572E',
-      tint: '#FDEEE9',
-      border: '#F9C4B3',
-      gradient: 'from-[#FDEEE9]/90 to-transparent',
-      badgeBg: 'bg-[#FDEEE9]',
-      badgeText: 'text-[#C9441F]',
-      badgeBorder: 'border-[#F9C4B3]',
+      primary: '#B65038',
+      tint: '#F9ECE6',
+      border: '#ECC4B5',
+      gradient: 'from-[#F9ECE6]/90 to-transparent',
+      badgeBg: 'bg-[#F9ECE6]',
+      badgeText: 'text-[#9B3F2A]',
+      badgeBorder: 'border-[#ECC4B5]',
       washiColor: 'coral',
       hoverShadow: 'hover:shadow-coral/20',
     };
   }
 
-  // 3. Educational Supplies -> Teal
+  // 3. Educational Supplies -> Well Verdigris Teal
   if (norm.includes('edu') || norm.includes('book') || norm.includes('school') || norm.includes('notebook') || norm.includes('geometry')) {
     return {
       name: 'Educational Supplies',
-      primary: '#1F8A7A',
-      tint: '#E3F5F2',
-      border: '#BDE6DF',
-      gradient: 'from-[#E3F5F2]/90 to-transparent',
-      badgeBg: 'bg-[#E3F5F2]',
-      badgeText: 'text-[#166C60]',
-      badgeBorder: 'border-[#BDE6DF]',
+      primary: '#24635C',
+      tint: '#E4F0ED',
+      border: '#BADAD3',
+      gradient: 'from-[#E4F0ED]/90 to-transparent',
+      badgeBg: 'bg-[#E4F0ED]',
+      badgeText: 'text-[#1B4D48]',
+      badgeBorder: 'border-[#BADAD3]',
       washiColor: 'teal',
       hoverShadow: 'hover:shadow-teal/15',
     };
   }
 
-  // 4. Health & Hygiene -> Sage-Green
+  // 4. Health & Hygiene -> Dried Sage
   if (norm.includes('health') || norm.includes('hygiene') || norm.includes('medical') || norm.includes('soap') || norm.includes('sanitary')) {
     return {
       name: 'Health & Hygiene',
-      primary: '#436D4D',
-      tint: '#EBF4EC',
-      border: '#BED6B4',
-      gradient: 'from-[#EBF4EC]/90 to-transparent',
-      badgeBg: 'bg-[#EBF4EC]',
-      badgeText: 'text-[#36593E]',
-      badgeBorder: 'border-[#BED6B4]',
+      primary: '#416148',
+      tint: '#E9F1E9',
+      border: '#C0D4C2',
+      gradient: 'from-[#E9F1E9]/90 to-transparent',
+      badgeBg: 'bg-[#E9F1E9]',
+      badgeText: 'text-[#314B37]',
+      badgeBorder: 'border-[#C0D4C2]',
       washiColor: 'sage',
       hoverShadow: 'hover:shadow-sage/20',
     };
   }
 
-  // 5. Nutrition & Food -> Marigold
+  // 5. Nutrition & Food -> Burnished Brass
   if (norm.includes('nutri') || norm.includes('food') || norm.includes('meal') || norm.includes('grain') || norm.includes('ration')) {
     return {
       name: 'Nutrition & Food',
-      primary: '#B0750C',
-      tint: '#FEF8E8',
-      border: '#FBE4AE',
-      gradient: 'from-[#FEF8E8]/90 to-transparent',
-      badgeBg: 'bg-[#FEF8E8]',
-      badgeText: 'text-[#9A6405]',
-      badgeBorder: 'border-[#FBE4AE]',
+      primary: '#A97624',
+      tint: '#FAF2DE',
+      border: '#ECD8A3',
+      gradient: 'from-[#FAF2DE]/90 to-transparent',
+      badgeBg: 'bg-[#FAF2DE]',
+      badgeText: 'text-[#855A19]',
+      badgeBorder: 'border-[#ECD8A3]',
       washiColor: 'marigold',
       hoverShadow: 'hover:shadow-marigold/20',
     };
   }
 
-  // 6. Sports & Recreation -> Sky Blue
+  // 6. Sports & Recreation -> Mineral Well Blue
   if (norm.includes('sport') || norm.includes('recreation') || norm.includes('game') || norm.includes('play') || norm.includes('toy')) {
     return {
       name: 'Sports & Recreation',
-      primary: '#2A76B5',
-      tint: '#E8F3FC',
-      border: '#BDDCF6',
-      gradient: 'from-[#E8F3FC]/90 to-transparent',
-      badgeBg: 'bg-[#E8F3FC]',
-      badgeText: 'text-[#205F94]',
-      badgeBorder: 'border-[#BDDCF6]',
+      primary: '#3B666E',
+      tint: '#E4EFF0',
+      border: '#BDD6DA',
+      gradient: 'from-[#E4EFF0]/90 to-transparent',
+      badgeBg: 'bg-[#E4EFF0]',
+      badgeText: 'text-[#2D5057]',
+      badgeBorder: 'border-[#BDD6DA]',
       washiColor: 'sky',
       hoverShadow: 'hover:shadow-skyblue/15',
     };
   }
 
-  // Default fallback (Teal)
+  // Default fallback (Verdigris Teal)
   return {
     name: 'General Need',
-    primary: '#1F8A7A',
-    tint: '#E3F5F2',
-    border: '#BDE6DF',
-    gradient: 'from-[#E3F5F2]/90 to-transparent',
-    badgeBg: 'bg-[#E3F5F2]',
-    badgeText: 'text-[#166C60]',
-    badgeBorder: 'border-[#BDE6DF]',
+    primary: '#24635C',
+    tint: '#E4F0ED',
+    border: '#BADAD3',
+    gradient: 'from-[#E4F0ED]/90 to-transparent',
+    badgeBg: 'bg-[#E4F0ED]',
+    badgeText: 'text-[#1B4D48]',
+    badgeBorder: 'border-[#BADAD3]',
     washiColor: 'teal',
     hoverShadow: 'hover:shadow-teal/15',
   };

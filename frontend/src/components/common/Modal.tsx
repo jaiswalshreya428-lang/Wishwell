@@ -47,9 +47,9 @@ export const Modal: React.FC<ModalProps> = ({
     >
       <div
         ref={modalRef}
-        className={`bg-white rounded-2xl shadow-soft-lg w-full ${maxWidthClass} overflow-hidden border border-cream-200 transform transition-all animate-in fade-in zoom-in-95 duration-200`}
+        className={`bg-[#FAF7EF] rounded-2xl shadow-soft-lg w-full ${maxWidthClass} overflow-hidden border border-cream-200 transform transition-all animate-in fade-in zoom-in-95 duration-200`}
       >
-        <div className="px-6 py-5 border-b border-cream-100 flex items-start justify-between bg-cream-50/70">
+        <div className="px-6 py-5 border-b border-cream-200 flex items-start justify-between bg-cream-100/80">
           <div>
             <h3 id="modal-title" className="font-serif text-xl font-bold text-ink-900 tracking-tight">
               {title}

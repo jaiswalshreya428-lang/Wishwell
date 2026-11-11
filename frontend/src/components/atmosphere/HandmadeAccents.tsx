@@ -16,13 +16,13 @@ export const WashiTape: React.FC<{
   }[position];
 
   const colorStyles: Record<string, string> = {
-    terracotta: 'bg-coral-200/90 border-coral-300 text-coral-800',
-    coral: 'bg-[#F9C4B3]/90 border-[#F49E86] text-[#A73315]',
-    marigold: 'bg-marigold-200/90 border-marigold-300 text-marigold-900',
-    sage: 'bg-[#BED6B4]/90 border-[#A1C295] text-[#36593E]',
-    teal: 'bg-[#BDE6DF]/90 border-[#94D4CB] text-[#11544B]',
-    plum: 'bg-[#D8C5E8]/90 border-[#C1A5D8] text-[#3A2A55]',
-    sky: 'bg-[#BDDCF6]/90 border-[#91C1ED] text-[#1C517E]',
+    terracotta: 'bg-[#ECC4B5]/90 border-[#D49E8B] text-[#7E3120]',
+    coral: 'bg-[#ECC4B5]/90 border-[#D49E8B] text-[#7E3120]',
+    marigold: 'bg-[#ECD8A3]/90 border-[#DFBF72] text-[#6E4A10]',
+    sage: 'bg-[#C0D4C2]/90 border-[#9BB99E] text-[#314B37]',
+    teal: 'bg-[#BADAD3]/90 border-[#8EC0B6] text-[#153B37]',
+    plum: 'bg-[#E2D9EA]/90 border-[#C9BBD6] text-[#42354E]',
+    sky: 'bg-[#BDD6DA]/90 border-[#93BAC1] text-[#2A4C53]',
   };
 
   const style = colorStyles[color] || colorStyles.marigold;
@@ -127,7 +127,7 @@ export const TornPaperDivider: React.FC<{
   position?: 'top' | 'bottom';
   fillColor?: string;
   className?: string;
-}> = ({ position = 'bottom', fillColor = '#F0F6FB', className = '' }) => {
+}> = ({ position = 'bottom', fillColor = '#EFF5F1', className = '' }) => {
   const isTop = position === 'top';
 
   return (
@@ -153,4 +153,31 @@ export const TornPaperDivider: React.FC<{
     </div>
   );
 };
+
+/**
+ * Vintage Wax Seal Stamp:
+ * Embossed antique wax seal with W crest for verified parchment cards.
+ */
+export const VintageWaxSeal: React.FC<{
+  className?: string;
+  label?: string;
+}> = ({ className = '', label = 'VERIFIED WELL' }) => (
+  <div
+    aria-label={label}
+    title={label}
+    className={`inline-flex items-center justify-center select-none pointer-events-none ${className}`}
+  >
+    <svg viewBox="0 0 48 48" className="w-10 h-10 drop-shadow-sm" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M24 3L28.2 6.1L33.3 5.2L35.7 9.8L40.6 11.1L40.8 16.3L44.6 19.8L42.5 24.5L44.4 29.4L40.3 32.6L39.9 37.8L34.9 38.8L32.3 43.3L27.2 42.1L24 45L20.8 42.1L15.7 43.3L13.1 38.8L8.1 37.8L7.7 32.6L3.6 29.4L5.5 24.5L3.4 19.8L7.2 16.3L7.4 11.1L12.3 9.8L14.7 5.2L19.8 6.1L24 3Z"
+        fill="#8D3628"
+        stroke="#722B1F"
+        strokeWidth="1.2"
+      />
+      <circle cx="24" cy="24" r="13.5" fill="#A84637" stroke="#DFC37C" strokeWidth="1" strokeOpacity="0.6" />
+      <circle cx="24" cy="24" r="10.5" fill="none" stroke="#FAF2DE" strokeWidth="0.7" strokeOpacity="0.45" strokeDasharray="2 1.5" />
+      <path d="M18.5 19L21 29L24 22.5L27 29L29.5 19" stroke="#FAF2DE" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  </div>
+);
 

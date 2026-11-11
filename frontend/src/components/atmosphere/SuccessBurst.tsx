@@ -38,7 +38,7 @@ export const SuccessBurst: React.FC<SuccessBurstProps> = ({
       return () => clearTimeout(timer);
     }
 
-    const colors = ['#C4552F', '#F2B441', '#1F5C57', '#FDF2D5', '#9E3F1F'];
+    const colors = ['#A84637', '#C69749', '#215B54', '#F6ECD3', '#8D3628'];
     const count = 18;
     const newParticles: Particle[] = [];
 
@@ -68,12 +68,23 @@ export const SuccessBurst: React.FC<SuccessBurstProps> = ({
 
   return (
     <div className="relative inline-flex flex-col items-center justify-center p-4">
+      {/* Mini Anime Celebration Badge Above Checkmark */}
+      <motion.div
+        initial={{ opacity: 0, y: 8, scale: 0.85 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.3 }}
+        className="mb-2 px-3 py-1 rounded-full bg-[#FAF8F3] border border-[#C69749]/60 shadow-xs text-[11px] font-serif italic font-bold text-[#8D3628] flex items-center gap-1.5"
+      >
+        <span>Yay! Thank you! ♡</span>
+        <span className="not-italic text-[#C69749]">✦</span>
+      </motion.div>
+
       {/* Central animated check badge */}
       <motion.div
         initial={{ scale: 0, rotate: -20 }}
         animate={{ scale: 1, rotate: 0 }}
         transition={{ type: 'spring', damping: 14, stiffness: 200 }}
-        className="w-14 h-14 rounded-full bg-gradient-to-br from-teal-500 to-teal-700 text-white shadow-teal flex items-center justify-center z-10"
+        className="w-14 h-14 rounded-full bg-gradient-to-br from-[#2E776E] to-[#194641] text-[#FAF7F0] shadow-teal flex items-center justify-center z-10 border border-[#DFC37C]/50"
       >
         <motion.div
           initial={{ pathLength: 0, opacity: 0 }}

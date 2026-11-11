@@ -25,28 +25,28 @@ export const DemoRoleBar: React.FC<DemoRoleBarProps> = ({ navigate }) => {
 
   return (
     <div
-      style={{ backgroundColor: '#EBF4FA' }}
-      className="bg-[#EBF4FA] text-[#0F172A] border-b border-[#D5E6F2] px-3 sm:px-6 py-2 relative z-50 shadow-xs"
+      style={{ backgroundColor: '#DFEEF2' }}
+      className="bg-[#DFEEF2] text-[#192D2A] border-b border-[#C5DAD7] px-3 sm:px-6 py-2 relative z-50 shadow-xs"
     >
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-2.5">
         {/* Left: Role Switcher Label & Current User */}
         <div className="flex items-center gap-2.5 shrink-0">
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#E0EFF8] border border-[#CFE4F2] text-[#0369A1] text-[11px] font-bold uppercase tracking-wider">
-            <Sparkles className="w-3.5 h-3.5 animate-pulse text-[#0284C7]" />
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#FAF7F0] border border-[#D4CAB0] text-[#194641] text-[11px] font-bold uppercase tracking-wider">
+            <Sparkles className="w-3.5 h-3.5 animate-pulse text-[#C69749]" />
             <span>1-Click Role Switcher</span>
           </div>
 
-          <div className="text-xs text-[#475569] flex items-center gap-1.5">
+          <div className="text-xs text-[#3D4D49] flex items-center gap-1.5">
             <span className="hidden sm:inline">Active:</span>
             {user ? (
-              <span className="inline-flex items-center gap-1 font-semibold text-[#0F172A] bg-white px-2 py-0.5 rounded-md border border-[#D0E2EE] shadow-xs">
-                <span className="w-2 h-2 rounded-full bg-[#0D9488]" />
+              <span className="inline-flex items-center gap-1 font-semibold text-[#1D2927] bg-[#FBF9F3] px-2 py-0.5 rounded-md border border-[#D4CAB0] shadow-xs">
+                <span className="w-2 h-2 rounded-full bg-[#24635C]" />
                 <span className="capitalize">{user.role}</span>
-                <span className="text-[#64748B] font-normal hidden sm:inline">({user.full_name})</span>
+                <span className="text-[#53645F] font-normal hidden sm:inline">({user.full_name})</span>
               </span>
             ) : (
-              <span className="inline-flex items-center gap-1 font-semibold text-[#0369A1] bg-white px-2 py-0.5 rounded-md border border-[#D0E2EE] shadow-xs">
-                <span className="w-2 h-2 rounded-full bg-[#0284C7]" />
+              <span className="inline-flex items-center gap-1 font-semibold text-[#1B4D48] bg-[#FBF9F3] px-2 py-0.5 rounded-md border border-[#D4CAB0] shadow-xs">
+                <span className="w-2 h-2 rounded-full bg-[#C89238]" />
                 <span>Guest (Public)</span>
               </span>
             )}
@@ -60,8 +60,8 @@ export const DemoRoleBar: React.FC<DemoRoleBarProps> = ({ navigate }) => {
             onClick={() => handleSwitch('donor')}
             className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 active:scale-95 border ${
               user?.role === 'donor'
-                ? 'bg-[#0284C7] text-white border-[#0284C7] shadow-sm font-bold ring-2 ring-[#0284C7]/30'
-                : 'bg-white hover:bg-[#E0EFF8] text-[#334155] hover:text-[#0F172A] border-[#D0E2EE]'
+                ? 'bg-[#215B54] text-[#FAF7F0] border-[#194641] shadow-sm font-bold ring-2 ring-[#215B54]/25'
+                : 'bg-[#FAF7F0] hover:bg-[#F2EEE3] text-[#2A3835] hover:text-[#192D2A] border-[#D4CAB0]'
             }`}
             title="Switch to Donor persona (Sarah Jenkins) & open Browse Wishes"
           >
@@ -74,8 +74,8 @@ export const DemoRoleBar: React.FC<DemoRoleBarProps> = ({ navigate }) => {
             onClick={() => handleSwitch('institution')}
             className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 active:scale-95 border ${
               user?.role === 'institution'
-                ? 'bg-[#0284C7] text-white border-[#0284C7] shadow-sm font-bold ring-2 ring-[#0284C7]/30'
-                : 'bg-white hover:bg-[#E0EFF8] text-[#334155] hover:text-[#0F172A] border-[#D0E2EE]'
+                ? 'bg-[#215B54] text-[#FAF7F0] border-[#194641] shadow-sm font-bold ring-2 ring-[#215B54]/25'
+                : 'bg-[#FAF7F0] hover:bg-[#F2EEE3] text-[#2A3835] hover:text-[#192D2A] border-[#D4CAB0]'
             }`}
             title="Switch to Children's Home persona (St. Mary's) & open Institution Hub"
           >
@@ -88,8 +88,8 @@ export const DemoRoleBar: React.FC<DemoRoleBarProps> = ({ navigate }) => {
             onClick={() => handleSwitch('verifier')}
             className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 active:scale-95 border ${
               user?.role === 'verifier'
-                ? 'bg-[#0284C7] text-white border-[#0284C7] shadow-sm font-bold ring-2 ring-[#0284C7]/30'
-                : 'bg-white hover:bg-[#E0EFF8] text-[#334155] hover:text-[#0F172A] border-[#D0E2EE]'
+                ? 'bg-[#215B54] text-[#FAF7F0] border-[#194641] shadow-sm font-bold ring-2 ring-[#215B54]/25'
+                : 'bg-[#FAF7F0] hover:bg-[#F2EEE3] text-[#2A3835] hover:text-[#192D2A] border-[#D4CAB0]'
             }`}
             title="Switch to Field Verifier persona (Marcus) & open Pending Inspection Queue"
           >
@@ -102,8 +102,8 @@ export const DemoRoleBar: React.FC<DemoRoleBarProps> = ({ navigate }) => {
             onClick={() => handleSwitch('admin')}
             className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 active:scale-95 border ${
               user?.role === 'admin'
-                ? 'bg-[#0284C7] text-white border-[#0284C7] shadow-sm font-bold ring-2 ring-[#0284C7]/30'
-                : 'bg-white hover:bg-[#E0EFF8] text-[#334155] hover:text-[#0F172A] border-[#D0E2EE]'
+                ? 'bg-[#215B54] text-[#FAF7F0] border-[#194641] shadow-sm font-bold ring-2 ring-[#215B54]/25'
+                : 'bg-[#FAF7F0] hover:bg-[#F2EEE3] text-[#2A3835] hover:text-[#192D2A] border-[#D4CAB0]'
             }`}
             title="Switch to Platform Administrator (Elena) & open BI Analytics"
           >
@@ -115,7 +115,7 @@ export const DemoRoleBar: React.FC<DemoRoleBarProps> = ({ navigate }) => {
           {user ? (
             <button
               onClick={handleGuest}
-              className="px-2.5 py-1.5 rounded-xl text-xs font-medium text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 transition ml-1"
+              className="px-2.5 py-1.5 rounded-xl text-xs font-medium text-[#722B1F] bg-[#FBF3F1] hover:bg-[#F5E0DC] border border-[#DC9C90] transition ml-1"
               title="Sign out to Guest persona"
             >
               Sign Out
@@ -123,7 +123,7 @@ export const DemoRoleBar: React.FC<DemoRoleBarProps> = ({ navigate }) => {
           ) : (
             <button
               onClick={() => navigate('/browse')}
-              className="px-2.5 py-1.5 rounded-xl text-xs font-semibold text-[#0369A1] bg-white hover:bg-[#E0EFF8] border border-[#D0E2EE] transition ml-1"
+              className="px-2.5 py-1.5 rounded-xl text-xs font-semibold text-[#194641] bg-[#FAF7F0] hover:bg-[#F2EEE3] border border-[#D4CAB0] transition ml-1"
             >
               Browse Open Wishes
             </button>

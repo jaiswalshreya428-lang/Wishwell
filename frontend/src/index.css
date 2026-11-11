@@ -3,43 +3,145 @@
 @tailwind utilities;
 
 :root {
-  --bg-night: #1E293B;
-  --bg-plum: #334155;
-  --primary-coral: #E4572E;
-  --primary-coral-hover: #C9441F;
-  --accent-marigold: #F59E0B;
-  --secondary-teal: #0D9488;
-  --soothing-blue: #EFF6FC;
-  --soothing-green: #EFF8F5;
-  --tint-blush: #F1F5F9;
-  --tint-sage: #E6F4EA;
-  --tint-butter: #EBF5FB;
-  --surface-card: #FFFFFF;
-  --ink-text: #0F172A;
-  --muted-text: #475569;
+  --bg-night: #182825;
+  --bg-plum: #293F3C;
+  --primary-coral: #A84637;
+  --primary-coral-hover: #8D3628;
+  --accent-marigold: #C69749;
+  --secondary-teal: #215B54;
+  --soothing-blue: #E2EFF2;
+  --soothing-green: #EAF3EE;
+  --tint-blush: #F7ECE8;
+  --tint-sage: #E1EFE6;
+  --tint-butter: #FAF2DE;
+  --surface-card: #FAF8F3;
+  --ink-text: #192D2A;
+  --muted-text: #4F615C;
 }
 
 @layer base {
   html {
     scroll-behavior: smooth;
     -webkit-tap-highlight-color: transparent;
-    background-color: #F8FAFC;
-    color: #0F172A;
+    background-color: #EAF3EE;
+    color: #192D2A;
   }
 
   body {
-    background: linear-gradient(180deg, #F0F6FB 0%, #FFFFFF 28%, #F1F8F5 65%, #F4F9FD 100%);
+    background-color: #EFF5F1;
+    background-image:
+      radial-gradient(circle at 14% 12%, rgba(164, 211, 215, 0.28) 0%, transparent 45%),
+      radial-gradient(circle at 86% 24%, rgba(235, 216, 180, 0.24) 0%, transparent 42%),
+      radial-gradient(circle at 48% 72%, rgba(173, 212, 194, 0.22) 0%, transparent 50%),
+      linear-gradient(180deg, #E2EFF2 0%, #EAF3EE 28%, #EFF5F1 66%, #E8F1EC 100%);
     background-attachment: fixed;
-    color: #0F172A;
+    color: #192D2A;
     font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
     min-height: 100vh;
   }
 
   /* Accessible visible keyboard focus rings meeting WCAG AA */
   *:focus-visible {
-    outline: 2px solid #E4572E;
+    outline: 2px solid #215B54;
     outline-offset: 2px;
   }
+}
+
+/* Soft vintage paper & well-ripple decorative helpers */
+.vintage-vellum-card {
+  background: linear-gradient(180deg, #FCF9F2 0%, #F6F1E4 100%);
+  border-color: #D6CCB6;
+}
+
+.vintage-double-frame {
+  box-shadow:
+    inset 0 0 0 1px rgba(198, 151, 73, 0.24),
+    0 8px 24px -4px rgba(25, 45, 42, 0.08);
+}
+
+@keyframes well-ripple {
+  0% {
+    transform: scale(0.45);
+    opacity: 0.85;
+  }
+  100% {
+    transform: scale(2.25);
+    opacity: 0;
+  }
+}
+
+@keyframes coin-drop {
+  0% {
+    transform: translateY(-48px) rotateY(0deg) scale(1);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  75% {
+    transform: translateY(10px) rotateY(540deg) scale(0.85);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(22px) rotateY(720deg) scale(0.3);
+    opacity: 0;
+  }
+}
+
+/* Anime Storybook Animation Keyframes */
+@keyframes anime-stride-left {
+  0%, 100% { transform: rotate(28deg); }
+  50% { transform: rotate(-28deg); }
+}
+
+@keyframes anime-stride-right {
+  0%, 100% { transform: rotate(-28deg); }
+  50% { transform: rotate(28deg); }
+}
+
+@keyframes anime-scarf-flutter {
+  0%, 100% { transform: rotate(0deg) skewX(0deg); }
+  50% { transform: rotate(-7deg) skewX(6deg); }
+}
+
+@keyframes anime-happy-hop {
+  0%, 100% { transform: translateY(0) rotate(-1.5deg); }
+  25% { transform: translateY(-7px) rotate(2deg); }
+  50% { transform: translateY(0) rotate(-2deg); }
+  75% { transform: translateY(-5px) rotate(1.5deg); }
+}
+
+@keyframes anime-sparkle-twinkle {
+  0%, 100% { transform: scale(0.85) rotate(0deg); opacity: 0.7; }
+  50% { transform: scale(1.2) rotate(12deg); opacity: 1; }
+}
+
+.animate-well-ripple {
+  animation: well-ripple 1.6s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+
+.animate-coin-drop {
+  animation: coin-drop 0.9s cubic-bezier(0.45, 0.05, 0.55, 0.95) forwards;
+}
+
+.animate-anime-stride-left {
+  animation: anime-stride-left 0.34s ease-in-out infinite;
+}
+
+.animate-anime-stride-right {
+  animation: anime-stride-right 0.34s ease-in-out infinite;
+}
+
+.animate-anime-scarf {
+  animation: anime-scarf-flutter 0.42s ease-in-out infinite;
+}
+
+.animate-anime-hop {
+  animation: anime-happy-hop 0.68s ease-in-out infinite;
+}
+
+.animate-anime-sparkle {
+  animation: anime-sparkle-twinkle 2.2s ease-in-out infinite;
 }
 
 /* Reduced motion preference */

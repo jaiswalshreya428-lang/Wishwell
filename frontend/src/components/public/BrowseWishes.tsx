@@ -106,8 +106,8 @@ export const BrowseWishes: React.FC<BrowseWishesProps> = ({ onSelectWish, onClai
         title="Browse Verified Wishes"
         subtitle="Choose a wish posted by a document-verified children's home. Pledge full or partial quantities and ship physical items directly with guaranteed delivery tracking."
         actions={
-          <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-2xl border border-[#D5E5E2] text-xs font-semibold text-[#0F172A] shadow-xs">
-            <span className="w-2 h-2 rounded-full bg-[#0D9488] animate-pulse" />
+          <div className="flex items-center gap-2 bg-[#FBF9F3] px-4 py-2 rounded-2xl border border-[#C7D6CD] text-xs font-semibold text-[#1D2927] shadow-xs">
+            <span className="w-2 h-2 rounded-full bg-[#24635C] animate-pulse" />
             <span>{totalWishes} Open Wishes Available</span>
           </div>
         }
@@ -115,7 +115,7 @@ export const BrowseWishes: React.FC<BrowseWishesProps> = ({ onSelectWish, onClai
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         {/* Filter & Search Bar */}
-        <div className="bg-white/90 backdrop-blur-sm rounded-3xl border border-[#D8E6F0] p-5 sm:p-6 shadow-soft flex flex-col lg:flex-row gap-4 items-stretch lg:items-center justify-between">
+        <div className="bg-[#FAF7EF]/95 backdrop-blur-sm rounded-3xl border border-[#D4CAB0] p-5 sm:p-6 shadow-soft flex flex-col lg:flex-row gap-4 items-stretch lg:items-center justify-between">
           {/* Search Input */}
           <form onSubmit={handleSearchSubmit} className="relative flex-1 max-w-md">
             <input
@@ -123,7 +123,7 @@ export const BrowseWishes: React.FC<BrowseWishesProps> = ({ onSelectWish, onClai
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search by item, home, or keywords..."
-              className="w-full pl-10 pr-4 py-3 rounded-2xl border border-[#D2E2EE] bg-white text-xs font-medium text-ink-900 placeholder:text-ink-400 focus-visible:ring-2 focus-visible:ring-coral-500 focus-visible:outline-none shadow-soft-sm transition"
+              className="w-full pl-10 pr-4 py-3 rounded-2xl border border-[#D4CAB0] bg-[#FFFDF8] text-xs font-medium text-ink-900 placeholder:text-ink-400 focus-visible:ring-2 focus-visible:ring-teal-600 focus-visible:outline-none shadow-soft-sm transition"
             />
             <Search className="w-4 h-4 text-ink-400 absolute left-3.5 top-3.5" />
           </form>
@@ -225,7 +225,7 @@ export const BrowseWishes: React.FC<BrowseWishesProps> = ({ onSelectWish, onClai
                         },
                   }}
                   whileHover={shouldReduceMotion ? undefined : { y: -7, rotate: 0, transition: { duration: 0.2 } }}
-                  className={`bg-white rounded-3xl border-2 border-dashed ${theme.border} hover:border-coral-500 p-6 flex flex-col justify-between shadow-soft hover:shadow-card transition-all duration-200 relative overflow-hidden group`}
+                  className={`bg-[#FBF8F1] rounded-3xl border-2 border-dashed ${theme.border} hover:border-coral-500 p-6 flex flex-col justify-between shadow-soft hover:shadow-card transition-all duration-200 relative overflow-hidden group`}
                   style={{ transform: shouldReduceMotion ? 'none' : `rotate(${tiltRotation}deg)` }}
                 >
                   {/* Category subtle gradient wash at top of card */}

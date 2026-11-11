@@ -9,28 +9,28 @@ interface StatusBadgeProps {
 export const StatusBadge: React.FC<StatusBadgeProps> = ({ status, size = 'md' }) => {
   const normalized = (status || '').toLowerCase().trim();
 
-  // Custom mapping adhering strictly to the "Twilight Home" specification
+  // Custom mapping tailored to Vintage Mineral-Spring WishWell palette
   const config: Record<string, { label: string; bg: string; text: string; border: string; dot: string }> = {
     // Institution Verification Statuses
-    verified: { label: 'Verified Home', bg: 'bg-[#E3F5F2]', text: 'text-[#166C60]', border: 'border-[#BDE6DF]', dot: 'bg-[#1F8A7A]' },
-    recommended: { label: 'Field Recommended', bg: 'bg-[#FEF8E8]', text: 'text-[#9A6405]', border: 'border-[#FBE4AE]', dot: 'bg-[#F6B93B]' },
-    pending: { label: 'Pending Review', bg: 'bg-[#F4F4F5]', text: 'text-[#52525B]', border: 'border-[#E4E4E7]', dot: 'bg-[#71717A]' },
-    rejected: { label: 'Declined', bg: 'bg-[#FDF2EE]', text: 'text-[#C9441F]', border: 'border-[#F9C4B3]', dot: 'bg-[#E4572E]' },
+    verified: { label: 'Verified Home', bg: 'bg-[#E4F0ED]', text: 'text-[#1B4D48]', border: 'border-[#BADAD3]', dot: 'bg-[#24635C]' },
+    recommended: { label: 'Field Recommended', bg: 'bg-[#FAF2DE]', text: 'text-[#855A19]', border: 'border-[#ECD8A3]', dot: 'bg-[#C89238]' },
+    pending: { label: 'Pending Review', bg: 'bg-[#F3EFE2]', text: 'text-[#53645F]', border: 'border-[#D4CAB0]', dot: 'bg-[#6D7D77]' },
+    rejected: { label: 'Declined', bg: 'bg-[#FBF3F0]', text: 'text-[#9B3F2A]', border: 'border-[#ECC4B5]', dot: 'bg-[#B65038]' },
 
     // Wish Statuses
-    open: { label: 'Open', bg: 'bg-[#E3F5F2]', text: 'text-[#166C60]', border: 'border-[#BDE6DF]', dot: 'bg-[#1F8A7A]' },
-    partially_claimed: { label: 'Partially Claimed', bg: 'bg-[#FEF8E8]', text: 'text-[#9A6405]', border: 'border-[#FBE4AE]', dot: 'bg-[#F6B93B]' },
-    claimed: { label: 'Claimed', bg: 'bg-[#F3EBF9]', text: 'text-[#533E78]', border: 'border-[#D8C5E8]', dot: 'bg-[#3A2A55]' },
-    delivered: { label: 'Delivered', bg: 'bg-[#E5F6EC]', text: 'text-[#215E3C]', border: 'border-[#B7E5C7]', dot: 'bg-[#2D7A4F]' },
-    expired: { label: 'Expired', bg: 'bg-[#F4F4F5]', text: 'text-[#52525B]', border: 'border-[#E4E4E7]', dot: 'bg-[#71717A]' },
-    cancelled: { label: 'Cancelled', bg: 'bg-[#F4F4F5]', text: 'text-[#52525B]', border: 'border-[#E4E4E7]', dot: 'bg-[#71717A]' },
+    open: { label: 'Open', bg: 'bg-[#E4F0ED]', text: 'text-[#1B4D48]', border: 'border-[#BADAD3]', dot: 'bg-[#24635C]' },
+    partially_claimed: { label: 'Partially Claimed', bg: 'bg-[#FAF2DE]', text: 'text-[#855A19]', border: 'border-[#ECD8A3]', dot: 'bg-[#C89238]' },
+    claimed: { label: 'Claimed', bg: 'bg-[#F2EEF5]', text: 'text-[#544363]', border: 'border-[#D6CCE0]', dot: 'bg-[#5E4B6B]' },
+    delivered: { label: 'Delivered', bg: 'bg-[#E9F1E9]', text: 'text-[#314B37]', border: 'border-[#C0D4C2]', dot: 'bg-[#416148]' },
+    expired: { label: 'Expired', bg: 'bg-[#F3EFE2]', text: 'text-[#53645F]', border: 'border-[#D4CAB0]', dot: 'bg-[#6D7D77]' },
+    cancelled: { label: 'Cancelled', bg: 'bg-[#F3EFE2]', text: 'text-[#53645F]', border: 'border-[#D4CAB0]', dot: 'bg-[#6D7D77]' },
 
     // Claim & Delivery Statuses
-    active: { label: 'Pledge Active', bg: 'bg-[#FEF8E8]', text: 'text-[#9A6405]', border: 'border-[#FBE4AE]', dot: 'bg-[#F6B93B]' },
-    released: { label: 'Released', bg: 'bg-[#F4F4F5]', text: 'text-[#52525B]', border: 'border-[#E4E4E7]', dot: 'bg-[#71717A]' },
-    in_transit: { label: 'In Transit', bg: 'bg-[#E8F3FC]', text: 'text-[#205F94]', border: 'border-[#BDDCF6]', dot: 'bg-[#3E8FD1]' },
-    confirmed: { label: 'Confirmed Receipt', bg: 'bg-[#E5F6EC]', text: 'text-[#215E3C]', border: 'border-[#B7E5C7]', dot: 'bg-[#2D7A4F]' },
-    pending_confirmation: { label: 'Awaiting Proof', bg: 'bg-[#FEF8E8]', text: 'text-[#9A6405]', border: 'border-[#FBE4AE]', dot: 'bg-[#F6B93B]' },
+    active: { label: 'Pledge Active', bg: 'bg-[#FAF2DE]', text: 'text-[#855A19]', border: 'border-[#ECD8A3]', dot: 'bg-[#C89238]' },
+    released: { label: 'Released', bg: 'bg-[#F3EFE2]', text: 'text-[#53645F]', border: 'border-[#D4CAB0]', dot: 'bg-[#6D7D77]' },
+    in_transit: { label: 'In Transit', bg: 'bg-[#E4EFF0]', text: 'text-[#2D5057]', border: 'border-[#BDD6DA]', dot: 'bg-[#4E8089]' },
+    confirmed: { label: 'Confirmed Receipt', bg: 'bg-[#E9F1E9]', text: 'text-[#314B37]', border: 'border-[#C0D4C2]', dot: 'bg-[#416148]' },
+    pending_confirmation: { label: 'Awaiting Proof', bg: 'bg-[#FAF2DE]', text: 'text-[#855A19]', border: 'border-[#ECD8A3]', dot: 'bg-[#C89238]' },
   };
 
   const fallbackStyle = getStatusStyle(normalized);
