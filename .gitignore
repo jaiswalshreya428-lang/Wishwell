@@ -52,6 +52,9 @@ htmlcov/
 mssql_data/
 azurite_data/
 
+# Netlify
+.netlify/
+
 # IDE & OS
 .vscode/
 .idea/

@@ -7,10 +7,27 @@ ARCHITECTURE NOTES:
 3. FastAPI dependency get_db ensures sessions are automatically closed after request lifecycle.
 """
 
+import logging
 from typing import AsyncGenerator
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 from sqlalchemy.orm import DeclarativeBase
 from app.core.config import settings
+
+logger = logging.getLogger("wishwell.database")
+
+def _resolve_database_url(url: str) -> str:
+    """Falls back to ODBC Driver 17 if Driver 18 is unavailable on the host."""
+    if not url.startswith("mssql"):
+        return url
+    try:
+        import pyodbc
+        drivers = set(pyodbc.drivers())
+        if "ODBC Driver 18 for SQL Server" not in drivers and "ODBC Driver 17 for SQL Server" in drivers:
+            logger.warning("ODBC Driver 18 not found; falling back to ODBC Driver 17 for SQL Server.")
+            return url.replace("ODBC+Driver+18+for+SQL+Server", "ODBC+Driver+17+for+SQL+Server")
+    except Exception:
+        pass
+    return url
 
 class Base(DeclarativeBase):
     """Base class for all SQLAlchemy 2.0 ORM models."""
@@ -19,7 +36,7 @@ class Base(DeclarativeBase):
 # Initialize async engine lazily or with pooling
 try:
     async_engine = create_async_engine(
-        settings.DATABASE_URL,
+        _resolve_database_url(settings.DATABASE_URL),
         echo=(settings.ENVIRONMENT == "development"),
         pool_pre_ping=True,
         pool_size=10,

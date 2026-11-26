@@ -80,12 +80,13 @@ class StorageService:
         self._mock_blobs = {}
         self.use_memory_fallback = False
 
+        is_prod = settings.ENVIRONMENT == "production"
         try:
             self.blob_service_client = BlobServiceClient.from_connection_string(
                 self.conn_str,
-                connection_timeout=1,
-                read_timeout=1,
-                retry_total=0,
+                connection_timeout=10 if is_prod else 1,
+                read_timeout=30 if is_prod else 1,
+                retry_total=2 if is_prod else 0,
             )
             self.account_name = self.blob_service_client.account_name
             self.account_key = self.blob_service_client.credential.account_key
@@ -172,28 +173,45 @@ class StorageService:
 
         return blob_name, len(file_bytes), mime_type
 
-    def generate_sas_url(self, blob_name: str, expiry_minutes: int = 15) -> str:
+    def _generate_container_sas_url(
+        self,
+        container_name: str,
+        blob_name: str,
+        expiry_minutes: int = 15,
+    ) -> str:
         """
         Generates a cryptographically signed Shared Access Signature (SAS) URL
-        with read-only permissions and short expiration (default 15 minutes).
+        for a blob in the specified private container (Azure Blob Storage or Azurite).
         """
+        if not blob_name:
+            return ""
         expiry_time = datetime.now(timezone.utc) + timedelta(minutes=expiry_minutes)
+        acc_name = str(self.account_name or "devstoreaccount1")
+        if self.blob_service_client is not None:
+            service_url = self.blob_service_client.url.rstrip("/")
+        else:
+            service_url = f"http://127.0.0.1:10000/{acc_name}"
+        base_url = f"{service_url}/{container_name}/{blob_name}"
 
         try:
-            acc_name = str(self.account_name or "devstoreaccount1")
             sas_token = generate_blob_sas(
                 account_name=acc_name,
-                container_name=self.container_name,
+                container_name=container_name,
                 blob_name=blob_name,
                 account_key=str(self.account_key or ""),
                 permission=BlobSasPermissions(read=True),
                 expiry=expiry_time,
             )
-            base_url = f"http://127.0.0.1:10000/{acc_name}/{self.container_name}/{blob_name}"
             return f"{base_url}?{sas_token}"
         except Exception:
-            # Fallback signed URL format
-            return f"http://127.0.0.1:10000/{self.account_name}/{self.container_name}/{blob_name}?token=mock_sas_token"
+            return f"{base_url}?token=mock_sas_token"
+
+    def generate_sas_url(self, blob_name: str, expiry_minutes: int = 15) -> str:
+        """
+        Generates a cryptographically signed Shared Access Signature (SAS) URL
+        with read-only permissions and short expiration (default 15 minutes).
+        """
+        return self._generate_container_sas_url(self.container_name, blob_name, expiry_minutes)
 
     def upload_delivery_proof(
         self,
@@ -258,22 +276,6 @@ class StorageService:
         """
         Generates short-lived SAS URL for delivery proof photos from private container.
         """
-        if not blob_name:
-            return ""
-        expiry_time = datetime.now(timezone.utc) + timedelta(minutes=expiry_minutes)
-        try:
-            acc_name = str(self.account_name or "devstoreaccount1")
-            sas_token = generate_blob_sas(
-                account_name=acc_name,
-                container_name=DELIVERY_PROOFS_CONTAINER,
-                blob_name=blob_name,
-                account_key=str(self.account_key or ""),
-                permission=BlobSasPermissions(read=True),
-                expiry=expiry_time,
-            )
-            base_url = f"http://127.0.0.1:10000/{acc_name}/{DELIVERY_PROOFS_CONTAINER}/{blob_name}"
-            return f"{base_url}?{sas_token}"
-        except Exception:
-            return f"http://127.0.0.1:10000/{self.account_name}/{DELIVERY_PROOFS_CONTAINER}/{blob_name}?token=mock_sas_token"
+        return self._generate_container_sas_url(DELIVERY_PROOFS_CONTAINER, blob_name, expiry_minutes)
 
 storage_service = StorageService()

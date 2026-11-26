@@ -7,7 +7,7 @@ ARCHITECTURE NOTE: Secrets are NEVER hardcoded in production; they are injected 
 import os
 import json
 from typing import List, Optional
-from pydantic import Field, model_validator
+from pydantic import Field, field_validator, model_validator
 
 try:
     from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -53,6 +53,18 @@ try:
             "http://127.0.0.1:5173",
             "http://localhost:3000",
         ]
+
+        @field_validator("CORS_ORIGINS", mode="before")
+        @classmethod
+        def parse_cors_origins(cls, value):
+            if isinstance(value, str):
+                raw = value.strip()
+                if not raw:
+                    return []
+                if raw.startswith("["):
+                    return json.loads(raw)
+                return [item.strip() for item in raw.split(",") if item.strip()]
+            return value
 
         @model_validator(mode="after")
         def validate_production_secrets(self):
