@@ -59,8 +59,12 @@ Write-Host " Frontend SWA:       $StaticWebAppName ($StaticWebAppLocation)"
 Write-Host "================================================================="
 
 # Ensure authenticated
+$prevEap = $ErrorActionPreference
+$ErrorActionPreference = "Continue"
 az account show -o none 2>$null
-if ($LASTEXITCODE -ne 0) {
+$loggedIn = ($LASTEXITCODE -eq 0)
+$ErrorActionPreference = $prevEap
+if (-not $loggedIn) {
     Write-Host "`n---> Logging in to Azure..." -ForegroundColor Yellow
     az login -o none
     if ($LASTEXITCODE -ne 0) { throw "Azure login failed." }
@@ -96,8 +100,12 @@ Write-Host "`n---> [Step 4/13] Provisioning Azure Cosmos DB: $CosmosAccount (Ser
 $CosmosEndpoint = ""
 $CosmosKey = ""
 try {
+    $prevEap = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
     az cosmosdb create --name $CosmosAccount --resource-group $ResourceGroup --locations regionName=$Location failoverPriority=0 isZoneRedundant=False --default-consistency-level Session --capabilities EnableServerless -o table 2>$null
-    if ($LASTEXITCODE -ne 0) {
+    $cosmosExit = $LASTEXITCODE
+    $ErrorActionPreference = $prevEap
+    if ($cosmosExit -ne 0) {
         az cosmosdb create --name $CosmosAccount --resource-group $ResourceGroup --locations regionName=$Location failoverPriority=0 isZoneRedundant=False --default-consistency-level Session -o table
     }
     az cosmosdb sql database create --account-name $CosmosAccount --resource-group $ResourceGroup --name $CosmosDatabase -o none
@@ -243,7 +251,10 @@ foreach ($ip in $OutboundIps) {
 }
 
 if ($ClientIp) {
+    $prevEap = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
     az sql server firewall-rule delete --resource-group $ResourceGroup --server $SqlServerName --name "DeploymentRunnerIP" -o none 2>$null
+    $ErrorActionPreference = $prevEap
 }
 
 # Step 12: Package & Deploy Backend to App Service
