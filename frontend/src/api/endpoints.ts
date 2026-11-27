@@ -74,6 +74,18 @@ export const api = {
       }),
 
     getMe: () => apiRequest<User>('/auth/me'),
+
+    forgotPassword: (email: string) =>
+      apiRequest<{ message: string; reset_token?: string | null; expires_in: number }>('/auth/forgot-password', {
+        method: 'POST',
+        body: JSON.stringify({ email }),
+      }),
+
+    resetPassword: (token: string, new_password: string) =>
+      apiRequest<{ message: string }>('/auth/reset-password', {
+        method: 'POST',
+        body: JSON.stringify({ token, new_password }),
+      }),
   },
 
   // --- WISHES ---

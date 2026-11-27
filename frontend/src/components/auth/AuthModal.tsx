@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Modal } from '../common/Modal';
 import { useAuth } from '../../context/AuthContext';
+import { useToast } from '../../context/ToastContext';
+import { api } from '../../api/endpoints';
 import { UserRole } from '../../types';
 
 interface AuthModalProps {
@@ -11,11 +13,18 @@ interface AuthModalProps {
 
 export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const { login, register, quickDemoLogin } = useAuth();
-  const [tab, setTab] = useState<'login' | 'register'>('login');
+  const { showToast } = useToast();
+  const [tab, setTab] = useState<'login' | 'register' | 'forgot'>('login');
 
   // Login form state
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
+
+  // Forgot / Reset password state
+  const [forgotEmail, setForgotEmail] = useState('');
+  const [resetToken, setResetToken] = useState('');
+  const [issuedDemoToken, setIssuedDemoToken] = useState<string | null>(null);
+  const [newPassword, setNewPassword] = useState('');
 
   // Register form state
   const [regRole, setRegRole] = useState<'donor' | 'institution'>('donor');
@@ -75,11 +84,69 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     onClose();
   };
 
+  const handleRequestReset = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    try {
+      const res = await api.auth.forgotPassword(forgotEmail.trim());
+      setIssuedDemoToken(res.reset_token || null);
+      if (res.reset_token) {
+        setResetToken(res.reset_token);
+      }
+      showToast({
+        type: 'info',
+        title: 'Reset Token Requested',
+        message: res.message,
+      });
+    } catch (err: any) {
+      showToast({
+        type: 'error',
+        title: 'Reset Request Failed',
+        message: err.message || 'Could not generate password reset token.',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleConfirmReset = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    try {
+      const res = await api.auth.resetPassword(resetToken.trim(), newPassword);
+      showToast({
+        type: 'success',
+        title: 'Password Updated',
+        message: res.message,
+      });
+      setLoginEmail(forgotEmail.trim());
+      setLoginPassword('');
+      setResetToken('');
+      setIssuedDemoToken(null);
+      setNewPassword('');
+      setTab('login');
+    } catch (err: any) {
+      showToast({
+        type: 'error',
+        title: 'Reset Failed',
+        message: err.message || 'Invalid or expired reset token.',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={tab === 'login' ? 'Sign In to WishWell' : 'Create an Account'}
+      title={
+        tab === 'login'
+          ? 'Sign In to WishWell'
+          : tab === 'forgot'
+            ? 'Reset Your Password'
+            : 'Create an Account'
+      }
       subtitle="In-memory authentication &bull; Tokens stored securely"
     >
       <div className="space-y-6">
@@ -168,9 +235,24 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-ink-800 uppercase tracking-wider mb-1">
-                Password
-              </label>
+              <div className="flex items-center justify-between mb-1">
+                <label className="block text-xs font-bold text-ink-800 uppercase tracking-wider">
+                  Password
+                </label>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setForgotEmail(loginEmail);
+                    setIssuedDemoToken(null);
+                    setResetToken('');
+                    setNewPassword('');
+                    setTab('forgot');
+                  }}
+                  className="text-[11px] font-semibold text-terracotta-700 hover:underline"
+                >
+                  Forgot password?
+                </button>
+              </div>
               <input
                 type="password"
                 required
@@ -189,6 +271,87 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
               {isSubmitting ? 'Authenticating...' : 'Sign In'}
             </button>
           </form>
+        ) : tab === 'forgot' ? (
+          <div className="space-y-5">
+            <form onSubmit={handleRequestReset} className="space-y-3">
+              <div>
+                <label className="block text-xs font-bold text-ink-800 uppercase tracking-wider mb-1">
+                  Account Email Address
+                </label>
+                <input
+                  type="email"
+                  required
+                  value={forgotEmail}
+                  onChange={(e) => setForgotEmail(e.target.value)}
+                  placeholder="name@example.com"
+                  className="w-full px-3.5 py-2 rounded-xl border border-cream-300 text-xs text-ink-900 focus-visible:ring-2 focus-visible:ring-terracotta-600"
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full py-2 rounded-xl bg-cream-200 hover:bg-cream-300 text-ink-900 text-xs font-bold transition disabled:opacity-50"
+              >
+                {isSubmitting ? 'Generating Token...' : '1. Request 15-Minute Reset Token'}
+              </button>
+            </form>
+
+            {issuedDemoToken && (
+              <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-[11px] text-amber-950 space-y-1">
+                <span className="font-bold block">Demo Reset Token Issued (auto-filled below):</span>
+                <code className="block break-all font-mono text-[10px] bg-white/80 p-1.5 rounded border border-amber-200">
+                  {issuedDemoToken}
+                </code>
+              </div>
+            )}
+
+            <form onSubmit={handleConfirmReset} className="space-y-3 pt-2 border-t border-cream-200">
+              <div>
+                <label className="block text-xs font-bold text-ink-800 uppercase tracking-wider mb-1">
+                  Reset Token
+                </label>
+                <input
+                  type="text"
+                  required
+                  minLength={10}
+                  value={resetToken}
+                  onChange={(e) => setResetToken(e.target.value)}
+                  placeholder="Paste reset token"
+                  className="w-full px-3.5 py-2 rounded-xl border border-cream-300 text-xs font-mono text-ink-900 focus-visible:ring-2 focus-visible:ring-terracotta-600"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-ink-800 uppercase tracking-wider mb-1">
+                  New Password (min 8 chars)
+                </label>
+                <input
+                  type="password"
+                  required
+                  minLength={8}
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  placeholder="Enter new password"
+                  className="w-full px-3.5 py-2 rounded-xl border border-cream-300 text-xs text-ink-900 focus-visible:ring-2 focus-visible:ring-terracotta-600"
+                />
+              </div>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setTab('login')}
+                  className="px-4 py-2.5 rounded-xl border border-cream-300 text-xs font-semibold text-ink-700 hover:bg-cream-100"
+                >
+                  Back
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="flex-1 py-2.5 rounded-xl bg-terracotta-600 hover:bg-terracotta-700 text-white text-xs font-bold shadow-soft transition disabled:opacity-50"
+                >
+                  {isSubmitting ? 'Updating...' : '2. Update Password'}
+                </button>
+              </div>
+            </form>
+          </div>
         ) : (
           /* Register Form */
           <form onSubmit={handleRegisterSubmit} className="space-y-4">
@@ -246,8 +409,18 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                 value={regEmail}
                 onChange={(e) => setRegEmail(e.target.value)}
                 placeholder="contact@shelter.org"
-                className="w-full px-3.5 py-2 rounded-xl border border-cream-300 text-xs text-ink-900 focus-visible:ring-2 focus-visible:ring-terracotta-600"
+                aria-invalid={regEmail.length > 0 && !regEmail.includes('@')}
+                className={`w-full px-3.5 py-2 rounded-xl border text-xs text-ink-900 focus-visible:ring-2 ${
+                  regEmail.length > 0 && !regEmail.includes('@')
+                    ? 'border-coral-500 bg-coral-50/40 focus-visible:ring-coral-500'
+                    : 'border-cream-300 focus-visible:ring-terracotta-600'
+                }`}
               />
+              {regEmail.length > 0 && !regEmail.includes('@') && (
+                <p role="alert" className="mt-1 text-[11px] font-semibold text-coral-700">
+                  Please add &lsquo;@&rsquo; to your email address (e.g. contact@shelter.org).
+                </p>
+              )}
             </div>
 
             <div>
@@ -310,7 +483,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
             <button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || (regEmail.length > 0 && !regEmail.includes('@'))}
               className="w-full py-2.5 rounded-xl bg-terracotta-600 hover:bg-terracotta-700 text-white text-xs font-bold shadow-soft transition disabled:opacity-50"
             >
               {isSubmitting ? 'Creating Account...' : 'Complete Registration'}

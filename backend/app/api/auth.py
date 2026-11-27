@@ -17,13 +17,30 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
+from app.core.config import settings
 from app.core.database import get_db
-from app.core.security import hash_password, verify_password, create_access_token
+from app.core.security import (
+    hash_password,
+    verify_password,
+    create_access_token,
+    create_password_reset_token,
+    decode_password_reset_token,
+    password_fingerprint,
+)
 from app.core.rate_limit import login_rate_limiter
 from app.core.dependencies import get_current_user
 from app.models.entities import User, Institution, AuditLog
 from app.core.audit import record_audit_event
-from app.schemas.auth import RegisterRequest, LoginRequest, TokenResponse, UserResponse
+from app.schemas.auth import (
+    RegisterRequest,
+    LoginRequest,
+    TokenResponse,
+    UserResponse,
+    ForgotPasswordRequest,
+    ForgotPasswordResponse,
+    ResetPasswordRequest,
+    ResetPasswordResponse,
+)
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
@@ -216,4 +233,93 @@ async def get_me(
     Retrieves the authenticated user's profile and institutional status (if applicable).
     """
     return UserResponse.model_validate(current_user)
+
+
+@router.post("/forgot-password", response_model=ForgotPasswordResponse)
+async def forgot_password(
+    payload: ForgotPasswordRequest,
+    request: Request,
+    db: AsyncSession = Depends(get_db),
+):
+    """
+    Generates a short-lived (15-minute), single-use password reset token.
+    Returns a generic message to avoid user enumeration; exposes reset_token in
+    non-production/local evaluation mode since no SMTP gateway is configured.
+    """
+    client_ip = request.client.host if request.client else "127.0.0.1"
+    login_rate_limiter.check_and_record(f"forgot:{client_ip}")
+
+    stmt = select(User).where(User.email == payload.email)
+    user = (await db.execute(stmt)).scalar_one_or_none()
+
+    reset_token = None
+    if user is not None:
+        reset_token = create_password_reset_token(
+            user_id=user.id,
+            email=user.email,
+            current_password_hash=user.password_hash,
+        )
+        await record_audit_event(
+            session=db,
+            entity_type="auth",
+            entity_id=user.id,
+            action="PASSWORD_RESET_REQUESTED",
+            old_status=None,
+            new_status=None,
+            changed_by=user.id,
+            details=f"Password reset token issued for '{user.email}' from IP '{client_ip}'.",
+            created_at=datetime.now(timezone.utc),
+        )
+        await db.commit()
+
+    return ForgotPasswordResponse(
+        message="If an account with that email exists, a 15-minute password reset token has been generated.",
+        reset_token=reset_token if settings.ENVIRONMENT != "production" else None,
+        expires_in=900,
+    )
+
+
+@router.post("/reset-password", response_model=ResetPasswordResponse)
+async def reset_password(
+    payload: ResetPasswordRequest,
+    db: AsyncSession = Depends(get_db),
+):
+    """
+    Verifies a single-use password reset token and updates the user's bcrypt password hash.
+    """
+    try:
+        token_data = decode_password_reset_token(payload.token)
+        user_id = int(token_data.get("sub", "0"))
+        token_fp = token_data.get("pw_fp")
+    except Exception:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid or expired password reset token.",
+        )
+
+    stmt = select(User).where(User.id == user_id)
+    user = (await db.execute(stmt)).scalar_one_or_none()
+    if user is None or not token_fp or password_fingerprint(user.password_hash) != token_fp:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid, expired, or already-used password reset token.",
+        )
+
+    user.password_hash = hash_password(payload.new_password)
+    user.updated_at = datetime.now(timezone.utc)
+
+    await record_audit_event(
+        session=db,
+        entity_type="auth",
+        entity_id=user.id,
+        action="PASSWORD_RESET_COMPLETED",
+        old_status=None,
+        new_status=None,
+        changed_by=user.id,
+        details=f"Password reset completed for '{user.email}'.",
+        created_at=datetime.now(timezone.utc),
+    )
+    await db.commit()
+
+    return ResetPasswordResponse(message="Password updated successfully. You can now sign in with your new password.")
 

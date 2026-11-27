@@ -41,6 +41,8 @@ async def get_current_user(
     token = credentials.credentials
     try:
         payload = decode_access_token(token)
+        if payload.get("purpose") == "password_reset":
+            raise ValueError("Reset token cannot be used as access token.")
         user_id_str = payload.get("sub")
         if user_id_str is None:
             raise HTTPException(

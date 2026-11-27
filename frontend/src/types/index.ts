@@ -97,7 +97,7 @@ export interface Delivery {
   tracking_number?: string;
   proof_photo_blob_name?: string;
   proof_photo_sas_url?: string;
-  status: 'pending_confirmation' | 'confirmed';
+  status: 'pending_confirmation' | 'delivered' | 'confirmed';
   created_at: string;
   confirmed_at?: string;
   item_name?: string;

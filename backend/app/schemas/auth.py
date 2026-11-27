@@ -95,3 +95,22 @@ class TokenResponse(BaseModel):
     token_type: str = "bearer"
     expires_in: int = 900 # 15 minutes in seconds
     user: UserResponse
+
+
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr = Field(...)
+
+
+class ForgotPasswordResponse(BaseModel):
+    message: str
+    reset_token: Optional[str] = None
+    expires_in: int = 900
+
+
+class ResetPasswordRequest(BaseModel):
+    token: str = Field(..., min_length=10)
+    new_password: str = Field(..., min_length=8, max_length=128)
+
+
+class ResetPasswordResponse(BaseModel):
+    message: str

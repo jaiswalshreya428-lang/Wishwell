@@ -173,3 +173,51 @@ async def test_me_endpoint_unauthenticated_fails(async_client: AsyncClient):
     """Proves: Unauthenticated request to /me gets 401."""
     response = await async_client.get("/api/auth/me")
     assert response.status_code == 401
+
+
+@pytest.mark.asyncio
+async def test_forgot_and_reset_password_single_use_flow(async_client: AsyncClient):
+    """Proves: Forgot password issues a single-use token, resets password, and cannot be used as access token."""
+    forgot_res = await async_client.post("/api/auth/forgot-password", json={"email": "donor@wishwell.org"})
+    assert forgot_res.status_code == 200
+    token = forgot_res.json().get("reset_token")
+    assert token
+
+    # Reset token cannot authenticate /api/auth/me
+    me_res = await async_client.get("/api/auth/me", headers={"Authorization": f"Bearer {token}"})
+    assert me_res.status_code == 401
+
+    # Reset password succeeds
+    reset_res = await async_client.post("/api/auth/reset-password", json={
+        "token": token,
+        "new_password": "NewPassword456!"
+    })
+    assert reset_res.status_code == 200
+
+    # Reusing the same reset token fails
+    reuse_res = await async_client.post("/api/auth/reset-password", json={
+        "token": token,
+        "new_password": "AnotherPassword789!"
+    })
+    assert reuse_res.status_code == 400
+
+    # Old password fails, new password works
+    old_login = await async_client.post("/api/auth/login", json={
+        "email": "donor@wishwell.org",
+        "password": "Password123!"
+    })
+    assert old_login.status_code == 401
+
+    new_login = await async_client.post("/api/auth/login", json={
+        "email": "donor@wishwell.org",
+        "password": "NewPassword456!"
+    })
+    assert new_login.status_code == 200
+
+
+@pytest.mark.asyncio
+async def test_forgot_password_unknown_email_returns_generic_200(async_client: AsyncClient):
+    """Proves: Unknown email returns generic 200 with no reset_token (anti-enumeration)."""
+    res = await async_client.post("/api/auth/forgot-password", json={"email": "nobody@wishwell.org"})
+    assert res.status_code == 200
+    assert res.json()["reset_token"] is None

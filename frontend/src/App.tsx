@@ -271,7 +271,7 @@ const AppContent: React.FC = () => {
                       <p className="text-xs text-ink-500">Wish: {del.wish_title}</p>
                     </div>
                     <div className="flex space-x-3">
-                      {del.status === 'pending_confirmation' ? (
+                      {del.status === 'pending_confirmation' || del.status === 'delivered' ? (
                         <button
                           onClick={() => setDeliveryToConfirm(del)}
                           className="px-4 py-2 rounded-xl bg-sage-600 hover:bg-sage-700 text-white text-xs font-bold shadow-soft"
@@ -425,9 +425,13 @@ const AppContent: React.FC = () => {
         isOpen={deliveryToConfirm !== null}
         onClose={() => setDeliveryToConfirm(null)}
         onSuccess={() => {
-          // Offer sending thank you note
+          // Mark confirmed in UI list and offer sending thank-you note
           if (deliveryToConfirm) {
-            setThankYouDeliveryId(deliveryToConfirm.id);
+            const confirmedId = deliveryToConfirm.id;
+            setPendingDeliveries((prev) =>
+              prev.map((d) => (d.id === confirmedId ? { ...d, status: 'confirmed' } : d))
+            );
+            setThankYouDeliveryId(confirmedId);
           }
         }}
       />

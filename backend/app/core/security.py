@@ -10,6 +10,7 @@ ARCHITECTURE NOTES:
   token is intercepted.
 """
 
+import hashlib
 from datetime import datetime, timedelta, timezone
 from typing import Optional, Dict, Any
 import bcrypt
@@ -81,3 +82,30 @@ def decode_access_token(token: str) -> Dict[str, Any]:
         settings.JWT_SECRET_KEY,
         algorithms=[settings.JWT_ALGORITHM]
     )
+
+
+def password_fingerprint(password_hash: str) -> str:
+    """Short fingerprint of the current bcrypt hash so reset tokens are single-use."""
+    return hashlib.sha256(password_hash.encode("utf-8")).hexdigest()[:16]
+
+
+def create_password_reset_token(user_id: int, email: str, current_password_hash: str) -> str:
+    """Generates a single-use, 15-minute JWT specifically scoped for password resets."""
+    now = datetime.now(timezone.utc)
+    payload = {
+        "sub": str(user_id),
+        "email": email,
+        "purpose": "password_reset",
+        "pw_fp": password_fingerprint(current_password_hash),
+        "iat": now,
+        "exp": now + timedelta(minutes=15),
+    }
+    return jwt.encode(payload, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
+
+
+def decode_password_reset_token(token: str) -> Dict[str, Any]:
+    """Decodes a password-reset token and verifies its purpose claim."""
+    payload = decode_access_token(token)
+    if payload.get("purpose") != "password_reset":
+        raise jwt.InvalidTokenError("Token is not a password reset token.")
+    return payload
