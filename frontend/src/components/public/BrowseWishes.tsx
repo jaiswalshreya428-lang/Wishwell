@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { OpenWishViewItem, Category } from '../../types';
 import { api } from '../../api/endpoints';
@@ -9,7 +9,21 @@ import { CategoryIllustration } from '../illustrations/Illustrations';
 import { WashiTape, PaperTagPin } from '../atmosphere/HandmadeAccents';
 import { WorkPageHeader } from '../layout/WorkPageHeader';
 import { getCategoryTheme } from '../../utils/categoryColors';
-import { ShieldCheck, Calendar, Sparkles, Search, Layers, RefreshCw } from 'lucide-react';
+import { ShieldCheck, Calendar, Sparkles, Search, Layers, RefreshCw, Bookmark, Clock, ArrowUpDown } from 'lucide-react';
+
+type WishSortOption = 'default' | 'urgent' | 'almost_fulfilled' | 'most_needed';
+const SAVED_WISHES_STORAGE_KEY = 'wishwell_saved_wishes';
+
+const loadSavedWishIds = (): number[] => {
+  try {
+    const raw = localStorage.getItem(SAVED_WISHES_STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed.filter((id): id is number => typeof id === 'number') : [];
+  } catch {
+    return [];
+  }
+};
 
 interface BrowseWishesProps {
   onSelectWish: (wish: OpenWishViewItem) => void;
@@ -36,6 +50,28 @@ export const BrowseWishes: React.FC<BrowseWishesProps> = ({ onSelectWish, onClai
   const [totalWishes, setTotalWishes] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [savedWishIds, setSavedWishIds] = useState<number[]>(loadSavedWishIds);
+  const [showSavedOnly, setShowSavedOnly] = useState(false);
+  const [showUrgentOnly, setShowUrgentOnly] = useState(false);
+  const [sortBy, setSortBy] = useState<WishSortOption>('default');
+
+  const toggleSaveWish = (wishId: number) => {
+    setSavedWishIds((prev) => {
+      const next = prev.includes(wishId) ? prev.filter((id) => id !== wishId) : [...prev, wishId];
+      try {
+        localStorage.setItem(SAVED_WISHES_STORAGE_KEY, JSON.stringify(next));
+      } catch {
+        // Ignore storage errors in restricted environments
+      }
+      return next;
+    });
+  };
+
+  const getDaysUntilNeeded = (dateStr: string): number => {
+    const parsed = new Date(dateStr).getTime();
+    if (Number.isNaN(parsed)) return Number.POSITIVE_INFINITY;
+    return Math.ceil((parsed - Date.now()) / (1000 * 60 * 60 * 24));
+  };
 
   // Load categories from database (merges new categories seamlessly)
   useEffect(() => {
@@ -86,8 +122,7 @@ export const BrowseWishes: React.FC<BrowseWishesProps> = ({ onSelectWish, onClai
   const formatNeededBy = (dateStr: string) => {
     try {
       const date = new Date(dateStr);
-      const now = new Date();
-      const diffDays = Math.ceil((date.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+      const diffDays = getDaysUntilNeeded(dateStr);
       if (diffDays <= 0) return 'Urgent: Due today';
       if (diffDays === 1) return 'Due tomorrow';
       if (diffDays <= 7) return `Needed in ${diffDays} days`;
@@ -96,6 +131,29 @@ export const BrowseWishes: React.FC<BrowseWishesProps> = ({ onSelectWish, onClai
       return dateStr;
     }
   };
+
+  const displayedWishes = useMemo(() => {
+    const savedSet = new Set(savedWishIds);
+    const filtered = wishes.filter((wish) => {
+      if (showSavedOnly && !savedSet.has(wish.wish_id)) return false;
+      if (showUrgentOnly && getDaysUntilNeeded(wish.needed_by) > 7) return false;
+      return true;
+    });
+
+    if (sortBy === 'default') return filtered;
+
+    return [...filtered].sort((a, b) => {
+      if (sortBy === 'urgent') {
+        return getDaysUntilNeeded(a.needed_by) - getDaysUntilNeeded(b.needed_by);
+      }
+      if (sortBy === 'almost_fulfilled') {
+        const pctA = a.qty_requested > 0 ? a.qty_claimed / a.qty_requested : 0;
+        const pctB = b.qty_requested > 0 ? b.qty_claimed / b.qty_requested : 0;
+        return pctB - pctA;
+      }
+      return b.qty_remaining - a.qty_remaining;
+    });
+  }, [wishes, savedWishIds, showSavedOnly, showUrgentOnly, sortBy]);
 
   return (
     <div className="space-y-8 pb-16">
@@ -115,49 +173,102 @@ export const BrowseWishes: React.FC<BrowseWishesProps> = ({ onSelectWish, onClai
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         {/* Filter & Search Bar */}
-        <div className="bg-[#FAF7EF]/95 backdrop-blur-sm rounded-3xl border border-[#D4CAB0] p-5 sm:p-6 shadow-soft flex flex-col lg:flex-row gap-4 items-stretch lg:items-center justify-between">
-          {/* Search Input */}
-          <form onSubmit={handleSearchSubmit} className="relative flex-1 max-w-md">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search by item, home, or keywords..."
-              className="w-full pl-10 pr-4 py-3 rounded-2xl border border-[#D4CAB0] bg-[#FFFDF8] text-xs font-medium text-ink-900 placeholder:text-ink-400 focus-visible:ring-2 focus-visible:ring-teal-600 focus-visible:outline-none shadow-soft-sm transition"
-            />
-            <Search className="w-4 h-4 text-ink-400 absolute left-3.5 top-3.5" />
-          </form>
+        <div className="bg-[#FAF7EF]/95 backdrop-blur-sm rounded-3xl border border-[#D4CAB0] p-5 sm:p-6 shadow-soft space-y-4">
+          <div className="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center justify-between">
+            {/* Search Input */}
+            <form onSubmit={handleSearchSubmit} className="relative flex-1 max-w-md">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search by item, home, or keywords..."
+                className="w-full pl-10 pr-4 py-3 rounded-2xl border border-[#D4CAB0] bg-[#FFFDF8] text-xs font-medium text-ink-900 placeholder:text-ink-400 focus-visible:ring-2 focus-visible:ring-teal-600 focus-visible:outline-none shadow-soft-sm transition"
+              />
+              <Search className="w-4 h-4 text-ink-400 absolute left-3.5 top-3.5" />
+            </form>
 
-          {/* Category Pill Filters with Color-Coded Chips */}
-          <div className="flex items-center space-x-2 overflow-x-auto pb-2 lg:pb-0 scrollbar-none">
-            <button
-              onClick={() => handleCategoryClick(undefined)}
-              className={`px-3.5 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all ${
-                selectedCategory === undefined
-                  ? 'bg-gradient-to-r from-coral-500 to-coral-600 text-white shadow-soft font-bold'
-                  : 'bg-white text-ink-700 hover:bg-cream-100 border border-cream-200'
-              }`}
-            >
-              All Categories
-            </button>
-            {categories.map((cat) => {
-              const theme = getCategoryTheme(cat.name);
-              const isSelected = selectedCategory === cat.id;
+            {/* Category Pill Filters with Color-Coded Chips */}
+            <div className="flex items-center space-x-2 overflow-x-auto pb-2 lg:pb-0 scrollbar-none">
+              <button
+                onClick={() => handleCategoryClick(undefined)}
+                className={`px-3.5 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all ${
+                  selectedCategory === undefined
+                    ? 'bg-gradient-to-r from-coral-500 to-coral-600 text-white shadow-soft font-bold'
+                    : 'bg-white text-ink-700 hover:bg-cream-100 border border-cream-200'
+                }`}
+              >
+                All Categories
+              </button>
+              {categories.map((cat) => {
+                const theme = getCategoryTheme(cat.name);
+                const isSelected = selectedCategory === cat.id;
 
-              return (
-                <button
-                  key={cat.id}
-                  onClick={() => handleCategoryClick(cat.id)}
-                  className={`px-3.5 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all border ${
-                    isSelected
-                      ? 'bg-gradient-to-r from-coral-500 to-coral-600 text-white border-coral-600 shadow-soft font-bold'
-                      : `${theme.badgeBg} ${theme.badgeText} ${theme.badgeBorder} hover:brightness-95`
-                  }`}
-                >
-                  {cat.name}
-                </button>
-              );
-            })}
+                return (
+                  <button
+                    key={cat.id}
+                    onClick={() => handleCategoryClick(cat.id)}
+                    className={`px-3.5 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all border ${
+                      isSelected
+                        ? 'bg-gradient-to-r from-coral-500 to-coral-600 text-white border-coral-600 shadow-soft font-bold'
+                        : `${theme.badgeBg} ${theme.badgeText} ${theme.badgeBorder} hover:brightness-95`
+                    }`}
+                  >
+                    {cat.name}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Urgency Filter, Saved Wishes Toggle & Sort Controls */}
+          <div className="pt-3 border-t border-[#E5DEC9] flex flex-wrap items-center justify-between gap-3">
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setShowUrgentOnly((prev) => !prev)}
+                aria-pressed={showUrgentOnly}
+                className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold border transition ${
+                  showUrgentOnly
+                    ? 'bg-amber-600 text-white border-amber-700 shadow-soft-sm'
+                    : 'bg-[#FFFDF8] text-ink-700 border-[#D4CAB0] hover:bg-amber-50'
+                }`}
+              >
+                <Clock className="w-3.5 h-3.5" />
+                <span>Urgent (&le; 7 days)</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setShowSavedOnly((prev) => !prev)}
+                aria-pressed={showSavedOnly}
+                className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold border transition ${
+                  showSavedOnly
+                    ? 'bg-teal-700 text-white border-teal-800 shadow-soft-sm'
+                    : 'bg-[#FFFDF8] text-ink-700 border-[#D4CAB0] hover:bg-teal-50'
+                }`}
+              >
+                <Bookmark className={`w-3.5 h-3.5 ${showSavedOnly ? 'fill-current' : ''}`} />
+                <span>Saved Wishes ({savedWishIds.length})</span>
+              </button>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <ArrowUpDown className="w-3.5 h-3.5 text-ink-500" />
+              <label htmlFor="wish-sort-select" className="text-xs font-semibold text-ink-600">
+                Sort:
+              </label>
+              <select
+                id="wish-sort-select"
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as WishSortOption)}
+                className="px-3 py-1.5 rounded-xl border border-[#D4CAB0] bg-[#FFFDF8] text-xs font-semibold text-ink-800 focus-visible:ring-2 focus-visible:ring-teal-600 focus-visible:outline-none"
+              >
+                <option value="default">Default Order</option>
+                <option value="urgent">Most Urgent (Deadline)</option>
+                <option value="almost_fulfilled">Almost Fulfilled</option>
+                <option value="most_needed">Most Items Needed</option>
+              </select>
+            </div>
           </div>
         </div>
 
@@ -179,28 +290,39 @@ export const BrowseWishes: React.FC<BrowseWishesProps> = ({ onSelectWish, onClai
         )}
 
         {/* Empty State */}
-        {!isLoading && !error && wishes.length === 0 && (
+        {!isLoading && !error && displayedWishes.length === 0 && (
           <EmptyState
-            title="No open wishes found"
-            description="Try selecting another category or clearing your search keywords."
+            title={showSavedOnly || showUrgentOnly ? 'No matching wishes on this page' : 'No open wishes found'}
+            description={
+              showSavedOnly
+                ? 'Bookmark wishes using the ribbon button on any wish card to save them for quick access.'
+                : showUrgentOnly
+                ? 'No wishes on this page are due within 7 days. Clear the urgent filter or check the next page.'
+                : 'Try selecting another category or clearing your search keywords.'
+            }
             actionText="Clear All Filters"
             onAction={() => {
               setSelectedCategory(undefined);
               setSearchQuery('');
+              setShowSavedOnly(false);
+              setShowUrgentOnly(false);
+              setSortBy('default');
               setPage(1);
             }}
           />
         )}
 
         {/* Wishes Grid with Category Color-Coded Cards & Gentle Floating Animation */}
-        {!isLoading && !error && wishes.length > 0 && (
+        {!isLoading && !error && displayedWishes.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-2">
-            {wishes.map((wish, index) => {
+            {displayedWishes.map((wish, index) => {
               const theme = getCategoryTheme(wish.category_name);
               const percentClaimed = Math.min(
                 100,
                 Math.round((wish.qty_claimed / wish.qty_requested) * 100)
               );
+              const isSaved = savedWishIds.includes(wish.wish_id);
+              const isUrgent = getDaysUntilNeeded(wish.needed_by) <= 7;
 
               // Friendly slight handmade tilt
               const tiltRotation = index % 3 === 0 ? -0.7 : index % 3 === 1 ? 0.6 : -0.4;
@@ -304,18 +426,38 @@ export const BrowseWishes: React.FC<BrowseWishesProps> = ({ onSelectWish, onClai
                     </div>
                   </div>
 
-                  {/* Card Bottom: Date & Claim Action */}
-                  <div className="mt-5 pt-3.5 border-t border-cream-200/70 flex items-center justify-between relative z-10">
-                    <span className="inline-flex items-center gap-1 text-[11px] text-ink-500">
-                      <Calendar className="w-3.5 h-3.5 text-ink-400" />
+                  {/* Card Bottom: Date, Bookmark & Claim Action */}
+                  <div className="mt-5 pt-3.5 border-t border-cream-200/70 flex items-center justify-between gap-2 relative z-10">
+                    <span
+                      className={`inline-flex items-center gap-1 text-[11px] font-medium ${
+                        isUrgent ? 'text-amber-700 font-semibold' : 'text-ink-500'
+                      }`}
+                    >
+                      <Calendar className={`w-3.5 h-3.5 ${isUrgent ? 'text-amber-600' : 'text-ink-400'}`} />
                       <span>{formatNeededBy(wish.needed_by)}</span>
                     </span>
-                    <button
-                      onClick={() => onClaimWish(wish)}
-                      className="px-4 py-2 rounded-xl bg-gradient-to-r from-coral-500 to-coral-600 hover:brightness-110 text-white font-bold text-xs tracking-wide shadow-soft transition active:scale-95"
-                    >
-                      Pledge Item &rarr;
-                    </button>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => toggleSaveWish(wish.wish_id)}
+                        aria-label={isSaved ? `Remove ${wish.wish_title} from saved wishes` : `Save ${wish.wish_title}`}
+                        aria-pressed={isSaved}
+                        title={isSaved ? 'Saved — click to remove' : 'Save wish for later'}
+                        className={`p-2 rounded-xl border transition ${
+                          isSaved
+                            ? 'bg-teal-50 text-teal-700 border-teal-300 shadow-soft-sm'
+                            : 'bg-white text-ink-500 border-cream-300 hover:text-teal-700 hover:border-teal-200'
+                        }`}
+                      >
+                        <Bookmark className={`w-3.5 h-3.5 ${isSaved ? 'fill-current' : ''}`} />
+                      </button>
+                      <button
+                        onClick={() => onClaimWish(wish)}
+                        className="px-4 py-2 rounded-xl bg-gradient-to-r from-coral-500 to-coral-600 hover:brightness-110 text-white font-bold text-xs tracking-wide shadow-soft transition active:scale-95"
+                      >
+                        Pledge Item &rarr;
+                      </button>
+                    </div>
                   </div>
                 </motion.div>
               );
